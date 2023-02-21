@@ -1,6 +1,13 @@
 pre-commit:
-  parallel: true
   commands:
     lint:
       glob: '*.{ts,tsx}'
-      run: yarn eslint {staged_files}
+      run: yarn eslint --fix {staged_files} && git add {staged_files}
+    format:
+      glob: '*.{ts,tsx}'
+      run: yarn prettier --write {staged_files} && git add {staged_files}
+
+commit-msg:
+  commands:
+    commit_message:
+      run: npx commitlint --edit {1}
