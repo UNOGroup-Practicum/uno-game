@@ -1,4 +1,3 @@
-html,
 body {
   padding: 0;
   margin: 0;
@@ -7,6 +6,8 @@ body {
   min-height: 100vh;
   /* mobile viewport bug fix */
   min-height: -webkit-fill-available;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
