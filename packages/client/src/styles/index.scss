@@ -1,0 +1,26 @@
+@import "reset";
+@import "@fontsource/roboto/300.css";
+@import "@fontsource/roboto/400.css";
+@import "@fontsource/roboto/500.css";
+@import "@fontsource/roboto/700.css";
+@import "variables/global";
+@import "themes/normal";
+@import "themes/dark";
+
+html {
+  font-size: 62.5%;
+}
+
+.app {
+  /* mobile viewport bug fix */
+  min-height: fill-available;
+  min-height: 100vh;
+
+  font: var(--font-m);
+  color: var(--text-color);
+
+  background: var(--bg-color);
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
