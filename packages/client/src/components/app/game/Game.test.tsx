@@ -1,7 +1,7 @@
 import Game from "./Game";
 import { render, screen } from "@testing-library/react";
 
-const appContent = "Game";
+const appContent = "Game_1";
 
 test("Example test", async () => {
   render(<Game />);
