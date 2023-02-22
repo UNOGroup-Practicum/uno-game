@@ -2,8 +2,6 @@ import { useEffect } from "react";
 import styles from "./app.module.scss";
 import clsx from "clsx";
 
-console.log(styles);
-
 function App() {
   useEffect(() => {
     const fetchServerData = async () => {
