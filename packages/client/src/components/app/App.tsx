@@ -3,6 +3,7 @@ import styles from "./app.module.scss";
 import clsx from "clsx";
 import { Route, Routes } from "react-router-dom";
 import GamePage from "../../pages/Game";
+import { routes } from "../../constants";
 
 function App() {
   useEffect(() => {
@@ -18,19 +19,19 @@ function App() {
   return (
     <Routes>
       <Route
-        path="/"
+        path={routes.home.path}
         element={
           <div className={clsx("app", styles["app-test"])}>
             Вот тут будет жить ваше приложение :)
           </div>
         }
       />
-      <Route path="/sign-in" />
-      <Route path="/sign-up" />
-      <Route path="/profile" />
-      <Route path="/leaderboard" />
-      <Route path="/forum" />
-      <Route path="/game" element={<GamePage />} />
+      <Route path={routes["sign-in"].path} />
+      <Route path={routes["sign-up"].path} />
+      <Route path={routes.profile.path} />
+      <Route path={routes.leaderboard.path} />
+      <Route path={routes.forum.path} />
+      <Route path={routes.game.path} element={<GamePage />} />
     </Routes>
   );
 }
