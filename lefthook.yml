@@ -1,8 +1,11 @@
 pre-commit:
   commands:
-    lint:
+    lintJS:
       glob: '*.{ts,tsx}'
       run: yarn eslint --fix {staged_files} && git add {staged_files}
+    lintCSS:
+      glob: '*.{css,scss}'
+      run: yarn stylelint --fix {staged_files} && git add {staged_files}
     format:
       glob: '*.{ts,tsx}'
       run: yarn prettier --write {staged_files} && git add {staged_files}

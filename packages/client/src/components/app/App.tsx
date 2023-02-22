@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import "./App.css";
+import styles from "./app.module.scss";
+import clsx from "clsx";
 
 function App() {
   useEffect(() => {
@@ -12,7 +13,9 @@ function App() {
 
     fetchServerData();
   }, []);
-  return <div className="App">Вот тут будет жить ваше приложение :)</div>;
+  return (
+    <div className={clsx("app", styles["app-test"])}>Вот тут будет жить ваше приложение :)</div>
+  );
 }
 
 export default App;
