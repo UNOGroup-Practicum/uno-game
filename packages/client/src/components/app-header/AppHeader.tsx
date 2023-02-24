@@ -1,15 +1,22 @@
 import clsx from "clsx";
 import * as React from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Container, Divider, FormGroup, FormControlLabel, Menu, MenuItem } from "@mui/material";
+import {
+  Container,
+  Divider,
+  FormGroup,
+  FormControlLabel,
+  Menu,
+  MenuItem,
+  Switch,
+} from "@mui/material";
 
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-import Switch from "@mui/material/Switch";
 
 import { useTheme } from "../../theme/useTheme";
-import { routes } from "../../constants";
 import { Theme } from "../../theme/ThemeContext";
+import { routes } from "../../constants";
 
 import logo from "../../assets/images/logo.png";
 import styles from "./AppHeader.module.scss";
@@ -27,7 +34,7 @@ export const AppHeader = () => {
     setAnchorEl(null);
   };
 
-  const handleLogout: React.MouseEventHandler = (event) => {
+  const handleLogout = (event: React.MouseEvent<HTMLElement>) => {
     // Todo: приделать logout
     event.preventDefault();
   };
