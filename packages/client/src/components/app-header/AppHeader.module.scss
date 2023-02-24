@@ -1,3 +1,65 @@
 .root {
+  position: relative;
+  background: var(--primary-light-color);
+  box-shadow: inset 0 -1px 0 0 rgb(255 255 255 / 10%);
+}
+
+.logo {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+
+  img {
+    width: 100px;
+    height: auto;
+  }
+}
+
+.nav {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+
+  &__link {
+    cursor: pointer;
+
+    display: inline-block;
+
+    padding: 1rem 2.5rem;
+
+    font-size: 1.4rem;
+    color: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+
+    background: transparent;
+    border: none;
+
+    &:hover {
+      background: var(--primary-main-color);
+    }
+
+    &-v2 {
+      display: block;
+      width: 100%;
+      padding: 0.5rem 2.5rem;
+    }
+  }
+
+  &__theme {
+    margin-right: 0;
+    margin-left: 1rem;
+  }
 }
