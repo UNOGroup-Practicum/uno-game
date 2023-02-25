@@ -1,3 +1,111 @@
-.root {
-  display: flex;
+.promo {
+  position: relative;
+  overflow: hidden;
+  padding: 8rem 0 15rem;
+  background: var(--primary-dark-color);
+
+  &::after {
+    content: "";
+
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-image: url("../../assets/images/pattern_01.png");
+  }
+
+  &__bg {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 1200px;
+
+    &::before,
+    &::after {
+      content: "";
+
+      position: absolute;
+      z-index: 1;
+      top: 0;
+
+      display: block;
+
+      width: 100%;
+      height: 100%;
+    }
+
+    &::before {
+      left: 0;
+      background: linear-gradient(
+        to right,
+        var(--primary-dark-color),
+        transparent
+      );
+    }
+
+    &::after {
+      right: 0;
+      background: linear-gradient(
+        to left,
+        var(--primary-dark-color),
+        transparent
+      );
+    }
+
+    img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      width: 100%;
+
+      object-fit: cover;
+    }
+  }
+
+  &__body {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+  }
+
+  &__title {
+    margin-bottom: 4rem;
+    font: var(--font-h1);
+    font-weight: bold;
+    font-style: italic;
+  }
+}
+
+.intro {
+  position: relative;
+  z-index: 2;
+  margin-top: -10rem;
+  margin-bottom: 5rem;
+
+  &__body {
+    padding: 2rem 4rem 1rem;
+    font: var(--font-l);
+    text-align: center;
+
+    p {
+      margin-bottom: 1.4rem;
+    }
+  }
+}
+
+.advantages {
+  margin-bottom: 7rem;
+
+  .advantage__img {
+    margin-bottom: 2rem;
+  }
 }
