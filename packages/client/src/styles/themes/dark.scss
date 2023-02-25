@@ -5,4 +5,11 @@
   --primary-main-color: #01386a;
   --primary-dark-color: #061e3a;
   --secondary-color: blue;
+
+  background: linear-gradient(
+    to bottom,
+    var(--primary-light-color) 0%,
+    var(--primary-light-color) 70vh,
+    var(--primary-dark-color) 100%
+  );
 }

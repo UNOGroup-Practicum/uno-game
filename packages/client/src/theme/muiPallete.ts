@@ -6,6 +6,12 @@ export const muiPallete = (mode: Theme) => {
         background: {
           paper: "coral",
         },
+        success: {
+          light: "#4caf50",
+          main: "#2e7d32",
+          dark: "#1b5e20",
+          contrastText: "#fff",
+        },
       }
     : {
         primary: {
@@ -20,8 +26,14 @@ export const muiPallete = (mode: Theme) => {
           dark: "#3d6a92",
           contrastText: "#fff",
         },
+        success: {
+          light: "#4caf50",
+          main: "#2e7d32",
+          dark: "#1b5e20",
+          contrastText: "#fff",
+        },
         background: {
-          paper: "#013d74",
+          paper: "#01386a",
         },
       };
 };

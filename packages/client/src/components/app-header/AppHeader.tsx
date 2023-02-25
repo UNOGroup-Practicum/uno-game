@@ -147,6 +147,7 @@ export const AppHeader = () => {
             <li className={styles.menu__theme}>
               <FormGroup>
                 <FormControlLabel
+                  disableTypography={true}
                   control={
                     <Switch
                       onChange={toggleTheme}
@@ -156,9 +157,9 @@ export const AppHeader = () => {
                   }
                   label={
                     theme === Theme.DARK ? (
-                      <Brightness7Icon fontSize="large" />
+                      <Brightness7Icon fontSize="small" />
                     ) : (
-                      <Brightness4Icon fontSize="large" />
+                      <Brightness4Icon fontSize="small" />
                     )
                   }
                 />
