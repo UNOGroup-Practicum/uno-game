@@ -1,10 +1,6 @@
 .root {
-  display: flex;
-  flex-direction: column;
-
   min-height: calc(100vh - 28px - 24px);
   padding: 40px 0;
-
   text-align: center;
 
   .leaderboard__headline {

@@ -1,4 +1,4 @@
-interface Data {
+type Data = {
   id: number;
   position: number;
   imgUrl: string;
@@ -6,7 +6,7 @@ interface Data {
   games: number;
   wins: number;
   percent: string;
-}
+};
 
 export const createData = (
   id: number,

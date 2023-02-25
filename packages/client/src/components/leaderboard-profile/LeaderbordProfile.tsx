@@ -14,12 +14,12 @@ import {
 } from "@mui/material";
 import { createData } from "../../utils/createDataForLeaderboard";
 
-interface Column {
+type Column = {
   id: "position" | "imgUrl" | "name" | "games" | "wins" | "percent";
   label: string;
   minWidth?: number;
   align?: "right" | "center";
-}
+};
 
 const columns: readonly Column[] = [
   { id: "position", label: "#", minWidth: 60, align: "center" },
@@ -30,7 +30,7 @@ const columns: readonly Column[] = [
   { id: "percent", label: "%", minWidth: 140, align: "center" },
 ];
 
-interface Data {
+type Data = {
   id: number;
   position: number;
   imgUrl: string;
@@ -38,7 +38,7 @@ interface Data {
   games: number;
   wins: number;
   percent: string;
-}
+};
 
 const rows: Data[] = [];
 Profiles.sort((a, b) => b.wins - a.wins).forEach((el, idx) => {
@@ -53,12 +53,12 @@ export const LeaderboardProfile = () => {
     setPage(newPage);
   };
 
-  interface LabelDisplayedRowsArgs {
+  type LabelDisplayedRowsArgs = {
     from: number;
     to: number;
     count: number;
     page: number;
-  }
+  };
   const createLabelDisplayedRows = (DisplayedRowsArgs: LabelDisplayedRowsArgs): string => {
     const { from, to, count } = DisplayedRowsArgs;
     return `${from}–${to} из ${count !== -1 ? count : `more than ${to}`}`;
@@ -70,7 +70,7 @@ export const LeaderboardProfile = () => {
   };
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
-      <TableContainer sx={{ maxHeight: 810 }}>
+      <TableContainer sx={{ maxHeight: 810, minHeight: 400 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -78,7 +78,7 @@ export const LeaderboardProfile = () => {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{
+                  sx={{
                     minWidth: column.minWidth,
                     fontSize: "1.2rem",
                     backgroundColor: "var(--bg-leaderboard-table-color)",
@@ -107,7 +107,7 @@ export const LeaderboardProfile = () => {
                       <TableCell
                         key={column.id}
                         align={column.align}
-                        style={{ fontSize: "1.7rem", color: "var(--text-color)" }}
+                        sx={{ fontSize: "1.7rem", color: "var(--text-color)" }}
                       >
                         {column.id === "imgUrl" ? <Avatar alt="" src={value.toString()} /> : value}
                       </TableCell>
@@ -120,7 +120,7 @@ export const LeaderboardProfile = () => {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[5, 15, 30]}
+        rowsPerPageOptions={[5, 10, 15]}
         labelRowsPerPage="Строк на странице:"
         labelDisplayedRows={createLabelDisplayedRows}
         component="div"
@@ -129,7 +129,7 @@ export const LeaderboardProfile = () => {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-        style={{
+        sx={{
           fontSize: "1.1rem",
           backgroundColor: "var(--bg-leaderboard-table-color)",
           color: "var(--text-color)",

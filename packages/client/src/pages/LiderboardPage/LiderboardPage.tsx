@@ -15,7 +15,7 @@ export const LiderboardPage = () => {
     <div className={styles.root}>
       <Container maxWidth="md">
         <h1 className={styles.leaderboard__headline}>Список лидеров</h1>
-        <Stack spacing={3} direction="row" style={{ margin: "20px 0", display: "inline-block" }}>
+        <Stack spacing={3} direction="row" sx={{ margin: "20px 0", display: "inline-block" }}>
           <Button variant="contained" className={styles.leaderboard__btn} onClick={handleFilter}>
             Неделя
           </Button>

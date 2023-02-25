@@ -79,20 +79,20 @@ export const Profiles: Profiles[] = [
     games: 5,
     wins: 2,
   },
-  // {
-  //   id: 10,
-  //   avatar:
-  //     "https://avatars.mds.yandex.net/get-kinopoisk-image/1777765/813f8c6a-b98f-46ab-90a8-1aa795c588dc/280x420",
-  //   name: "Анна Торв",
-  //   games: 22,
-  //   wins: 13,
-  // },
-  // {
-  //   id: 11,
-  //   avatar:
-  //     "https://avatars.mds.yandex.net/get-kinopoisk-image/1777765/bbab0511-9448-4df9-abbf-80adf2aaa1a3/1920x",
-  //   name: "Гэбриел Луна",
-  //   games: 2,
-  //   wins: 1,
-  // },
+  {
+    id: 10,
+    avatar:
+      "https://avatars.mds.yandex.net/get-kinopoisk-image/1777765/813f8c6a-b98f-46ab-90a8-1aa795c588dc/280x420",
+    name: "Анна Торв",
+    games: 22,
+    wins: 13,
+  },
+  {
+    id: 11,
+    avatar:
+      "https://avatars.mds.yandex.net/get-kinopoisk-image/1777765/bbab0511-9448-4df9-abbf-80adf2aaa1a3/1920x",
+    name: "Гэбриел Луна",
+    games: 2,
+    wins: 1,
+  },
 ];
