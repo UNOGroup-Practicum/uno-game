@@ -4,6 +4,7 @@ import GamePage from "../../pages/Game";
 import { useTheme } from "../../theme/useTheme";
 import { routes } from "../../constants";
 import { HomePage } from "../../pages/HomePage/HomePage";
+import { RulesPage } from "../../pages/RulesPage/RulesPage";
 import { LiderboardPage } from "../../pages/LiderboardPage/LiderboardPage";
 import { AppHeader } from "../../components/app-header/AppHeader";
 import { AppFooter } from "../../components/app-footer/AppFooter";
@@ -35,6 +36,7 @@ function App() {
         <Route path={routes["sign-in"].path} element={<LoginPage />} />
         <Route path={routes["sign-up"].path} element={<RegisterPage />} />
         <Route path={routes.profile.path} element={<ProfilePage />} />
+        <Route path={routes.rules.path} element={<RulesPage />} />
         <Route path={routes.leaderboard.path} element={<LiderboardPage />} />
         <Route path={routes.forum.path} element={<ForumPage />} />
         <Route path={routes.game.path} element={<GamePage />} />

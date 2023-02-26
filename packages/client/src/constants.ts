@@ -12,6 +12,9 @@ export const routes = {
   profile: {
     path: "/profile",
   },
+  rules: {
+    path: "/rules",
+  },
   leaderboard: {
     path: "/leaderboard",
   },
