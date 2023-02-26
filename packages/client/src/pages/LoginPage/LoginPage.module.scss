@@ -1,3 +1,16 @@
 .root {
   display: flex;
+  flex-direction: column;
+  margin-top: 100px;
+  text-align: center;
+}
+
+.login__headline {
+  font-weight: 300;
+}
+
+.form__auth {
+  width: 40%;
+  margin: 0 auto;
+  margin-top: 40px;
 }
