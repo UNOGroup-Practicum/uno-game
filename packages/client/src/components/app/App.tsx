@@ -36,7 +36,9 @@ function App() {
         <Route path={routes["sign-up"].path} element={<RegisterPage />} />
         <Route path={routes.profile.path} element={<ProfilePage />} />
         <Route path={routes.leaderboard.path} element={<LiderboardPage />} />
-        <Route path={routes.forum.path} element={<ForumPage />} />
+        <Route path={routes.forum.path} element={<ForumPage />}>
+          <Route path=":themeId" element={<ForumPage />} />
+        </Route>
         <Route path={routes.game.path} element={<GamePage />} />
       </Routes>
       <AppFooter />

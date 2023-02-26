@@ -1,3 +1,43 @@
-.root {
-  display: flex;
+.ForumPage {
+  margin: 40px 0;
+
+  &__header {
+    padding: 28px 0;
+    border-bottom: 2px solid var(--text-color);
+
+    a {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+  }
+
+  &__form {
+    display: flex;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--text-color);
+
+    &_input {
+      width: 100%;
+      margin-right: 10px;
+      padding: 5px 10px;
+
+      color: var(--text-color);
+
+      background-color: var(--bg-color);
+      border: 2px solid var(--primary-color);
+    }
+
+    &_btn {
+      padding: 0 5px;
+      color: var(--text-color);
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+  }
+
+  &_wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
