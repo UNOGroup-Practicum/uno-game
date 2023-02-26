@@ -1,0 +1,30 @@
+.themeItem {
+  display: flex;
+  justify-content: space-between;
+
+  width: 100%;
+  padding: 28px 0;
+
+  border-bottom: 1px solid var(--text-color);
+
+  &__wrapper {
+    a {
+      cursor: pointer;
+
+      font-size: 21px;
+      font-weight: bold;
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    &_descr {
+      margin-top: 5px;
+      font-weight: lighter;
+    }
+
+    &_count {
+      margin-top: 0;
+      text-align: center;
+    }
+  }
+}
