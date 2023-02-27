@@ -21,7 +21,7 @@ function App() {
   }, []);
 
   return (
-    <div className={`app ${theme}`}>
+    <div className={clsx("app", theme)}>
       <button onClick={toggleTheme}>Переключить тему</button>
 
       <Routes>
