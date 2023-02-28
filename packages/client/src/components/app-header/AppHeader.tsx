@@ -43,7 +43,7 @@ export const AppHeader = () => {
   const isAuth = true;
 
   return (
-    <div className={clsx("app-header", styles.root)}>
+    <header className={clsx("app-header", styles.root)}>
       <Container maxWidth="md" className={styles.container}>
         <nav className={styles.nav}>
           <ul className={clsx(styles.menu, styles.menu_left)}>
@@ -167,6 +167,6 @@ export const AppHeader = () => {
           </ul>
         </nav>
       </Container>
-    </div>
+    </header>
   );
 };

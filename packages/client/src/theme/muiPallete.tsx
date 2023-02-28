@@ -22,8 +22,8 @@ export const muiPallete = (mode: Theme) => {
           contrastText: "#fff",
         },
         background: {
-          paper: "#013d74",
-          default: "#01386a",
+          paper: "var(--primary-light-color)",
+          default: "var(--primary-main-color)",
         },
       };
 };
