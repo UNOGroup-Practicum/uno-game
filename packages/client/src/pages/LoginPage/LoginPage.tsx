@@ -1,58 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import { Container } from "@mui/material";
 import { Stack } from "@mui/material";
 import styles from "./LoginPage.module.scss";
 import ControlledInput from "../../components/elements/input/Input";
-import ControlledButton from "../../components/elements/button/Button";
-import { checkAuthInputValue } from "../../utils/utils-validate/checkAuthInputValues";
-import { submitAuthForm } from "../../utils/utils-validate/submitAuthForm";
+import { ControlledButton } from "../../components/elements/button/Button";
 
 export const LoginPage = () => {
-  // Declare State
-  // State for password
-  const [password, setPassword] = useState("");
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
-  const [passwordError, setPasswordError] = useState(false);
-
-  // State for login
-  const [login, setLogin] = useState("");
-  const [loginErrorMessage, setLoginErrorMessage] = useState("");
-  const [loginError, setLoginError] = useState(false);
-
   // Declare handlers for form
-  const handlerSubmitForm: React.FormEventHandler<HTMLFormElement> = (event): void => {
+  const handlerSubmitForm: React.FormEventHandler<HTMLFormElement> = (
+    event: React.FormEvent<HTMLFormElement>
+  ): void => {
     event.preventDefault();
-  };
-
-  const handlerButtonClick = (event: React.MouseEvent<HTMLElement>): void => {
-    event.preventDefault();
-    submitAuthForm({
-      sendData: { login: login, password: password },
-      errorMessages: { login: loginErrorMessage, password: passwordErrorMessage },
-      pageType: "Sign-in",
-    });
-  };
-
-  // Declare handler for LoginField
-  const handlerLoginChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    checkAuthInputValue({
-      event,
-      setInputCallback: setLogin,
-      setInputErrorMessageCallback: setLoginErrorMessage,
-      setInputErrorCallback: setLoginError,
-      inputType: "Login",
-    });
-  };
-
-  // Declare handler for PasswordField
-  const handlerPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    checkAuthInputValue({
-      event,
-      setInputCallback: setPassword,
-      setInputErrorMessageCallback: setPasswordErrorMessage,
-      setInputErrorCallback: setPasswordError,
-      inputType: "Password",
-    });
   };
 
   return (
@@ -66,25 +24,17 @@ export const LoginPage = () => {
               type="text"
               id="login"
               name="login"
-              value={login}
-              helperText={loginErrorMessage}
-              error={loginError}
-              onChange={handlerLoginChange}
-              onBlur={handlerLoginChange}
+              helperText="От 3 до 20 знаков (EN)"
             />
             <ControlledInput
               label="Пароль"
               type="password"
               id="password"
               name="password"
-              value={password}
-              helperText={passwordErrorMessage}
-              error={passwordError}
-              onChange={handlerPasswordChange}
-              onBlur={handlerPasswordChange}
+              helperText="От 8 до 40 символов (EN), обязательно хотя бы одна заглавная буква и цифра"
             />
           </Stack>
-          <ControlledButton text="Войти" onClick={handlerButtonClick}></ControlledButton>
+          <ControlledButton text="Войти"></ControlledButton>
         </form>
       </Container>
     </div>

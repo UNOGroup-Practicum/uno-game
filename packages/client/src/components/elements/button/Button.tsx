@@ -1,30 +1,29 @@
 import React from "react";
 import { Button } from "@mui/material";
-import { styled } from "@mui/material/styles";
 
 type ButtonProps = {
   text: string;
   onClick?: (event: React.MouseEvent<HTMLElement>) => void;
 };
 
-const CssButton = styled(Button)({
-  "&": {
-    fontSize: 14,
-    padding: "16px 14px",
-    borderRadius: 15,
-    backgroundColor: "var(--primary-color)",
-    color: "white",
-    width: "100%",
-    marginTop: 200,
-  },
-});
+declare module "@mui/material/Button" {
+  interface ButtonPropsVariantOverrides {
+    submit: true;
+  }
+}
 
-const ControlledButton: React.FC<ButtonProps> = ({ text, onClick }) => {
+export const ControlledButton: React.FC<ButtonProps> = ({ text, onClick }) => {
   return (
-    <CssButton variant="contained" onClick={onClick}>
+    <Button
+      onClick={onClick}
+      size="large"
+      variant="submit"
+      type="submit"
+      sx={{
+        marginTop: "200px",
+      }}
+    >
       {text}
-    </CssButton>
+    </Button>
   );
 };
-
-export default ControlledButton;
