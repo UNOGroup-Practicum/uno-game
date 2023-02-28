@@ -38,6 +38,57 @@ export const muiComponents = (theme: Theme) => {
           padding: "1rem 3rem",
         },
       },
+      variants: [
+        {
+          props: { variant: "submit" },
+          style: {
+            backgroundColor: theme == Theme.LIGHT ? pallete?.success?.main : "coral",
+            width: "100%",
+            color: pallete.success.contrastText,
+
+            "&:hover": {
+              backgroundColor: pallete.success?.dark,
+            },
+          },
+        },
+      ],
+    },
+    MuiInputBase: {
+      styleOverrides: {},
+    },
+    MuiFilledInput: {
+      styleOverrides: {
+        root: {
+          "&:after": {
+            borderBottomColor: theme == Theme.LIGHT ? pallete.info?.main : "coral",
+          },
+        },
+      },
+    },
+    MuiFieldInput: {
+      styleOverrides: {
+        sizeNormal: {
+          fontSize: "1.5rem",
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          fontSize: "1.5rem",
+
+          "&.Mui-focused": {
+            color: theme == Theme.LIGHT ? pallete.info?.main : "coral",
+          },
+        },
+      },
+    },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: {
+          fontSize: "1.3rem",
+        },
+      },
     },
   };
 };

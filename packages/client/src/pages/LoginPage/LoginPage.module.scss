@@ -1,3 +1,8 @@
 .root {
-  display: flex;
+  height: calc(100vh - 45px - (51px + 1rem * 2));
+}
+
+.form__auth {
+  width: 40%;
+  margin: 0 auto;
 }
