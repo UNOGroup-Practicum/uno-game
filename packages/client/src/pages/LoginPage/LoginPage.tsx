@@ -1,9 +1,10 @@
 import React from "react";
-import { Container } from "@mui/material";
+import { Container, Link, Typography } from "@mui/material";
 import { Stack } from "@mui/material";
 import styles from "./LoginPage.module.scss";
 import ControlledInput from "../../components/elements/input/Input";
 import { ControlledButton } from "../../components/elements/button/Button";
+import { routes } from "../../constants";
 
 export const LoginPage = () => {
   // Declare handlers for form
@@ -37,6 +38,17 @@ export const LoginPage = () => {
           <ControlledButton text="Войти"></ControlledButton>
         </form>
       </Container>
+      <Link href={routes["sign-up"].path} underline="none">
+        <Typography
+          align="center"
+          fontSize="16px"
+          color="text.disabled"
+          fontWeight="bold"
+          marginTop="16px"
+        >
+          Нет аккаунта?
+        </Typography>
+      </Link>
     </div>
   );
 };
