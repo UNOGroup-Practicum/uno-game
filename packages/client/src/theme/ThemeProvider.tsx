@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { LOCAL_STORAGE_THEME_KEY, Theme, ThemeContext } from "./ThemeContext";
 import { ThemeProvider as ThemeProviderMui, createTheme } from "@mui/material/styles";
-import { muiPallete } from "./muiPallete";
+import { muiPallete, setGlobalStyles } from "./muiPallete";
 import { muiComponents } from "./muiComponents";
 import { muiTypography } from "./muiTypography";
 
@@ -33,6 +33,7 @@ const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 
   return (
     <ThemeProviderMui theme={themeMui}>
+      {setGlobalStyles(themeMui)}
       <ThemeContext.Provider value={defaultProps}>{children}</ThemeContext.Provider>
     </ThemeProviderMui>
   );

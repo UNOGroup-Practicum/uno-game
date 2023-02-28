@@ -11,23 +11,21 @@ import { LoginPage } from "../../pages/LoginPage/LoginPage";
 import { RegisterPage } from "../../pages/RegisterPage/RegisterPage";
 import { ForumPage } from "../../pages/ForumPage/ForumPage";
 import { ProfilePage } from "../../pages/ProfilePage/ProfilePage";
+import { Theme } from "../../theme/ThemeContext";
 
 function App() {
   const { theme } = useTheme();
 
   useEffect(() => {
-    const fetchServerData = async () => {
-      const url = `http://localhost:${__SERVER_PORT__}`;
-      const response = await fetch(url);
-      const data = await response.json();
-      console.log(data);
-    };
+    const [oldTheme, newTheme] =
+      theme === Theme.DARK ? [Theme.LIGHT, Theme.DARK] : [Theme.DARK, Theme.LIGHT];
 
-    fetchServerData();
-  }, []);
+    document.body.classList.add("app", newTheme);
+    document.body.classList.remove(oldTheme);
+  }, [theme]);
 
   return (
-    <div className={`app ${theme}`}>
+    <>
       <AppHeader />
 
       <Routes>
@@ -40,7 +38,7 @@ function App() {
         <Route path={routes.game.path} element={<GamePage />} />
       </Routes>
       <AppFooter />
-    </div>
+    </>
   );
 }
 
