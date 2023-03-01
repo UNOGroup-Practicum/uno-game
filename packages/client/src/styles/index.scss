@@ -4,11 +4,13 @@
 @import "@fontsource/roboto/500.css";
 @import "@fontsource/roboto/700.css";
 @import "variables/global";
+@import "themes/dark";
 
 html {
   font-size: 62.5%;
 }
 
+// CSS переменные задаются тут src/theme/muiPallete.tsx
 .app {
   /* mobile viewport bug fix */
   min-height: fill-available;
