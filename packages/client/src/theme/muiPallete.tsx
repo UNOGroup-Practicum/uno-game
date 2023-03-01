@@ -14,7 +14,10 @@ export const muiPallete = (mode: Theme) => {
           contrastText: "#fff",
         },
         info: {
+          light: "#4d7497",
           main: "#01386a",
+          dark: "#011c34",
+          contrastText: "#fff",
         },
       }
     : {
@@ -34,6 +37,12 @@ export const muiPallete = (mode: Theme) => {
           light: "#4caf50",
           main: "#2e7d32",
           dark: "#1b5e20",
+          contrastText: "#fff",
+        },
+        info: {
+          light: "fd7c6e",
+          main: "#fe6e61",
+          dark: "ff6f61",
           contrastText: "#fff",
         },
         background: {
@@ -57,6 +66,10 @@ export const setGlobalStyles = (theme: ThemeMui) => (
         "--secondary-main-color": theme.palette.secondary.main,
         "--secondary-dark-color": theme.palette.secondary.dark,
         "--secondary-contrast-text": theme.palette.secondary.contrastText,
+        "--info-light-color": theme.palette.info.light,
+        "--info-main-color": theme.palette.info.main,
+        "--info-dark-color": theme.palette.info.dark,
+        "--info-contrast-text": theme.palette.info.contrastText,
       },
     }}
   />

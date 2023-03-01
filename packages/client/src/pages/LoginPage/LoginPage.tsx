@@ -1,9 +1,8 @@
 import React from "react";
-import { Container, Link, Typography, Button, Stack } from "@mui/material";
+import { Container, Link, Typography, Button, Stack, TextField } from "@mui/material";
 import styles from "./LoginPage.module.scss";
 import { routes } from "../../constants";
 import { LOCAL_STORAGE_THEME_KEY } from "../../theme/ThemeContext";
-import ControlledInput from "../../components/elements/Input/Input";
 
 declare module "@mui/material/Button" {
   interface ButtonPropsVariantOverrides {
@@ -23,7 +22,7 @@ export const LoginPage = () => {
 
   return (
     <div className={styles.root}>
-      <Container maxWidth="md" sx={{}}>
+      <Container maxWidth="md">
         <Typography
           variant="h4"
           component="h2"
@@ -35,14 +34,16 @@ export const LoginPage = () => {
         </Typography>
         <form name="login-form" className={styles.form__auth} onSubmit={handlerSubmitForm}>
           <Stack spacing={3}>
-            <ControlledInput
+            <TextField
+              variant="filled"
               label="Логин"
               type="text"
               id="login"
               name="login"
               helperText="От 3 до 20 знаков (EN)"
             />
-            <ControlledInput
+            <TextField
+              variant="filled"
               label="Пароль"
               type="password"
               id="password"

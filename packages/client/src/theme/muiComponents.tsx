@@ -42,7 +42,7 @@ export const muiComponents = (theme: Theme) => {
         {
           props: { variant: "difColor" },
           style: {
-            backgroundColor: theme == Theme.LIGHT ? pallete?.success?.main : "coral",
+            backgroundColor: theme == Theme.LIGHT ? pallete?.success?.main : pallete.info.main,
             width: "100%",
             color: pallete.success.contrastText,
 
@@ -60,7 +60,7 @@ export const muiComponents = (theme: Theme) => {
       styleOverrides: {
         root: {
           "&:after": {
-            borderBottomColor: theme == Theme.LIGHT ? pallete.info?.main : "coral",
+            borderBottomColor: pallete.info.main,
           },
         },
       },
@@ -78,7 +78,7 @@ export const muiComponents = (theme: Theme) => {
           fontSize: "1.5rem",
 
           "&.Mui-focused": {
-            color: theme == Theme.LIGHT ? pallete.info?.main : "coral",
+            color: pallete.info.main,
           },
         },
       },
