@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import GamePage from "../../pages/Game";
 import { useTheme } from "../../theme/useTheme";
 import { routes } from "../../constants";
@@ -15,6 +15,7 @@ import { Theme } from "../../theme/ThemeContext";
 
 function App() {
   const { theme } = useTheme();
+  const location = useLocation();
 
   useEffect(() => {
     const [oldTheme, newTheme] =
@@ -26,7 +27,7 @@ function App() {
 
   return (
     <>
-      <AppHeader />
+      {location.pathname !== "/game" && <AppHeader />}
 
       <Routes>
         <Route path={routes.home.path} element={<HomePage />} />
@@ -37,7 +38,8 @@ function App() {
         <Route path={routes.forum.path} element={<ForumPage />} />
         <Route path={routes.game.path} element={<GamePage />} />
       </Routes>
-      <AppFooter />
+
+      {location.pathname !== "/game" && <AppFooter />}
     </>
   );
 }
