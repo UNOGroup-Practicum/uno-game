@@ -12,10 +12,6 @@ html {
 
 // CSS переменные задаются тут src/theme/muiPallete.tsx
 .app {
-  /* mobile viewport bug fix */
-  min-height: fill-available;
-  min-height: 100vh;
-
   font: var(--font-m);
   color: var(--text-color);
 
@@ -23,4 +19,13 @@ html {
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.root {
+  display: flex;
+  flex-direction: column;
+
+  /* mobile viewport bug fix */
+  min-height: fill-available;
+  min-height: 100vh;
 }
