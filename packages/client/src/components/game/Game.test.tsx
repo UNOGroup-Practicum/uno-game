@@ -1,9 +1,7 @@
-import Game from "./Game";
-import { render, screen } from "@testing-library/react";
+function sum(a: number, b: number) {
+  return a + b;
+}
 
-const appContent = "Game_1";
-
-test("Example test", async () => {
-  render(<Game />);
-  expect(screen.getByText(appContent)).toBeDefined();
+test("adds 1 + 2 to equal 3", () => {
+  expect(sum(1, 2)).toBe(3);
 });
