@@ -7,7 +7,7 @@ pre-commit:
       glob: '*.{css,scss}'
       run: yarn stylelint --fix {staged_files} && git add {staged_files}
     format:
-      glob: '*.{ts,tsx}'
+      glob: '*.{ts,tsx,css,scss}'
       run: yarn prettier --write {staged_files} && git add {staged_files}
 
 commit-msg:

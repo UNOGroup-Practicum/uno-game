@@ -3,10 +3,18 @@ import { Route, Routes } from "react-router-dom";
 import GamePage from "../../pages/Game";
 import { useTheme } from "../../theme/useTheme";
 import { routes } from "../../constants";
+import { HomePage } from "../../pages/HomePage/HomePage";
+import { LiderboardPage } from "../../pages/LiderboardPage/LiderboardPage";
+import { AppHeader } from "../../components/app-header/AppHeader";
+import { AppFooter } from "../../components/app-footer/AppFooter";
+import { LoginPage } from "../../pages/LoginPage/LoginPage";
+import { RegisterPage } from "../../pages/RegisterPage/RegisterPage";
+import { ForumPage } from "../../pages/ForumPage/ForumPage";
+import { ProfilePage } from "../../pages/ProfilePage/ProfilePage";
 import { Theme } from "../../theme/ThemeContext";
 
 function App() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
 
   useEffect(() => {
     const [oldTheme, newTheme] =
@@ -18,17 +26,18 @@ function App() {
 
   return (
     <>
-      <button onClick={toggleTheme}>Переключить тему</button>
+      <AppHeader />
 
       <Routes>
-        <Route path={routes.home.path} element={<div>Вот тут будет жить ваше приложение :)</div>} />
-        <Route path={routes["sign-in"].path} />
-        <Route path={routes["sign-up"].path} />
-        <Route path={routes.profile.path} />
-        <Route path={routes.leaderboard.path} />
-        <Route path={routes.forum.path} />
+        <Route path={routes.home.path} element={<HomePage />} />
+        <Route path={routes["sign-in"].path} element={<LoginPage />} />
+        <Route path={routes["sign-up"].path} element={<RegisterPage />} />
+        <Route path={routes.profile.path} element={<ProfilePage />} />
+        <Route path={routes.leaderboard.path} element={<LiderboardPage />} />
+        <Route path={routes.forum.path} element={<ForumPage />} />
         <Route path={routes.game.path} element={<GamePage />} />
       </Routes>
+      <AppFooter />
     </>
   );
 }
