@@ -15,9 +15,9 @@ import createSkipTurnCard from "./utils/createSkipTurnCard";
 import createTakeTwoCard from "./utils/createTakeTwoCard";
 
 function Game() {
-  const ref = useRef(null);
+  const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
-    const canvas = ref.current as unknown as HTMLCanvasElement;
+    const canvas = ref.current as HTMLCanvasElement;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -46,7 +46,6 @@ function Game() {
     function setUserCardsDuringCardsDistribution(
       canvas: HTMLCanvasElement,
       ctx: CanvasRenderingContext2D,
-
       gamersList: { id: string; name: string }[],
       shuffleArrayCards: TShuffleArrayCards
     ) {
@@ -120,10 +119,10 @@ function Game() {
             ctx.clearRect(0, yEndPoint + 30, canvas.width, canvas.height - 330);
             createBackSideCard(ctx, canvas.width / 2 - 40, canvas.height / 2 - 60);
             const idx = generator.next().value as number;
-            if (idx !== undefined) {
+            if (typeof idx !== "undefined") {
               cardsDistribution(gamersPositions[idx].cards[0], gamersPositions[idx].cards[1]);
             }
-            if (idx === undefined) {
+            if (typeof idx === "undefined") {
               setCardsAmountForGamer(
                 ctx,
                 gamersPositions[gamersPositions.length - 1].cards[0],

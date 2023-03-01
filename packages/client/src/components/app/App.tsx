@@ -27,7 +27,7 @@ function App() {
 
   return (
     <>
-      {location.pathname !== "/game" && <AppHeader />}
+      {location.pathname !== routes.game.path && <AppHeader />}
 
       <Routes>
         <Route path={routes.home.path} element={<HomePage />} />
@@ -39,7 +39,7 @@ function App() {
         <Route path={routes.game.path} element={<GamePage />} />
       </Routes>
 
-      {location.pathname !== "/game" && <AppFooter />}
+      {location.pathname !== routes.game.path && <AppFooter />}
     </>
   );
 }
