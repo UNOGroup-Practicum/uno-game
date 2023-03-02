@@ -12,7 +12,9 @@ export default function createShuffleArrayCards(gamersList: { id: string; name: 
     Color.yellow,
     Color.blue,
   ];
+
   const shuffleArrayCards: TShuffleArrayCards = [];
+
   for (let index = 0; index < 109; index++) {
     if (index < 4) {
       shuffleArrayCards.push({
@@ -149,21 +151,27 @@ export default function createShuffleArrayCards(gamersList: { id: string; name: 
       });
     }
   }
+
   function shuffle(array: TShuffleArrayCards) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
     }
   }
+
   shuffle(shuffleArrayCards);
+
   let idx = 0;
+
   for (let index = 0; index < gamersList.length * 7; index++) {
     if (idx >= gamersList.length) {
       idx = 0;
     }
+
     shuffleArrayCards[index].owner = gamersList[idx].name;
     shuffleArrayCards[index].status = CardStatus.inHands;
     idx++;
   }
+
   return shuffleArrayCards;
 }

@@ -8,3 +8,9 @@ export type TShuffleArrayCards = {
   value: number;
   status: CardStatus;
 }[];
+
+export type TCardsDistribution = {
+  (xEndPoint: number, yEndPoint: number): void;
+  cardsCounter1: number;
+  cardsCounter2: number;
+};
