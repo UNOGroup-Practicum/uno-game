@@ -2,7 +2,8 @@ import React from "react";
 import { Container, Link, Typography, Button, Stack, TextField } from "@mui/material";
 import styles from "./LoginPage.module.scss";
 import { routes } from "../../constants";
-import { LOCAL_STORAGE_THEME_KEY } from "../../theme/ThemeContext";
+import { useTheme } from "../../theme/useTheme";
+import { Theme } from "../../theme/ThemeContext";
 
 declare module "@mui/material/Button" {
   interface ButtonPropsVariantOverrides {
@@ -10,7 +11,8 @@ declare module "@mui/material/Button" {
   }
 }
 
-const currentTheme = () => localStorage.getItem(LOCAL_STORAGE_THEME_KEY);
+const { theme } = useTheme();
+const isLight = theme === Theme.LIGHT;
 
 export const LoginPage = () => {
   // Declare handlers for form
@@ -28,7 +30,7 @@ export const LoginPage = () => {
           component="h1"
           align="center"
           marginBottom={3}
-          color={currentTheme() === "light" ? "black" : "white"}
+          color={isLight ? "black" : "white"}
         >
           Вход
         </Typography>
