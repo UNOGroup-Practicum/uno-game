@@ -1,44 +1,51 @@
 import styles from "./ForumPage.module.scss";
 import { ThemeItem } from "./ThemeItem/ThemeItem";
-import { ChangeEvent, Dispatch, FC, FormEvent, SetStateAction, useState } from "react";
-import { NavLink } from "react-router-dom";
-import { ThemeType } from "./types/types";
+import React from "react";
+import { Button, Container, TextField } from "@mui/material";
+import { forumData } from "./data/data";
 
-type PropsType = {
-  forumState: ThemeType[];
-  addTheme: (
-    e: FormEvent<HTMLFormElement>,
-    title: string,
-    setText: Dispatch<SetStateAction<string>>
-  ) => void;
-};
-export const ForumThemesListPage: FC<PropsType> = ({ forumState, addTheme }) => {
-  const [title, setTitle] = useState("");
+export const ForumThemesListPage: React.FC = () => {
+  const [title, setTitle] = React.useState("");
+  const [isDisabled, setIsDisabled] = React.useState(true);
+
+  React.useEffect(() => {
+    title.length ? setIsDisabled(false) : setIsDisabled(true);
+  }, [title]);
+
+  const addTheme = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!isDisabled) {
+      console.log(title);
+    }
+  };
 
   return (
-    <div className={styles.ForumPage}>
-      <h2 className={styles.ForumPage__header}>
-        <NavLink to={"/forum"}>Форум</NavLink>
-      </h2>
+    <Container maxWidth="md">
+      <main className={styles.ForumPage}>
+        <h2 className={styles.ForumPage__header}>Форум</h2>
 
-      <form className={styles.ForumPage__form} onSubmit={(e) => addTheme(e, title, setTitle)}>
-        <input
-          name={"title"}
-          className={styles.ForumPage__form_input}
-          placeholder={"Создать новую тему"}
-          value={title}
-          onChange={(event: ChangeEvent<HTMLInputElement>) => {
-            setTitle(event.target.value);
-          }}
-        />
-        <button className={styles.ForumPage__form_btn} type="submit">
-          Добавить
-        </button>
-      </form>
+        <form className={styles.ForumPage__form} onSubmit={(e) => addTheme(e)}>
+          <TextField
+            name={"title"}
+            className={styles.ForumPage__form_input}
+            placeholder={"Создать новую тему"}
+            value={title}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setTitle(event.target.value);
+            }}
+            variant="outlined"
+            type="search"
+            size="small"
+          />
+          <Button size="small" variant="contained" type="submit" disabled={isDisabled}>
+            Добавить
+          </Button>
+        </form>
 
-      {forumState.map((item) => (
-        <ThemeItem key={item.themeId} {...item} />
-      ))}
-    </div>
+        {forumData.map((item) => (
+          <ThemeItem key={item.themeId} {...item} />
+        ))}
+      </main>
+    </Container>
   );
 };

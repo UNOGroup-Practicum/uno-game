@@ -3,9 +3,11 @@
 
   &__header {
     padding: 28px 0;
+    color: var(--primary-color);
     border-bottom: 2px solid var(--text-color);
 
     a {
+      margin-right: 35px;
       color: var(--primary-color);
       text-decoration: none;
     }
@@ -18,20 +20,10 @@
 
     &_input {
       width: 100%;
-      margin-right: 10px;
-      padding: 5px 10px;
 
-      color: var(--text-color);
-
-      background-color: var(--bg-color);
-      border: 2px solid var(--primary-color);
-    }
-
-    &_btn {
-      padding: 0 5px;
-      color: var(--text-color);
-      background: var(--primary-color);
-      border-color: var(--primary-color);
+      & div {
+        margin-right: 10px;
+      }
     }
   }
 

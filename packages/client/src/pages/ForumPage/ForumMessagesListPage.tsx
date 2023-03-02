@@ -1,80 +1,79 @@
 import styles from "./ForumPage.module.scss";
 import stylesMessageItem from "./MessageItem/MessageItem.module.scss";
-import {
-  ChangeEvent,
-  Dispatch,
-  FC,
-  FormEvent,
-  SetStateAction,
-  useState,
-  SyntheticEvent,
-} from "react";
-import { NavLink } from "react-router-dom";
-import { ThemeType } from "./types/types";
+import React from "react";
+import { NavLink, useParams } from "react-router-dom";
 import { MessageItem } from "./MessageItem/MessageItem";
-import { Avatar, Button } from "@mui/material";
+import { Avatar, Button, Container, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { currentUserData } from "./data/data";
+import { currentUserData, forumData } from "./data/data";
+import { routes } from "../../constants";
 
-type PropsType = {
-  themeData: ThemeType;
-  addMessage: (
-    e: FormEvent<HTMLFormElement>,
-    title: string,
-    themeData: ThemeType,
-    setText: Dispatch<SetStateAction<string>>
-  ) => void;
-  delTheme: (e: SyntheticEvent<HTMLButtonElement>, themeId: number) => void;
-};
-export const ForumMessagesListPage: FC<PropsType> = ({ themeData, addMessage, delTheme }) => {
-  const [text, setText] = useState("");
+export const ForumMessagesListPage: React.FC = () => {
+  const [text, setText] = React.useState("");
+  const { themeId } = useParams();
+  const [isDisabled, setIsDisabled] = React.useState(true);
+
+  const themeData = forumData.filter((item) => Number(item.themeId) === Number(themeId))[0];
+
+  React.useEffect(() => {
+    text.length ? setIsDisabled(false) : setIsDisabled(true);
+  }, [text]);
+
+  const addMessage = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!isDisabled) {
+      console.log(text);
+    }
+  };
+
+  const delTheme = () => {
+    console.log(`Theme ${themeData.themeId} deleted`);
+  };
 
   return (
-    <div className={styles.ForumPage}>
-      <div className={styles.ForumPage_wrapper}>
-        <div className={stylesMessageItem.MessageItem__user}>
-          <Avatar alt="Avatar" src={themeData.themeCreatorUser.avatar} />
-          <p className={stylesMessageItem.MessageItem__user_username}>
-            {themeData.themeCreatorUser.username}
-          </p>
+    <Container maxWidth="md">
+      <main className={styles.ForumPage}>
+        <div className={styles.ForumPage_wrapper}>
+          <div className={stylesMessageItem.MessageItem__user}>
+            <Avatar alt="Avatar" src={themeData.themeCreatorUser.avatar} />
+            <p className={stylesMessageItem.MessageItem__user_username}>
+              {themeData.themeCreatorUser.username}
+            </p>
+          </div>
+          {themeData.themeCreatorUser.userId === currentUserData.userId && (
+            <Button onClick={delTheme} variant="outlined" color="error" startIcon={<DeleteIcon />}>
+              Удалить тему
+            </Button>
+          )}
         </div>
-        {themeData.themeCreatorUser.userId === currentUserData.userId && (
-          <Button
-            onClick={(e: SyntheticEvent<HTMLButtonElement>) => delTheme(e, themeData.themeId)}
+
+        <h2 className={styles.ForumPage__header}>
+          <NavLink to={routes.forum.path}>{"<"}</NavLink>
+          {themeData.themeTitle}
+        </h2>
+
+        {themeData.themeMessages.map((item) => (
+          <MessageItem key={item.messageId} messageData={item} />
+        ))}
+
+        <form className={styles.ForumPage__form} onSubmit={addMessage}>
+          <TextField
+            className={styles.ForumPage__form_input}
             variant="outlined"
-            color="error"
-            startIcon={<DeleteIcon />}
-          >
-            Удалить тему
+            type="search"
+            value={text}
+            placeholder={"Отправить сообщение"}
+            name="title"
+            size="small"
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setText(event.target.value);
+            }}
+          />
+          <Button size="small" variant="contained" type="submit" disabled={isDisabled}>
+            Отправить
           </Button>
-        )}
-      </div>
-
-      <h2 className={styles.ForumPage__header}>
-        <NavLink to={"/forum"}>{themeData.themeTitle}</NavLink>
-      </h2>
-
-      {themeData.themeMessages.map((item) => (
-        <MessageItem key={item.messageId} messageData={item} />
-      ))}
-
-      <form
-        className={styles.ForumPage__form}
-        onSubmit={(e) => addMessage(e, text, themeData, setText)}
-      >
-        <input
-          name={"title"}
-          className={styles.ForumPage__form_input}
-          placeholder={"Отправить сообщение"}
-          value={text}
-          onChange={(event: ChangeEvent<HTMLInputElement>) => {
-            setText(event.target.value);
-          }}
-        />
-        <button className={styles.ForumPage__form_btn} type="submit">
-          Отправить
-        </button>
-      </form>
-    </div>
+        </form>
+      </main>
+    </Container>
   );
 };

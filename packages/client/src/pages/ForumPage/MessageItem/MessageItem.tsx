@@ -1,13 +1,13 @@
 import styles from "./MessageItem.module.scss";
 import { MessageType } from "../types/types";
-import { FC } from "react";
+import React from "react";
 import { Avatar } from "@mui/material";
 import { timeOptions } from "../helpers/timeOptions";
 
 type PropsType = {
   messageData: MessageType;
 };
-export const MessageItem: FC<PropsType> = ({ messageData }) => {
+export const MessageItem: React.FC<PropsType> = ({ messageData }) => {
   return (
     <div className={styles.MessageItem}>
       <div className={styles.MessageItem__user}>
