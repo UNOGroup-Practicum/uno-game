@@ -25,7 +25,7 @@ export const LoginPage = () => {
       <Container maxWidth="md">
         <Typography
           variant="h4"
-          component="h2"
+          component="h1"
           align="center"
           marginBottom={3}
           color={currentTheme() === "light" ? "black" : "white"}
