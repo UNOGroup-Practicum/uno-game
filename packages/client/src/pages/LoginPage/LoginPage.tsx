@@ -2,19 +2,8 @@ import React from "react";
 import { Container, Link, Typography, Button, Stack, TextField } from "@mui/material";
 import styles from "./LoginPage.module.scss";
 import { routes } from "../../constants";
-import { useTheme } from "../../theme/useTheme";
-import { Theme } from "../../theme/ThemeContext";
-
-declare module "@mui/material/Button" {
-  interface ButtonPropsVariantOverrides {
-    difColor: true;
-  }
-}
 
 export const LoginPage = () => {
-  const { theme } = useTheme();
-  const isLight = theme === Theme.LIGHT;
-
   // Declare handlers for form
   const handlerSubmitForm: React.FormEventHandler<HTMLFormElement> = (
     event: React.FormEvent<HTMLFormElement>
@@ -25,13 +14,7 @@ export const LoginPage = () => {
   return (
     <div className={styles.root}>
       <Container maxWidth="md">
-        <Typography
-          variant="h4"
-          component="h1"
-          align="center"
-          marginBottom={3}
-          color={isLight ? "black" : "white"}
-        >
+        <Typography variant="h4" component="h1" align="center" marginBottom={3}>
           Вход
         </Typography>
         <form name="login-form" className={styles.form__auth} onSubmit={handlerSubmitForm}>
