@@ -34,10 +34,7 @@ export default function createUserCards(
       rate -= 40;
     } else {
       for (let index = 0; index < shuffleArrayCards.length; index++) {
-        if (
-          shuffleArrayCards[index].owner.toLowerCase() === gamersList[0].name.toLowerCase() &&
-          !indexes.includes(index)
-        ) {
+        if (shuffleArrayCards[index].owner === gamersList[0].name && !indexes.includes(index)) {
           userCards.push(shuffleArrayCards[index]);
           indexes.push(index);
           break;

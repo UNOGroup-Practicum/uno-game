@@ -36,21 +36,22 @@ export default function createGamersPositions(
     });
   }
 
-  enum Point {
-    x = canvas.width / 2,
-    y = canvas.height - 154,
-  }
+  const point = {
+    x: canvas.width / 2,
+    y: canvas.height - 154,
+  };
 
   if (gamersList.length > 1 && gamersList.length < 11) {
     let steper = gamersList.length * 60 - 80;
+
     for (let index = 0; index < gamersList.length; index++) {
       if (index === 0) {
-        pushObject(Point.x - 40, Point.y, gamersList[index].name);
+        pushObject(point.x - 40, point.y, gamersList[index].name);
       } else if (index === 1) {
-        pushObject(Point.x - steper, 30, gamersList[index].name);
+        pushObject(point.x - steper, 30, gamersList[index].name);
         steper = -Math.abs(steper) + 120;
       } else {
-        pushObject(Point.x + steper, 30, gamersList[index].name);
+        pushObject(point.x + steper, 30, gamersList[index].name);
         if (steper < 0) {
           steper = -Math.abs(steper) + 120;
         } else {

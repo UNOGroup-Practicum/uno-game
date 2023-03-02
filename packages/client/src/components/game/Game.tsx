@@ -10,6 +10,7 @@ import { TCardsDistribution } from "./types/typeAliases";
 
 function Game() {
   const ref = useRef<HTMLCanvasElement>(null);
+
   useEffect(() => {
     const canvas = ref.current as HTMLCanvasElement;
     canvas.width = window.innerWidth;
@@ -46,33 +47,36 @@ function Game() {
       if (!cardsDistribution.cardsCounter1) {
         cardsDistribution.cardsCounter1 = 1;
       }
+
       if (!cardsDistribution.cardsCounter2) {
         cardsDistribution.cardsCounter2 = 1;
       }
+
       const point = {
         x: canvas.width / 2,
+        xMinus40: canvas.width / 2 - 40,
         y: canvas.height / 2,
+        yMinus60: canvas.height / 2 - 60,
       };
-      const rate = (point.y - 60 - 160) / 30;
+
+      const rate = (point.yMinus60 - 160) / 30;
       let xSteper = 0;
       let ySteper = 0;
 
       function fn() {
         ctx.clearRect(0, 155, canvas.width, canvas.height - 330);
-
-        xSteper += ((point.x - 40 - xEndPoint) / (point.y - 90 - yEndPoint)) * rate;
+        xSteper += ((point.xMinus40 - xEndPoint) / (point.y - 90 - yEndPoint)) * rate;
         ySteper += 1 * rate;
-
-        createBackSideCard(ctx, point.x - 40, point.y - 60);
+        createBackSideCard(ctx, point.xMinus40, point.yMinus60);
 
         if (yEndPoint < point.y) {
-          createBackSideCard(ctx, point.x - 40 - xSteper, point.y - 60 - ySteper);
+          createBackSideCard(ctx, point.xMinus40 - xSteper, point.yMinus60 - ySteper);
 
           if (yEndPoint + ySteper < point.y - 95) {
             requestAnimationFrame(fn);
           } else {
             ctx.clearRect(0, yEndPoint + 30, canvas.width, canvas.height - 330);
-            createBackSideCard(ctx, point.x - 40, point.y - 60);
+            createBackSideCard(ctx, point.xMinus40, point.yMinus60);
             const idx = generator.next().value as number;
 
             if (typeof idx !== "undefined") {
@@ -87,7 +91,7 @@ function Game() {
                 cardsDistribution.cardsCounter2.toString()
               );
               ctx.clearRect(0, yEndPoint + 30, canvas.width, canvas.height - 330);
-              createBackSideCard(ctx, point.x - 40, point.y - 60);
+              createBackSideCard(ctx, point.xMinus40, point.yMinus60);
             }
 
             if (idx === 0) {
@@ -116,13 +120,13 @@ function Game() {
             }
           }
         } else {
-          createBackSideCard(ctx, point.x - 40 - xSteper, point.y - 60 + ySteper);
+          createBackSideCard(ctx, point.xMinus40 - xSteper, point.yMinus60 + ySteper);
 
           if (point.y + 180 + ySteper < yEndPoint) {
             requestAnimationFrame(fn);
           } else {
             ctx.clearRect(0, point.y, canvas.width, point.y - 175);
-            createBackSideCard(ctx, point.x - 40, point.y - 60);
+            createBackSideCard(ctx, point.xMinus40, point.yMinus60);
             const idx = generator.next().value as number;
             cardsDistribution(gamersPositions[idx].cards[0], gamersPositions[idx].cards[1]);
             createUserCardsDuringCardsDistribution();
