@@ -23,6 +23,7 @@ export const ForumMessagesListPage: React.FC = () => {
     e.preventDefault();
     if (!isDisabled) {
       console.log(text);
+      setText("");
     }
   };
 

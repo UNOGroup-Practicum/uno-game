@@ -16,6 +16,7 @@ export const ForumThemesListPage: React.FC = () => {
     e.preventDefault();
     if (!isDisabled) {
       console.log(title);
+      setTitle("");
     }
   };
 
