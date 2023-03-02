@@ -37,9 +37,8 @@ function App() {
         <Route path={routes["sign-up"].path} element={<RegisterPage />} />
         <Route path={routes.profile.path} element={<ProfilePage />} />
         <Route path={routes.leaderboard.path} element={<LiderboardPage />} />
-        <Route path={routes.forum.path} element={<ForumThemesListPage />}>
-          <Route path=":themeId" element={<ForumMessagesListPage />} />
-        </Route>
+        <Route path={routes.forum.path} element={<ForumThemesListPage />} />
+        <Route path={`${routes.forum.path}/:themeId`} element={<ForumMessagesListPage />} />
         <Route path={routes.game.path} element={<GamePage />} />
       </Routes>
       <AppFooter />
