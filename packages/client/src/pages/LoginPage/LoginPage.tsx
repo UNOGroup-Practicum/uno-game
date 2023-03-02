@@ -11,10 +11,10 @@ declare module "@mui/material/Button" {
   }
 }
 
-const { theme } = useTheme();
-const isLight = theme === Theme.LIGHT;
-
 export const LoginPage = () => {
+  const { theme } = useTheme();
+  const isLight = theme === Theme.LIGHT;
+
   // Declare handlers for form
   const handlerSubmitForm: React.FormEventHandler<HTMLFormElement> = (
     event: React.FormEvent<HTMLFormElement>
