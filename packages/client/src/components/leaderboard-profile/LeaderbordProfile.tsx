@@ -1,4 +1,3 @@
-import styles from "./LeaderbordProfile.module.scss";
 import { Profiles } from "./database";
 import * as React from "react";
 import {
@@ -13,6 +12,13 @@ import {
   Avatar,
 } from "@mui/material";
 import { createData } from "../../utils/createDataForLeaderboard";
+
+type LabelDisplayedRowsArgs = {
+  from: number;
+  to: number;
+  count: number;
+  page: number;
+};
 
 type Column = {
   id: "position" | "imgUrl" | "name" | "games" | "wins" | "percent";
@@ -45,6 +51,11 @@ Profiles.sort((a, b) => b.wins - a.wins).forEach((el, idx) => {
   rows.push(createData(el.id, idx + 1, el.avatar, el.name, el.games, el.wins));
 });
 
+const createLabelDisplayedRows = (displayedRowsArgs: LabelDisplayedRowsArgs): string => {
+  const { from, to, count } = displayedRowsArgs;
+  return `${from}–${to} из ${count !== -1 ? count : `более чем ${to}`}`;
+};
+
 export const LeaderboardProfile = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -53,24 +64,13 @@ export const LeaderboardProfile = () => {
     setPage(newPage);
   };
 
-  type LabelDisplayedRowsArgs = {
-    from: number;
-    to: number;
-    count: number;
-    page: number;
-  };
-  const createLabelDisplayedRows = (DisplayedRowsArgs: LabelDisplayedRowsArgs): string => {
-    const { from, to, count } = DisplayedRowsArgs;
-    return `${from}–${to} из ${count !== -1 ? count : `more than ${to}`}`;
-  };
-
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
-      <TableContainer sx={{ maxHeight: 810, minHeight: 400 }}>
+      <TableContainer sx={{ maxHeight: 810 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -81,7 +81,7 @@ export const LeaderboardProfile = () => {
                   sx={{
                     minWidth: column.minWidth,
                     fontSize: "1.2rem",
-                    backgroundColor: "var(--bg-leaderboard-table-color)",
+                    backgroundColor: "var(--primary-main-color)",
                     color: "var(--text-color)",
                   }}
                 >
@@ -93,21 +93,18 @@ export const LeaderboardProfile = () => {
           <TableBody>
             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
-                <TableRow
-                  // hover
-                  role="checkbox"
-                  tabIndex={-1}
-                  key={row.id}
-                  className={styles.profile}
-                >
+                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                   {columns.map((column) => {
                     const value = row[column.id];
-                    console.log(value);
                     return (
                       <TableCell
                         key={column.id}
                         align={column.align}
-                        sx={{ fontSize: "1.7rem", color: "var(--text-color)" }}
+                        sx={{
+                          fontSize: "1.7rem",
+                          backgroundColor: "var(--primary-light-color)",
+                          color: "var(--text-color)",
+                        }}
                       >
                         {column.id === "imgUrl" ? <Avatar alt="" src={value.toString()} /> : value}
                       </TableCell>
@@ -131,7 +128,7 @@ export const LeaderboardProfile = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
         sx={{
           fontSize: "1.1rem",
-          backgroundColor: "var(--bg-leaderboard-table-color)",
+          backgroundColor: "var(--primary-main-color)",
           color: "var(--text-color)",
         }}
       />
