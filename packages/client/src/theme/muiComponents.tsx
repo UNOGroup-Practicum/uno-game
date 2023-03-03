@@ -47,7 +47,7 @@ export const muiComponents = (theme: Theme) => {
             color: pallete.success.contrastText,
 
             "&:hover": {
-              backgroundColor: pallete.success?.dark,
+              backgroundColor: theme == Theme.LIGHT ? pallete?.success?.dark : pallete.info.dark,
             },
           },
         },

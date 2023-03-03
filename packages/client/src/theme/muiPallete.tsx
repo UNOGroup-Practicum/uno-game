@@ -40,9 +40,9 @@ export const muiPallete = (mode: Theme) => {
           contrastText: "#fff",
         },
         info: {
-          light: "fd7c6e",
-          main: "#fe6e61",
-          dark: "ff6f61",
+          light: "#fd7c6e",
+          main: "#E00D01",
+          dark: "#C60B01",
           contrastText: "#fff",
         },
         background: {
