@@ -41,21 +41,6 @@ export const muiComponents = (theme: Theme) => {
           padding: "1rem 3rem",
         },
       },
-      variants: [
-        {
-          props: { variant: "difColor" },
-          style: {
-            backgroundColor: theme == Theme.LIGHT ? pallete?.success?.main : pallete.warning?.main,
-            width: "100%",
-            color: pallete.success.contrastText,
-
-            "&:hover": {
-              backgroundColor:
-                theme == Theme.LIGHT ? pallete?.success?.dark : pallete.warning?.dark,
-            },
-          },
-        },
-      ],
     },
     MuiInputBase: {
       styleOverrides: {},
