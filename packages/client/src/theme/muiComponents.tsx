@@ -32,6 +32,9 @@ export const muiComponents = (theme: Theme) => {
         containedSuccess: {
           color: pallete.success?.contrastText,
         },
+        containedWarning: {
+          color: pallete.warning?.contrastText,
+        },
         sizeLarge: {
           fontSize: "2rem",
           fontWeight: "400",
@@ -42,12 +45,13 @@ export const muiComponents = (theme: Theme) => {
         {
           props: { variant: "difColor" },
           style: {
-            backgroundColor: theme == Theme.LIGHT ? pallete?.success?.main : pallete.info.main,
+            backgroundColor: theme == Theme.LIGHT ? pallete?.success?.main : pallete.warning?.main,
             width: "100%",
             color: pallete.success.contrastText,
 
             "&:hover": {
-              backgroundColor: theme == Theme.LIGHT ? pallete?.success?.dark : pallete.info.dark,
+              backgroundColor:
+                theme == Theme.LIGHT ? pallete?.success?.dark : pallete.warning?.dark,
             },
           },
         },
@@ -60,7 +64,7 @@ export const muiComponents = (theme: Theme) => {
       styleOverrides: {
         root: {
           "&:after": {
-            borderBottomColor: pallete.info.main,
+            borderBottomColor: theme == Theme.LIGHT ? pallete?.info?.dark : pallete.warning?.main,
           },
         },
       },
@@ -78,7 +82,7 @@ export const muiComponents = (theme: Theme) => {
           fontSize: "1.5rem",
 
           "&.Mui-focused": {
-            color: pallete.info.main,
+            color: theme == Theme.LIGHT ? pallete?.info?.dark : pallete.warning?.main,
           },
         },
       },
