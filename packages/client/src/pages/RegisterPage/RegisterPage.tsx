@@ -1,23 +1,12 @@
 import { Container, Typography, Stack, TextField, Button, Link } from "@mui/material";
 import styles from "./RegisterPage.module.scss";
-import { useTheme } from "../../theme/useTheme";
-import { Theme } from "../../theme/ThemeContext";
 import { routes } from "../../constants";
 
 export const RegisterPage = () => {
-  const { theme } = useTheme();
-  const isLight = theme === Theme.LIGHT;
-
   return (
     <div className={styles.root}>
       <Container maxWidth="md">
-        <Typography
-          variant="h4"
-          component="h1"
-          align="center"
-          marginBottom={3}
-          color={isLight ? "black" : "white"}
-        >
+        <Typography variant="h4" component="h1" align="center" marginBottom={3}>
           Регистрация
         </Typography>
         <form name="registration-name" className={styles.form__auth}>
@@ -56,9 +45,11 @@ export const RegisterPage = () => {
             />
           </Stack>
           <Button
+            fullWidth={true}
             size="large"
             type="submit"
-            variant="difColor"
+            variant="contained"
+            color="warning"
             sx={{
               marginTop: "50px",
               marginBottom: "10px",
