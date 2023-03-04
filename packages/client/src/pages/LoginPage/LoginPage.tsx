@@ -2,15 +2,8 @@ import React from "react";
 import { Container, Link, Typography, Button, Stack, TextField } from "@mui/material";
 import styles from "./LoginPage.module.scss";
 import { routes } from "../../constants";
-import { useTheme } from "../../theme/useTheme";
-import { Theme } from "../../theme/ThemeContext";
-import { muiPallete } from "../../theme/muiPallete";
 
 export const LoginPage = () => {
-  const { theme } = useTheme();
-  const isLigth = theme === Theme.LIGHT;
-  const palette = muiPallete(theme);
-
   // Declare handlers for form
   const handlerSubmitForm: React.FormEventHandler<HTMLFormElement> = (
     event: React.FormEvent<HTMLFormElement>
@@ -44,19 +37,14 @@ export const LoginPage = () => {
             />
           </Stack>
           <Button
+            fullWidth={true}
             size="large"
             type="submit"
             variant="contained"
+            color="warning"
             sx={{
-              width: "100%",
               marginTop: "100px",
               marginBottom: "10px",
-              color: palette.success.contrastText,
-              backgroundColor: isLigth ? palette?.success?.main : palette.warning?.main,
-
-              "&:hover": {
-                backgroundColor: isLigth ? palette?.success?.dark : palette.warning?.dark,
-              },
             }}
           >
             Войти

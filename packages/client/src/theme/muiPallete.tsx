@@ -63,7 +63,7 @@ export const setGlobalStyles = (theme: ThemeMui) => (
     styles={{
       ".app.dark, .app.light": {
         "--bg-color": theme.palette.background.default,
-        "--text-color": theme.palette.primary.contrastText,
+        "--text-color": theme.palette.text.primary,
         "--primary-light-color": theme.palette.primary.light,
         "--primary-main-color": theme.palette.primary.main,
         "--primary-dark-color": theme.palette.primary.dark,
