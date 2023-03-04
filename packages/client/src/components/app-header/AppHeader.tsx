@@ -20,8 +20,11 @@ import { routes } from "../../constants";
 
 import logo from "../../assets/images/logo.png";
 import styles from "./AppHeader.module.scss";
+import { useSelector } from "../../services/hooks";
+import { selectAuth } from "../../services/slices/auth-slice";
 
 export const AppHeader = () => {
+  const { user } = useSelector(selectAuth);
   const { theme, toggleTheme } = useTheme();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -38,9 +41,6 @@ export const AppHeader = () => {
     // Todo: приделать logout
     event.preventDefault();
   };
-
-  // Todo: приделать проверку авторизации
-  const isAuth = true;
 
   return (
     <header className={clsx("app-header", styles.root)}>
@@ -73,14 +73,14 @@ export const AppHeader = () => {
             </li>
 
             <li className={styles.menu__item}>
-              {!isAuth ? (
+              {!user ? (
                 <NavLink className={styles.menu__link} to={routes["sign-in"].path}>
                   Вход
                 </NavLink>
               ) : (
                 <>
                   <button className={styles.menu__link} onClick={handleClick}>
-                    Василий
+                    {user.firstName}
                   </button>
                   <Menu
                     anchorEl={anchorEl}
