@@ -13,7 +13,7 @@ export const RegisterPage = () => {
           <Stack spacing={3}>
             <TextField
               variant="filled"
-              label="Email"
+              label="Почта"
               type="email"
               id="email"
               name="email"
@@ -22,10 +22,31 @@ export const RegisterPage = () => {
             <TextField
               variant="filled"
               label="Логин"
-              type="text"
               id="login"
               name="login"
               helperText="От 3 до 20 знаков (EN)"
+            />
+            <TextField
+              variant="filled"
+              label="Имя"
+              id="first_name"
+              name="first_name"
+              helperText="(RU/EN), первая буква прописная, -"
+            />
+            <TextField
+              variant="filled"
+              label="Фамилия"
+              id="second_name"
+              name="second_name"
+              helperText="(RU/EN), первая буква прописная, -"
+            />
+            <TextField
+              variant="filled"
+              type="tel"
+              label="Телефон"
+              id="phone"
+              name="phone"
+              helperText='от 10 до 15 знаков, можно начать с "+"'
             />
             <TextField
               variant="filled"
@@ -33,7 +54,7 @@ export const RegisterPage = () => {
               type="password"
               id="password"
               name="password"
-              helperText="От 8 до 40 символов (EN), обязательно хотя бы одна заглавная буква и цифра"
+              helperText="От 8 знаков (EN), прописные, заглавные, цифры"
             />
             <TextField
               variant="filled"
