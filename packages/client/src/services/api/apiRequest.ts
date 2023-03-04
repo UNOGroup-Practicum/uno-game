@@ -53,3 +53,8 @@ export const request = {
     return result.data;
   },
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const apiHasError = (response: any): response is APIError => {
+  return response && response.reason;
+};
