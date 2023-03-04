@@ -13,6 +13,7 @@ export enum Font {
   bold22Arial = "bold 22px Arial",
   normal19Arial = "19px Arial",
   normal18Arial = "18px Arial",
+  bold14Arial = "bold 14px Arial",
 }
 
 export enum CardType {

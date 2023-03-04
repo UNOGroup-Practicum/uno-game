@@ -7,6 +7,9 @@ import createGamersPositions from "./utils/createGamersPositions";
 import generateCardsDistribution from "./utils/generateCardsDistribution";
 import createUserCards from "./utils/createUserCards";
 import { TCardsDistribution } from "./types/typeAliases";
+import createDigitCard from "./utils/createDigitCard";
+import { CardStatus } from "./types/enums";
+import createUNOButton from "./utils/createUNOButton";
 
 function Game() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -91,7 +94,25 @@ function Game() {
                 cardsDistribution.cardsCounter2.toString()
               );
               ctx.clearRect(0, yEndPoint + 30, canvas.width, canvas.height - 330);
-              createBackSideCard(ctx, point.xMinus40, point.yMinus60);
+              createBackSideCard(ctx, point.x - 100, point.yMinus60);
+              createUNOButton(ctx, canvas.width / 2 + 140, canvas.height / 2 - 20);
+
+              for (let index = 0; index < shuffleArrayCards.length; index++) {
+                if (
+                  shuffleArrayCards[index].status === CardStatus.inDeck &&
+                  isFinite(Number(shuffleArrayCards[index].type))
+                ) {
+                  createDigitCard(
+                    ctx,
+                    point.x + 20,
+                    point.yMinus60,
+                    shuffleArrayCards[index].type,
+                    shuffleArrayCards[index].color as string
+                  );
+                  shuffleArrayCards[index].status = CardStatus.inOutside;
+                  break;
+                }
+              }
             }
 
             if (idx === 0) {
