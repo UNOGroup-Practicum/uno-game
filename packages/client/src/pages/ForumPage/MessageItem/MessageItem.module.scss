@@ -1,0 +1,24 @@
+.MessageItem {
+  width: 100%;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--text-color);
+
+  &__user {
+    display: flex;
+    font-weight: bold;
+
+    &_username {
+      align-self: center;
+      margin-left: 10px;
+    }
+  }
+
+  &__text {
+    margin-left: 50px;
+  }
+
+  &__data {
+    margin-top: 5px;
+    font-weight: lighter;
+  }
+}
