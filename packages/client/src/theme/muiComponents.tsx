@@ -32,10 +32,50 @@ export const muiComponents = (theme: Theme) => {
         containedSuccess: {
           color: pallete.success?.contrastText,
         },
+        containedWarning: {
+          color: pallete.warning?.contrastText,
+        },
         sizeLarge: {
           fontSize: "2rem",
           fontWeight: "400",
           padding: "1rem 3rem",
+        },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {},
+    },
+    MuiFilledInput: {
+      styleOverrides: {
+        root: {
+          "&:after": {
+            borderBottomColor: theme == Theme.LIGHT ? pallete?.info?.dark : pallete.warning?.main,
+          },
+        },
+      },
+    },
+    MuiFieldInput: {
+      styleOverrides: {
+        sizeNormal: {
+          fontSize: "1.5rem",
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          fontSize: "1.5rem",
+
+          "&.Mui-focused": {
+            color: theme == Theme.LIGHT ? pallete?.info?.dark : pallete.warning?.main,
+          },
+        },
+      },
+    },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: {
+          fontSize: "1.3rem",
         },
       },
     },
