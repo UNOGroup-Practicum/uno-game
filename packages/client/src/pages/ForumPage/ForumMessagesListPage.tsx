@@ -1,6 +1,6 @@
 import styles from "./ForumPage.module.scss";
 import stylesMessageItem from "./MessageItem/MessageItem.module.scss";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { MessageItem } from "./MessageItem/MessageItem";
 import { Avatar, Button, Container, TextField } from "@mui/material";
@@ -9,20 +9,22 @@ import { currentUserData, forumData } from "./data/data";
 import { routes } from "../../constants";
 
 export const ForumMessagesListPage: React.FC = () => {
-  const [text, setText] = React.useState("");
+  const [text, setText] = useState("");
   const { themeId } = useParams();
-  const [isDisabled, setIsDisabled] = React.useState(true);
+  const [isDisabled, setIsDisabled] = useState(true);
 
   const themeData = forumData.filter((item) => Number(item.themeId) === Number(themeId))[0];
 
-  React.useEffect(() => {
+  useEffect(() => {
     text.length ? setIsDisabled(false) : setIsDisabled(true);
   }, [text]);
 
   const addMessage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isDisabled) {
+      // здесь будет отправка сообщения
       console.log(text);
+
       setText("");
     }
   };
@@ -60,6 +62,7 @@ export const ForumMessagesListPage: React.FC = () => {
         <form className={styles.ForumPage__form} onSubmit={addMessage}>
           <TextField
             className={styles.ForumPage__form_input}
+            multiline
             variant="outlined"
             type="search"
             value={text}

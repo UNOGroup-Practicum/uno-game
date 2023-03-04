@@ -1,21 +1,23 @@
 import styles from "./ForumPage.module.scss";
 import { ThemeItem } from "./ThemeItem/ThemeItem";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Container, TextField } from "@mui/material";
 import { forumData } from "./data/data";
 
 export const ForumThemesListPage: React.FC = () => {
-  const [title, setTitle] = React.useState("");
-  const [isDisabled, setIsDisabled] = React.useState(true);
+  const [title, setTitle] = useState("");
+  const [isDisabled, setIsDisabled] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     title.length ? setIsDisabled(false) : setIsDisabled(true);
   }, [title]);
 
   const addTheme = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isDisabled) {
+      // здесь будет создание темы
       console.log(title);
+
       setTitle("");
     }
   };
@@ -27,8 +29,9 @@ export const ForumThemesListPage: React.FC = () => {
 
         <form className={styles.ForumPage__form} onSubmit={(e) => addTheme(e)}>
           <TextField
-            name={"title"}
             className={styles.ForumPage__form_input}
+            multiline
+            name={"title"}
             placeholder={"Создать новую тему"}
             value={title}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
