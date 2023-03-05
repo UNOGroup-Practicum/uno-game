@@ -1,16 +1,27 @@
 import React from "react";
 import { Container, Button, Grid, Paper, Card, CardContent, Typography } from "@mui/material";
+
+import { useTheme } from "theme/useTheme";
+import { Theme } from "theme/ThemeContext";
+
+import { Picture } from "components/picture/Picture";
+
+import promoBg from "assets/images/promo_bg.jpg?quality=75&imagetools";
+import promoBgWebp from "assets/images/promo_bg.jpg?format=webp&quality=75&source&imagetools";
+import advantage1 from "assets/images/advantage-1.png?quality=75&imagetools";
+import advantage1Webp from "assets/images/advantage-1.png?format=webp&quality=75&source&imagetools";
+import advantage2 from "assets/images/advantage-2.png?quality=75&imagetools";
+import advantage2Webp from "assets/images/advantage-2.png?format=webp&quality=75&source&imagetools";
+import advantage3 from "assets/images/advantage-3.png?quality=75&imagetools";
+import advantage3Webp from "assets/images/advantage-3.png?format=webp&quality=75&source&imagetools";
+import advantage4 from "assets/images/advantage-4.png?quality=75&imagetools";
+import advantage4Webp from "assets/images/advantage-4.png?format=webp&quality=75&source&imagetools";
+import advantage5 from "assets/images/advantage-5.png?quality=75&imagetools";
+import advantage5Webp from "assets/images/advantage-5.png?format=webp&quality=75&source&imagetools";
+
 import { routes } from "../../constants";
-import { useTheme } from "../../theme/useTheme";
-import { Theme } from "../../theme/ThemeContext";
 
 import styles from "./HomePage.module.scss";
-import promoBg from "../../assets/images/promo_bg.jpg";
-import advantage1 from "../../assets/images/advantage-1.png";
-import advantage2 from "../../assets/images/advantage-2.png";
-import advantage3 from "../../assets/images/advantage-3.png";
-import advantage4 from "../../assets/images/advantage-4.png";
-import advantage5 from "../../assets/images/advantage-5.png";
 
 const AdvantagesItem: React.FC<React.PropsWithChildren> = ({ children }) => {
   // Todo: добавить стили для светлой темы
@@ -40,7 +51,9 @@ export const HomePage = () => {
     <>
       <section className={styles.promo}>
         <div className={styles.promo__bg}>
-          <img src={promoBg} alt="Карты на столе" />
+          <Picture webp={promoBgWebp}>
+            <img src={promoBg} alt="Карты на столе" />
+          </Picture>
         </div>
         <Container maxWidth="md">
           <div className={styles.promo__body}>
@@ -94,12 +107,15 @@ export const HomePage = () => {
           <Grid container spacing={2} justifyContent="center">
             <AdvantagesItem>
               <CardContent>
-                <img
-                  src={advantage1}
-                  height="140"
-                  alt="Удобный интерфейс"
-                  className={styles.advantage__img}
-                />
+                <Picture webp={advantage1Webp}>
+                  <img
+                    src={advantage1}
+                    height="140"
+                    alt="Удобный интерфейс"
+                    className={styles.advantage__img}
+                  />
+                </Picture>
+
                 <Typography
                   mb={2}
                   variant="caption"
@@ -117,12 +133,15 @@ export const HomePage = () => {
 
             <AdvantagesItem>
               <CardContent>
-                <img
-                  src={advantage4}
-                  height="140"
-                  alt="Удобный интерфейс"
-                  className={styles.advantage__img}
-                />
+                <Picture webp={advantage4Webp}>
+                  <img
+                    src={advantage4}
+                    height="140"
+                    alt="Удобный интерфейс"
+                    className={styles.advantage__img}
+                  />
+                </Picture>
+
                 <Typography
                   mb={2}
                   variant="caption"
@@ -139,12 +158,15 @@ export const HomePage = () => {
 
             <AdvantagesItem>
               <CardContent>
-                <img
-                  src={advantage3}
-                  height="140"
-                  alt="Удобный интерфейс"
-                  className={styles.advantage__img}
-                />
+                <Picture webp={advantage3Webp}>
+                  <img
+                    src={advantage3}
+                    height="140"
+                    alt="Удобный интерфейс"
+                    className={styles.advantage__img}
+                  />
+                </Picture>
+
                 <Typography
                   mb={2}
                   variant="caption"
@@ -162,12 +184,15 @@ export const HomePage = () => {
 
             <AdvantagesItem>
               <CardContent>
-                <img
-                  src={advantage2}
-                  height="140"
-                  alt="Удобный интерфейс"
-                  className={styles.advantage__img}
-                />
+                <Picture webp={advantage2Webp}>
+                  <img
+                    src={advantage2}
+                    height="140"
+                    alt="Удобный интерфейс"
+                    className={styles.advantage__img}
+                  />
+                </Picture>
+
                 <Typography
                   mb={2}
                   variant="caption"
@@ -185,12 +210,15 @@ export const HomePage = () => {
 
             <AdvantagesItem>
               <CardContent>
-                <img
-                  src={advantage5}
-                  height="140"
-                  alt="Удобный интерфейс"
-                  className={styles.advantage__img}
-                />
+                <Picture webp={advantage5Webp}>
+                  <img
+                    src={advantage5}
+                    height="140"
+                    alt="Удобный интерфейс"
+                    className={styles.advantage__img}
+                  />
+                </Picture>
+
                 <Typography
                   mb={2}
                   variant="caption"

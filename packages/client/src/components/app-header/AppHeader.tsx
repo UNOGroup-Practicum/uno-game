@@ -14,14 +14,20 @@ import {
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 
-import { useTheme } from "../../theme/useTheme";
-import { Theme } from "../../theme/ThemeContext";
+import { useTheme } from "theme/useTheme";
+import { Theme } from "theme/ThemeContext";
+
+import { useSelector } from "services/hooks";
+import { authSelect } from "services/slices/auth-slice";
+
+import { Picture } from "components/picture/Picture";
+
+import logo from "assets/images/logo.png?quality=75&imagetools";
+import logoWebp from "assets/images/logo.png?format=webp&quality=75&source&imagetools";
+
 import { routes } from "../../constants";
 
-import logo from "../../assets/images/logo.png";
 import styles from "./AppHeader.module.scss";
-import { useSelector } from "../../services/hooks";
-import { authSelect } from "../../services/slices/auth-slice";
 
 export const AppHeader = () => {
   const { user } = useSelector(authSelect);
@@ -62,7 +68,9 @@ export const AppHeader = () => {
           </ul>
 
           <Link to={routes.home.path} className={styles.logo}>
-            <img src={logo} alt="Uno" width="205" height="184" />
+            <Picture webp={logoWebp}>
+              <img src={logo} alt="Uno" width="205" height="184" />
+            </Picture>
           </Link>
 
           <ul className={clsx(styles.menu, styles.menu_right)}>
