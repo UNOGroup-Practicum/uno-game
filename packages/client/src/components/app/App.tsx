@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "../../services/hooks";
-import { auth, selectAuth } from "../../services/slices/auth-slice";
+import { authThunks, authSelect } from "../../services/slices/auth-slice";
 import GamePage from "../../pages/Game";
 import { useTheme } from "../../theme/useTheme";
-import { EAuthStatus, routes } from "../../constants";
+import { routes } from "../../constants";
 import { HomePage } from "../../pages/HomePage/HomePage";
 import { LiderboardPage } from "../../pages/LiderboardPage/LiderboardPage";
 import { AppHeader } from "../../components/app-header/AppHeader";
@@ -17,15 +17,15 @@ import { Theme } from "../../theme/ThemeContext";
 
 function App() {
   const dispatch = useDispatch();
-  const { status } = useSelector(selectAuth);
+  const { user } = useSelector(authSelect);
   const { theme } = useTheme();
   const location = useLocation();
 
   useEffect(() => {
-    if (status === EAuthStatus.pending) {
-      dispatch(auth());
+    if (!user) {
+      dispatch(authThunks.me());
     }
-  }, [status, dispatch]);
+  }, [dispatch]);
 
   useEffect(() => {
     const [oldTheme, newTheme] =

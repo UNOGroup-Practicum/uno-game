@@ -20,9 +20,3 @@ export const routes = {
     path: "/game",
   },
 };
-
-export enum EAuthStatus {
-  pending = "pending",
-  ok = "auth",
-  no = "notAuth",
-}

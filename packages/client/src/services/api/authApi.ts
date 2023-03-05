@@ -1,16 +1,16 @@
-import { APIError, LoginRequestData, User, UserDTO } from "./types";
-import { request, apiHasError } from "./apiRequest";
+import { LoginRequestData, User, UserDTO } from "./types";
+import { request } from "./apiRequest";
 import { transformUser } from "./transformers";
 
 export const authAPI = {
-  login: (data: LoginRequestData): Promise<"OK" | APIError> =>
+  login: (data: LoginRequestData): Promise<"OK"> =>
     request.post<"OK", LoginRequestData>("auth/signin", data),
 
-  me: async (): Promise<User | APIError> => {
-    const result = await request.get<UserDTO>("auth/user");
+  me: async (): Promise<User> => {
+    const result = await request.get<UserDTO>("auth/users");
 
-    return apiHasError(result) ? result : transformUser(result);
+    return transformUser(result);
   },
 
-  logout: (): Promise<"OK" | APIError> => request.post<"OK", null>("auth/logout"),
+  logout: (): Promise<"OK"> => request.post<"OK", null>("auth/logout"),
 };

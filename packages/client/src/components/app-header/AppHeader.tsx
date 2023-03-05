@@ -21,10 +21,10 @@ import { routes } from "../../constants";
 import logo from "../../assets/images/logo.png";
 import styles from "./AppHeader.module.scss";
 import { useSelector } from "../../services/hooks";
-import { selectAuth } from "../../services/slices/auth-slice";
+import { authSelect } from "../../services/slices/auth-slice";
 
 export const AppHeader = () => {
-  const { user } = useSelector(selectAuth);
+  const { user } = useSelector(authSelect);
   const { theme, toggleTheme } = useTheme();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
