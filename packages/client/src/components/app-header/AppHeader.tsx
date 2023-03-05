@@ -48,7 +48,7 @@ export const AppHeader = () => {
         <nav className={styles.nav}>
           <ul className={clsx(styles.menu, styles.menu_left)}>
             <li className={styles.menu__item}>
-              <NavLink className={styles.menu__link} to={routes.game.path}>
+              <NavLink className={styles.menu__link} to={routes["game-preparing"].path}>
                 ИГРАТЬ СЕЙЧАС
               </NavLink>
             </li>

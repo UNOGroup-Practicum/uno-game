@@ -47,7 +47,12 @@ export const HomePage = () => {
             <h1 className={styles.promo__title}>
               Присоединяйтесь к игре, завоевавшей симпатии 200 миллионов игроков по всему миру
             </h1>
-            <Button variant="contained" href={routes.game.path} color="success" size="large">
+            <Button
+              variant="contained"
+              href={routes["game-preparing"].path}
+              color="success"
+              size="large"
+            >
               Играть сейчас
             </Button>
           </div>
