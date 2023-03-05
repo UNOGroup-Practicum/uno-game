@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import GamePage from "../../pages/GamePage";
+import { useDispatch, useSelector } from "../../services/hooks";
+import { authThunks, authSelect } from "../../services/slices/auth-slice";
+import GamePage from "../../pages/Game";
 import { useTheme } from "../../theme/useTheme";
 import { routes } from "../../constants";
 import { HomePage } from "../../pages/HomePage/HomePage";
@@ -15,8 +18,16 @@ import { Theme } from "../../theme/ThemeContext";
 import GamePreparingPage from "../../pages/GamePreparingPage";
 
 function App() {
+  const dispatch = useDispatch();
+  const { user } = useSelector(authSelect);
   const { theme } = useTheme();
   const location = useLocation();
+
+  useEffect(() => {
+    if (!user) {
+      dispatch(authThunks.me());
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     const [oldTheme, newTheme] =
