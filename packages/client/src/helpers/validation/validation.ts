@@ -44,28 +44,3 @@ export const validationTemplate = (name: string, messageType: string = name) => 
     validate: (value: string) => validateCheck(value, name, messageType),
   };
 };
-
-// export const loginValidation = {
-//   required: REQUIRED_MESSAGE,
-//   validate: (value: string) => validateCheck(value, 'LOGIN'),
-// };
-
-// export const passwordValidation = {
-//   required: REQUIRED_MESSAGE,
-//   validate: (value: string) => validateCheck(value, 'PASSWORD'),
-// };
-
-// export const emailValidation = {
-//   required: REQUIRED_MESSAGE,
-//   validate: (value: string) => validateCheck(value, 'EMAIL'),
-// }
-
-// export const nameValidation = {
-//   required: REQUIRED_MESSAGE,
-//   validate: (value: string) => validateCheck(value, 'NAME'),
-// }
-
-// export const phoneValidation = {
-//   required: REQUIRED_MESSAGE,
-//   validate: (value: string) => validateCheck(value, 'PHONE')
-// }
