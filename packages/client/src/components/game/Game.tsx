@@ -10,6 +10,7 @@ import { TCardsDistribution } from "./types/typeAliases";
 import createDigitCard from "./utils/createDigitCard";
 import { CardStatus } from "./types/enums";
 import createUNOButton from "./utils/createUNOButton";
+import createRightDirection from "./utils/createRightDirection";
 
 function Game() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -96,6 +97,7 @@ function Game() {
               ctx.clearRect(0, yEndPoint + 30, canvas.width, canvas.height - 330);
               createBackSideCard(ctx, point.x - 100, point.yMinus60);
               createUNOButton(ctx, canvas.width / 2 + 140, canvas.height / 2 - 20);
+              createRightDirection(ctx, canvas.width / 2 - 200, canvas.height / 2 - 60);
 
               for (let index = 0; index < shuffleArrayCards.length; index++) {
                 if (
