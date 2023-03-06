@@ -18,7 +18,7 @@ type TFormInput = {
   second_name: string;
   phone: string;
   password: string;
-  confirm_password?: string;
+  confirm_password: string;
 };
 
 export const RegisterPage = () => {
@@ -40,8 +40,8 @@ export const RegisterPage = () => {
   });
 
   const onSubmit: SubmitHandler<TFormInput> = (data) => {
-    const result = { ...data };
-    delete result.confirm_password;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirm_password, ...result } = data;
     console.log(result);
   };
 
