@@ -1,4 +1,4 @@
-import { Profiles } from "./database";
+import { profilesList } from "./database";
 import * as React from "react";
 import {
   Paper,
@@ -47,9 +47,11 @@ type Data = {
 };
 
 const rows: Data[] = [];
-Profiles.sort((a, b) => b.wins - a.wins).forEach((el, idx) => {
-  rows.push(createData(el.id, idx + 1, el.avatar, el.name, el.games, el.wins));
-});
+profilesList
+  .sort((a, b) => b.wins - a.wins)
+  .forEach((el, idx) => {
+    rows.push(createData(el.id, idx + 1, el.avatar, el.name, el.games, el.wins));
+  });
 
 const createLabelDisplayedRows = (displayedRowsArgs: LabelDisplayedRowsArgs): string => {
   const { from, to, count } = displayedRowsArgs;

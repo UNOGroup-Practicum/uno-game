@@ -6,7 +6,7 @@ type Profiles = {
   wins: number;
 };
 
-export const Profiles: Profiles[] = [
+export const profilesList: Profiles[] = [
   {
     id: 1,
     avatar:
