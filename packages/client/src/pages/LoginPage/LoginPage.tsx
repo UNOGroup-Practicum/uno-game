@@ -2,22 +2,26 @@ import { Container, Link, Typography, Button, Stack, TextField } from "@mui/mate
 import styles from "./LoginPage.module.scss";
 import { routes } from "../../constants";
 
-import { useForm, Controller, SubmitHandler, useFormState } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { InputNames, validationTemplate } from "../../helpers/validation/validation";
 
 type TFormInput = {
   login: string;
-  password?: string;
+  password: string;
 };
 
 export const LoginPage = () => {
-  const { control, handleSubmit } = useForm({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm({
     defaultValues: {
       login: "",
       password: "",
     },
+    mode: "onChange",
   });
-  const { errors } = useFormState({ control });
 
   const onSubmit: SubmitHandler<TFormInput> = (data) => {
     console.log(data);
@@ -41,7 +45,7 @@ export const LoginPage = () => {
                   label="Логин"
                   type="text"
                   id="login"
-                  onChange={(event) => field.onChange(event)}
+                  onChange={field.onChange}
                   value={field.value}
                   error={!!errors.login?.message}
                   helperText={errors.login?.message}
@@ -58,7 +62,7 @@ export const LoginPage = () => {
                   label="Пароль"
                   type="password"
                   id="password"
-                  onChange={(event) => field.onChange(event)}
+                  onChange={field.onChange}
                   value={field.value}
                   error={!!errors.password?.message}
                   helperText={errors.password?.message}
@@ -76,6 +80,7 @@ export const LoginPage = () => {
               marginTop: "100px",
               marginBottom: "10px",
             }}
+            disabled={!isValid}
           >
             Войти
           </Button>
