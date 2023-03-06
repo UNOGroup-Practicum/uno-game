@@ -3,7 +3,6 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import GamePage from "../../pages/GamePage";
 import { useDispatch, useSelector } from "../../services/hooks";
 import { authThunks, authSelect } from "../../services/slices/auth-slice";
-import GamePage from "../../pages/Game";
 import { useTheme } from "../../theme/useTheme";
 import { routes } from "../../constants";
 import { HomePage } from "../../pages/HomePage/HomePage";
