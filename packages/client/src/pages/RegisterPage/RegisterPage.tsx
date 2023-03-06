@@ -3,7 +3,7 @@ import { Container, Typography, Stack, TextField, Button, Link } from "@mui/mate
 import styles from "./RegisterPage.module.scss";
 import { routes } from "../../constants";
 
-import { Controller, useForm, useFormState, SubmitHandler } from "react-hook-form";
+import { Controller, useForm, SubmitHandler } from "react-hook-form";
 import {
   ERROR_MESSAGE,
   InputNames,
@@ -11,18 +11,22 @@ import {
   validationTemplate,
 } from "../../helpers/validation/validation";
 
-type TFormInput<T = string> = {
-  email: T;
-  login: T;
-  first_name: T;
-  second_name: T;
-  phone: T;
-  password: T;
-  confirm_password?: T;
+type TFormInput = {
+  email: string;
+  login: string;
+  first_name: string;
+  second_name: string;
+  phone: string;
+  password: string;
+  confirm_password?: string;
 };
 
 export const RegisterPage = () => {
-  const { control, handleSubmit } = useForm({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm({
     defaultValues: {
       email: "",
       login: "",
@@ -32,9 +36,8 @@ export const RegisterPage = () => {
       password: "",
       confirm_password: "",
     },
+    mode: "onChange",
   });
-
-  const { errors } = useFormState({ control });
 
   const onSubmit: SubmitHandler<TFormInput> = (data) => {
     const result = { ...data };
@@ -67,7 +70,7 @@ export const RegisterPage = () => {
                   label="Почта"
                   type="email"
                   id="email"
-                  onChange={(event) => field.onChange(event)}
+                  onChange={field.onChange}
                   value={field.value}
                   error={!!errors.email?.message}
                   helperText={errors.email?.message}
@@ -83,7 +86,7 @@ export const RegisterPage = () => {
                   variant="filled"
                   label="Логин"
                   id="login"
-                  onChange={(event) => field.onChange(event)}
+                  onChange={field.onChange}
                   value={field.value}
                   error={!!errors.login?.message}
                   helperText={errors.login?.message}
@@ -99,7 +102,7 @@ export const RegisterPage = () => {
                   variant="filled"
                   label="Имя"
                   id="first_name"
-                  onChange={(event) => field.onChange(event)}
+                  onChange={field.onChange}
                   value={field.value}
                   error={!!errors.first_name?.message}
                   helperText={errors.first_name?.message}
@@ -115,7 +118,7 @@ export const RegisterPage = () => {
                   variant="filled"
                   label="Фамилия"
                   id="second_name"
-                  onChange={(event) => field.onChange(event)}
+                  onChange={field.onChange}
                   value={field.value}
                   error={!!errors.second_name?.message}
                   helperText={errors.second_name?.message}
@@ -132,7 +135,7 @@ export const RegisterPage = () => {
                   type="tel"
                   label="Телефон"
                   id="phone"
-                  onChange={(event) => field.onChange(event)}
+                  onChange={field.onChange}
                   value={field.value}
                   error={!!errors.phone?.message}
                   helperText={errors.phone?.message}
@@ -150,7 +153,7 @@ export const RegisterPage = () => {
                   type="password"
                   id="password"
                   inputRef={passwordRef}
-                  onChange={(event) => field.onChange(event)}
+                  onChange={field.onChange}
                   value={field.value}
                   error={!!errors.password?.message}
                   helperText={errors.password?.message}
@@ -176,7 +179,7 @@ export const RegisterPage = () => {
                   label="Подтвердите пароль"
                   type="password"
                   id="confirm_password"
-                  onChange={(event) => field.onChange(event)}
+                  onChange={field.onChange}
                   value={field.value}
                   error={!!errors.confirm_password?.message}
                   helperText={errors.confirm_password?.message}
@@ -194,6 +197,7 @@ export const RegisterPage = () => {
               marginTop: "50px",
               marginBottom: "10px",
             }}
+            disabled={!isValid}
           >
             Регистрация
           </Button>
