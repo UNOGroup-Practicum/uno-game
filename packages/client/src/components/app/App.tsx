@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
+import GamePage from "../../pages/GamePage";
 import { useDispatch, useSelector } from "../../services/hooks";
 import { authThunks, authSelect } from "../../services/slices/auth-slice";
 import GamePage from "../../pages/Game";
@@ -14,6 +15,7 @@ import { RegisterPage } from "../../pages/RegisterPage/RegisterPage";
 import { ForumPage } from "../../pages/ForumPage/ForumPage";
 import { ProfilePage } from "../../pages/ProfilePage/ProfilePage";
 import { Theme } from "../../theme/ThemeContext";
+import GamePreparingPage from "../../pages/GamePreparingPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -46,6 +48,7 @@ function App() {
         <Route path={routes.profile.path} element={<ProfilePage />} />
         <Route path={routes.leaderboard.path} element={<LiderboardPage />} />
         <Route path={routes.forum.path} element={<ForumPage />} />
+        <Route path={routes["game-preparing"].path} element={<GamePreparingPage />} />
         <Route path={routes.game.path} element={<GamePage />} />
       </Routes>
 
