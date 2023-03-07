@@ -1,9 +1,15 @@
-import { Container, Link, Typography, Button, Stack, TextField } from "@mui/material";
+import { Container, Link, Typography, Button, Stack, TextField, Box } from "@mui/material";
 import styles from "./LoginPage.module.scss";
 import { ROUTES } from "../../constants";
 
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { InputNames, validationTemplate } from "../../utils/validation/validation";
+import { useDispatch, useSelector } from "../../services/hooks";
+import {
+  InputNames,
+  REQUIRED_MESSAGE,
+  validationTemplate,
+} from "../../utils/validation/validation";
+import { authSelect, authThunks } from "../../services/slices/auth-slice";
 
 type TFormInput = {
   login: string;
@@ -11,6 +17,8 @@ type TFormInput = {
 };
 
 export const LoginPage = () => {
+  const dispatch = useDispatch();
+  const { loading } = useSelector(authSelect);
   const {
     control,
     handleSubmit,
@@ -24,7 +32,7 @@ export const LoginPage = () => {
   });
 
   const onSubmit: SubmitHandler<TFormInput> = (data) => {
-    console.log(data);
+    dispatch(authThunks.login(data));
   };
 
   return (
@@ -55,7 +63,9 @@ export const LoginPage = () => {
             <Controller
               control={control}
               name="password"
-              rules={validationTemplate(InputNames.PASSWORD)}
+              rules={{
+                required: REQUIRED_MESSAGE,
+              }}
               render={({ field }) => (
                 <TextField
                   variant="filled"
@@ -70,6 +80,11 @@ export const LoginPage = () => {
               )}
             />
           </Stack>
+          {loading && (
+            <Box mt={2} textAlign={"center"}>
+              ...Загрузка
+            </Box>
+          )}
           <Button
             fullWidth={true}
             size="large"
