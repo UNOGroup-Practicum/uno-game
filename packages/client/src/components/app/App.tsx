@@ -17,6 +17,7 @@ import { ForumThemesListPage } from "../../pages/ForumPage/ForumThemesListPage";
 import { ForumMessagesListPage } from "../../pages/ForumPage/ForumMessagesListPage";
 import GamePreparingPage from "../../pages/GamePreparingPage";
 import { ProtectedRoute } from "../protected-route/ProtectedRoute";
+import { AuthPagesRoute } from "../auth-pages-route/AuthPagesRoute";
 
 function App() {
   const dispatch = useDispatch();
@@ -44,8 +45,11 @@ function App() {
 
       <Routes>
         <Route path={ROUTES.home.path} element={<HomePage />} />
-        <Route path={ROUTES.signIn.path} element={<LoginPage />} />
-        <Route path={ROUTES.signUp.path} element={<RegisterPage />} />
+
+        <Route element={<AuthPagesRoute />}>
+          <Route path={ROUTES.signIn.path} element={<LoginPage />} />
+          <Route path={ROUTES.signUp.path} element={<RegisterPage />} />
+        </Route>
 
         <Route element={<ProtectedRoute />}>
           <Route path={ROUTES.profile.path} element={<ProfilePage />} />
