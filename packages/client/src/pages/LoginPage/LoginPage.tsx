@@ -1,14 +1,30 @@
-import React from "react";
 import { Container, Link, Typography, Button, Stack, TextField } from "@mui/material";
 import styles from "./LoginPage.module.scss";
 import { routes } from "../../constants";
 
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { InputNames, validationTemplate } from "../../utils/validation/validation";
+
+type TFormInput = {
+  login: string;
+  password: string;
+};
+
 export const LoginPage = () => {
-  // Declare handlers for form
-  const handlerSubmitForm: React.FormEventHandler<HTMLFormElement> = (
-    event: React.FormEvent<HTMLFormElement>
-  ): void => {
-    event.preventDefault();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm({
+    defaultValues: {
+      login: "",
+      password: "",
+    },
+    mode: "onChange",
+  });
+
+  const onSubmit: SubmitHandler<TFormInput> = (data) => {
+    console.log(data);
   };
 
   return (
@@ -17,23 +33,41 @@ export const LoginPage = () => {
         <Typography variant="h4" component="h1" align="center" marginBottom={3}>
           Вход
         </Typography>
-        <form name="login-form" className={styles.form__auth} onSubmit={handlerSubmitForm}>
+        <form name="login-form" className={styles.form__auth} onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={3}>
-            <TextField
-              variant="filled"
-              label="Логин"
-              type="text"
-              id="login"
+            <Controller
+              control={control}
               name="login"
-              helperText="От 3 до 20 знаков (EN)"
+              rules={validationTemplate(InputNames.LOGIN)}
+              render={({ field }) => (
+                <TextField
+                  variant="filled"
+                  label="Логин"
+                  type="text"
+                  id="login"
+                  onChange={field.onChange}
+                  value={field.value}
+                  error={!!errors.login?.message}
+                  helperText={errors.login?.message}
+                />
+              )}
             />
-            <TextField
-              variant="filled"
-              label="Пароль"
-              type="password"
-              id="password"
+            <Controller
+              control={control}
               name="password"
-              helperText="От 8 до 40 символов (EN), обязательно хотя бы одна заглавная буква и цифра"
+              rules={validationTemplate(InputNames.PASSWORD)}
+              render={({ field }) => (
+                <TextField
+                  variant="filled"
+                  label="Пароль"
+                  type="password"
+                  id="password"
+                  onChange={field.onChange}
+                  value={field.value}
+                  error={!!errors.password?.message}
+                  helperText={errors.password?.message}
+                />
+              )}
             />
           </Stack>
           <Button
@@ -46,6 +80,7 @@ export const LoginPage = () => {
               marginTop: "100px",
               marginBottom: "10px",
             }}
+            disabled={!isValid}
           >
             Войти
           </Button>

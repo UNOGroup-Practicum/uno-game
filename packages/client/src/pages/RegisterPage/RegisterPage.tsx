@@ -1,68 +1,190 @@
+import { useRef } from "react";
 import { Container, Typography, Stack, TextField, Button, Link } from "@mui/material";
 import styles from "./RegisterPage.module.scss";
 import { routes } from "../../constants";
 
+import { Controller, useForm, SubmitHandler } from "react-hook-form";
+import {
+  ERROR_MESSAGE,
+  InputNames,
+  REQUIRED_MESSAGE,
+  validationTemplate,
+} from "../../utils/validation/validation";
+
+type TFormInput = {
+  email: string;
+  login: string;
+  first_name: string;
+  second_name: string;
+  phone: string;
+  password: string;
+  confirm_password: string;
+};
+
 export const RegisterPage = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm({
+    defaultValues: {
+      email: "",
+      login: "",
+      first_name: "",
+      second_name: "",
+      phone: "",
+      password: "",
+      confirm_password: "",
+    },
+    mode: "onChange",
+  });
+
+  const onSubmit: SubmitHandler<TFormInput> = (data) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirm_password, ...result } = data;
+    console.log(result);
+  };
+
+  const passwordRef = useRef<HTMLInputElement>();
+
   return (
     <div className={styles.root}>
       <Container maxWidth="md">
         <Typography variant="h4" component="h1" align="center" marginBottom={3}>
           Регистрация
         </Typography>
-        <form name="registration-name" className={styles.form__auth}>
+        <form
+          name="registration-name"
+          className={styles.form__auth}
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+        >
           <Stack spacing={3}>
-            <TextField
-              variant="filled"
-              label="Почта"
-              type="email"
-              id="email"
+            <Controller
+              control={control}
               name="email"
-              helperText="(EN), непробельные знаки, @..., .домен"
+              rules={validationTemplate(InputNames.EMAIL)}
+              render={({ field }) => (
+                <TextField
+                  variant="filled"
+                  label="Почта"
+                  type="email"
+                  id="email"
+                  onChange={field.onChange}
+                  value={field.value}
+                  error={!!errors.email?.message}
+                  helperText={errors.email?.message}
+                />
+              )}
             />
-            <TextField
-              variant="filled"
-              label="Логин"
-              id="login"
+            <Controller
+              control={control}
               name="login"
-              helperText="От 3 до 20 знаков (EN)"
+              rules={validationTemplate(InputNames.LOGIN)}
+              render={({ field }) => (
+                <TextField
+                  variant="filled"
+                  label="Логин"
+                  id="login"
+                  onChange={field.onChange}
+                  value={field.value}
+                  error={!!errors.login?.message}
+                  helperText={errors.login?.message}
+                />
+              )}
             />
-            <TextField
-              variant="filled"
-              label="Имя"
-              id="first_name"
+            <Controller
+              control={control}
               name="first_name"
-              helperText="(RU/EN), первая буква прописная, -"
+              rules={validationTemplate(InputNames.NAME)}
+              render={({ field }) => (
+                <TextField
+                  variant="filled"
+                  label="Имя"
+                  id="first_name"
+                  onChange={field.onChange}
+                  value={field.value}
+                  error={!!errors.first_name?.message}
+                  helperText={errors.first_name?.message}
+                />
+              )}
             />
-            <TextField
-              variant="filled"
-              label="Фамилия"
-              id="second_name"
+            <Controller
+              control={control}
               name="second_name"
-              helperText="(RU/EN), первая буква прописная, -"
+              rules={validationTemplate(InputNames.NAME)}
+              render={({ field }) => (
+                <TextField
+                  variant="filled"
+                  label="Фамилия"
+                  id="second_name"
+                  onChange={field.onChange}
+                  value={field.value}
+                  error={!!errors.second_name?.message}
+                  helperText={errors.second_name?.message}
+                />
+              )}
             />
-            <TextField
-              variant="filled"
-              type="tel"
-              label="Телефон"
-              id="phone"
+            <Controller
+              control={control}
               name="phone"
-              helperText='от 10 до 15 знаков, можно начать с "+"'
+              rules={validationTemplate(InputNames.PHONE)}
+              render={({ field }) => (
+                <TextField
+                  variant="filled"
+                  type="tel"
+                  label="Телефон"
+                  id="phone"
+                  onChange={field.onChange}
+                  value={field.value}
+                  error={!!errors.phone?.message}
+                  helperText={errors.phone?.message}
+                />
+              )}
             />
-            <TextField
-              variant="filled"
-              label="Пароль"
-              type="password"
-              id="password"
+            <Controller
+              control={control}
               name="password"
-              helperText="От 8 знаков (EN), прописные, заглавные, цифры"
+              rules={validationTemplate(InputNames.PASSWORD)}
+              render={({ field }) => (
+                <TextField
+                  variant="filled"
+                  label="Пароль"
+                  type="password"
+                  id="password"
+                  inputRef={passwordRef}
+                  onChange={field.onChange}
+                  value={field.value}
+                  error={!!errors.password?.message}
+                  helperText={errors.password?.message}
+                />
+              )}
             />
-            <TextField
-              variant="filled"
-              label="Подтвердите пароль"
-              type="password"
-              id="confirm_password"
+            <Controller
+              control={control}
               name="confirm_password"
-              helperText="Пароли не совпадают"
+              rules={{
+                required: REQUIRED_MESSAGE,
+                validate: (value: string) => {
+                  if (value !== passwordRef.current?.value) {
+                    return ERROR_MESSAGE.CONFIRM_PASSWORD;
+                  }
+
+                  return true;
+                },
+              }}
+              render={({ field }) => (
+                <TextField
+                  variant="filled"
+                  label="Подтвердите пароль"
+                  type="password"
+                  id="confirm_password"
+                  onChange={field.onChange}
+                  value={field.value}
+                  error={!!errors.confirm_password?.message}
+                  helperText={errors.confirm_password?.message}
+                />
+              )}
             />
           </Stack>
           <Button
@@ -75,6 +197,7 @@ export const RegisterPage = () => {
               marginTop: "50px",
               marginBottom: "10px",
             }}
+            disabled={!isValid}
           >
             Регистрация
           </Button>

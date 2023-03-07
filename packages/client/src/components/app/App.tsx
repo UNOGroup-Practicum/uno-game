@@ -11,9 +11,10 @@ import { AppHeader } from "../../components/app-header/AppHeader";
 import { AppFooter } from "../../components/app-footer/AppFooter";
 import { LoginPage } from "../../pages/LoginPage/LoginPage";
 import { RegisterPage } from "../../pages/RegisterPage/RegisterPage";
-import { ForumPage } from "../../pages/ForumPage/ForumPage";
 import { ProfilePage } from "../../pages/ProfilePage/ProfilePage";
 import { Theme } from "../../theme/ThemeContext";
+import { ForumThemesListPage } from "../../pages/ForumPage/ForumThemesListPage";
+import { ForumMessagesListPage } from "../../pages/ForumPage/ForumMessagesListPage";
 import GamePreparingPage from "../../pages/GamePreparingPage";
 
 function App() {
@@ -46,7 +47,10 @@ function App() {
         <Route path={routes["sign-up"].path} element={<RegisterPage />} />
         <Route path={routes.profile.path} element={<ProfilePage />} />
         <Route path={routes.leaderboard.path} element={<LiderboardPage />} />
-        <Route path={routes.forum.path} element={<ForumPage />} />
+        <Route path={routes.forum.path}>
+          <Route index element={<ForumThemesListPage />} />
+          <Route path=":themeId" element={<ForumMessagesListPage />} />
+        </Route>
         <Route path={routes["game-preparing"].path} element={<GamePreparingPage />} />
         <Route path={routes.game.path} element={<GamePage />} />
       </Routes>
