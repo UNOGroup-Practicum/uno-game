@@ -12,15 +12,18 @@ import { FormEvent, memo, useCallback, useLayoutEffect, useState } from "react";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import { useDispatch } from "../../services/hooks";
-import { setGameVariant } from "../../services/slices/gameSlice";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { routes } from "../../constants";
 import gamer from "../../assets/images/gamer.png";
+import { gameSlice } from "../../services/slices/gameSlice";
+import { customAlphabet } from "nanoid";
+
+const nanoid = customAlphabet("123456789", 4);
 
 function GamePreparing() {
   const [isWithFriendsCardClicked, setIsWithFriendsCardClicked] = useState<true | false>(false);
   const [isRoomCardClicked, setIsRoomCardClicked] = useState<true | false>(false);
-  const [IDRoom, setIDRoom] = useState<number | null>(null);
+  const [IDRoom, setIDRoom] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -32,7 +35,7 @@ function GamePreparing() {
     } else if (searchParams.get("prestart") === "2") {
       setIsRoomCardClicked(true);
       setIsWithFriendsCardClicked(false);
-      setIDRoom(Math.floor(1000 + Math.random() * 9000));
+      setIDRoom(nanoid());
     } else {
       setIsWithFriendsCardClicked(false);
       setIsRoomCardClicked(false);
@@ -40,12 +43,12 @@ function GamePreparing() {
   }, [searchParams]);
 
   const handleSoloCardClick = useCallback(() => {
-    dispatch(setGameVariant("solo"));
+    dispatch(gameSlice.actions.setGameVariant("solo"));
     navigate(routes.game.path);
   }, []);
 
   const handleWithFriendsCardClick = useCallback(() => {
-    dispatch(setGameVariant("withFriends"));
+    dispatch(gameSlice.actions.setGameVariant("withFriends"));
     setSearchParams({
       prestart: "1",
     });

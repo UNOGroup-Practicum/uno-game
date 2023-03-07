@@ -19,8 +19,4 @@ export const gameSlice = createSlice({
   },
 });
 
-export const { setGameVariant } = gameSlice.actions;
-
-export const selectGame = (state: RootState) => state.game;
-
-export default gameSlice.reducer;
+export const gameSelect = (state: RootState) => state.game;
