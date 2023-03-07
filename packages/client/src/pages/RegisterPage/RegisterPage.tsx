@@ -9,7 +9,7 @@ import {
   InputNames,
   REQUIRED_MESSAGE,
   validationTemplate,
-} from "../../helpers/validation/validation";
+} from "../../utils/validation/validation";
 
 type TFormInput = {
   email: string;
