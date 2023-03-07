@@ -16,6 +16,7 @@ import { Theme } from "../../theme/ThemeContext";
 import { ForumThemesListPage } from "../../pages/ForumPage/ForumThemesListPage";
 import { ForumMessagesListPage } from "../../pages/ForumPage/ForumMessagesListPage";
 import GamePreparingPage from "../../pages/GamePreparingPage";
+import { ProtectedRoute } from "../protected-route/ProtectedRoute";
 
 function App() {
   const dispatch = useDispatch();
@@ -45,14 +46,17 @@ function App() {
         <Route path={ROUTES.home.path} element={<HomePage />} />
         <Route path={ROUTES.signIn.path} element={<LoginPage />} />
         <Route path={ROUTES.signUp.path} element={<RegisterPage />} />
-        <Route path={ROUTES.profile.path} element={<ProfilePage />} />
-        <Route path={ROUTES.leaderboard.path} element={<LiderboardPage />} />
-        <Route path={ROUTES.forum.path}>
-          <Route index element={<ForumThemesListPage />} />
-          <Route path=":themeId" element={<ForumMessagesListPage />} />
+
+        <Route element={<ProtectedRoute />}>
+          <Route path={ROUTES.profile.path} element={<ProfilePage />} />
+          <Route path={ROUTES.leaderboard.path} element={<LiderboardPage />} />
+          <Route path={ROUTES.forum.path}>
+            <Route index element={<ForumThemesListPage />} />
+            <Route path=":themeId" element={<ForumMessagesListPage />} />
+          </Route>
+          <Route path={ROUTES.gamePreparing.path} element={<GamePreparingPage />} />
+          <Route path={ROUTES.game.path} element={<GamePage />} />
         </Route>
-        <Route path={ROUTES.gamePreparing.path} element={<GamePreparingPage />} />
-        <Route path={ROUTES.game.path} element={<GamePage />} />
       </Routes>
 
       {location.pathname !== ROUTES.game.path && <AppFooter />}
