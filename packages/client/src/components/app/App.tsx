@@ -4,7 +4,7 @@ import GamePage from "../../pages/GamePage";
 import { useDispatch, useSelector } from "../../services/hooks";
 import { authThunks, authSelect } from "../../services/slices/auth-slice";
 import { useTheme } from "../../theme/useTheme";
-import { routes } from "../../constants";
+import { ROUTES } from "../../constants";
 import { HomePage } from "../../pages/HomePage/HomePage";
 import { LiderboardPage } from "../../pages/LiderboardPage/LiderboardPage";
 import { AppHeader } from "../../components/app-header/AppHeader";
@@ -39,23 +39,23 @@ function App() {
 
   return (
     <>
-      {location.pathname !== routes.game.path && <AppHeader />}
+      {location.pathname !== ROUTES.game.path && <AppHeader />}
 
       <Routes>
-        <Route path={routes.home.path} element={<HomePage />} />
-        <Route path={routes["sign-in"].path} element={<LoginPage />} />
-        <Route path={routes["sign-up"].path} element={<RegisterPage />} />
-        <Route path={routes.profile.path} element={<ProfilePage />} />
-        <Route path={routes.leaderboard.path} element={<LiderboardPage />} />
-        <Route path={routes.forum.path}>
+        <Route path={ROUTES.home.path} element={<HomePage />} />
+        <Route path={ROUTES.signIn.path} element={<LoginPage />} />
+        <Route path={ROUTES.signUp.path} element={<RegisterPage />} />
+        <Route path={ROUTES.profile.path} element={<ProfilePage />} />
+        <Route path={ROUTES.leaderboard.path} element={<LiderboardPage />} />
+        <Route path={ROUTES.forum.path}>
           <Route index element={<ForumThemesListPage />} />
           <Route path=":themeId" element={<ForumMessagesListPage />} />
         </Route>
-        <Route path={routes["game-preparing"].path} element={<GamePreparingPage />} />
-        <Route path={routes.game.path} element={<GamePage />} />
+        <Route path={ROUTES.gamePreparing.path} element={<GamePreparingPage />} />
+        <Route path={ROUTES.game.path} element={<GamePage />} />
       </Routes>
 
-      {location.pathname !== routes.game.path && <AppFooter />}
+      {location.pathname !== ROUTES.game.path && <AppFooter />}
     </>
   );
 }

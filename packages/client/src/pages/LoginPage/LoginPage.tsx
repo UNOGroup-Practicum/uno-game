@@ -1,6 +1,6 @@
 import { Container, Link, Typography, Button, Stack, TextField } from "@mui/material";
 import styles from "./LoginPage.module.scss";
-import { routes } from "../../constants";
+import { ROUTES } from "../../constants";
 
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { InputNames, validationTemplate } from "../../utils/validation/validation";
@@ -85,7 +85,7 @@ export const LoginPage = () => {
             Войти
           </Button>
         </form>
-        <Link href={routes["sign-up"].path} underline="none">
+        <Link href={ROUTES.signUp.path} underline="none">
           <Typography align="center" fontSize="16px" color="text.disabled" fontWeight="bold">
             Нет аккаунта?
           </Typography>
