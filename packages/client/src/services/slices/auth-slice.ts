@@ -37,6 +37,8 @@ export const authThunks = {
       return rejectWithValue(null);
     }
   }),
+
+  logout: createAsyncThunk("AUTH/logout", async () => authAPI.logout()),
 };
 
 export const authSlice = createSlice({
@@ -56,6 +58,19 @@ export const authSlice = createSlice({
       state.loading = false;
       state.error = action.payload ? action.payload : null;
       state.user = null;
+    });
+
+    builder.addCase(authThunks.logout.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(authThunks.logout.fulfilled, (state) => {
+      state.loading = false;
+      state.user = null;
+    });
+    builder.addCase(authThunks.logout.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error?.message || null;
     });
   },
 });

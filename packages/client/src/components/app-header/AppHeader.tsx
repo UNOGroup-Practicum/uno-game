@@ -17,8 +17,8 @@ import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { useTheme } from "theme/useTheme";
 import { Theme } from "theme/ThemeContext";
 
-import { useSelector } from "services/hooks";
-import { authSelect } from "services/slices/auth-slice";
+import { useDispatch, useSelector } from "services/hooks";
+import { authThunks, authSelect } from "services/slices/auth-slice";
 
 import { Picture } from "components/picture/Picture";
 
@@ -30,6 +30,7 @@ import { ROUTES } from "../../constants";
 import styles from "./AppHeader.module.scss";
 
 export const AppHeader = () => {
+  const dispatch = useDispatch();
   const { user } = useSelector(authSelect);
   const { theme, toggleTheme } = useTheme();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -44,8 +45,9 @@ export const AppHeader = () => {
   };
 
   const handleLogout = (event: React.MouseEvent<HTMLElement>) => {
-    // Todo: приделать logout
     event.preventDefault();
+
+    dispatch(authThunks.logout());
   };
 
   return (
@@ -140,7 +142,6 @@ export const AppHeader = () => {
                     <Divider />
                     <MenuItem sx={{ paddingLeft: 0, paddingRight: 0 }}>
                       <a
-                        href="#"
                         className={clsx(styles.menu__link, styles["menu__link-v2"])}
                         onClick={handleLogout}
                       >
