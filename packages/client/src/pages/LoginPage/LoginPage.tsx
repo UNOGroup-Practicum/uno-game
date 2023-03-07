@@ -3,7 +3,7 @@ import styles from "./LoginPage.module.scss";
 import { routes } from "../../constants";
 
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { InputNames, validationTemplate } from "../../helpers/validation/validation";
+import { InputNames, validationTemplate } from "../../utils/validation/validation";
 
 type TFormInput = {
   login: string;
