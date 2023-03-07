@@ -16,6 +16,9 @@ export const routes = {
     path: "/leaderboard",
   },
   forum: { path: "/forum" },
+  "game-preparing": {
+    path: "/game-preparing",
+  },
   game: {
     path: "/game",
   },

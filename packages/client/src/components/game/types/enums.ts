@@ -3,6 +3,7 @@ export enum Color {
   green = "#56a956",
   yellow = "#ffaa01",
   blue = "#5555fd",
+  darkBlue = "#1e5999",
   black = "#000",
   white = "#fff",
 }
@@ -13,6 +14,7 @@ export enum Font {
   bold22Arial = "bold 22px Arial",
   normal19Arial = "19px Arial",
   normal18Arial = "18px Arial",
+  bold14Arial = "bold 14px Arial",
 }
 
 export enum CardType {

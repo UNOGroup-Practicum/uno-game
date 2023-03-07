@@ -20,8 +20,11 @@ import { routes } from "../../constants";
 
 import logo from "../../assets/images/logo.png";
 import styles from "./AppHeader.module.scss";
+import { useSelector } from "../../services/hooks";
+import { authSelect } from "../../services/slices/auth-slice";
 
 export const AppHeader = () => {
+  const { user } = useSelector(authSelect);
   const { theme, toggleTheme } = useTheme();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -39,16 +42,13 @@ export const AppHeader = () => {
     event.preventDefault();
   };
 
-  // Todo: приделать проверку авторизации
-  const isAuth = true;
-
   return (
     <header className={clsx("app-header", styles.root)}>
       <Container maxWidth="md" className={styles.container}>
         <nav className={styles.nav}>
           <ul className={clsx(styles.menu, styles.menu_left)}>
             <li className={styles.menu__item}>
-              <NavLink className={styles.menu__link} to={routes.game.path}>
+              <NavLink className={styles.menu__link} to={routes["game-preparing"].path}>
                 ИГРАТЬ СЕЙЧАС
               </NavLink>
             </li>
@@ -73,14 +73,14 @@ export const AppHeader = () => {
             </li>
 
             <li className={styles.menu__item}>
-              {!isAuth ? (
+              {!user ? (
                 <NavLink className={styles.menu__link} to={routes["sign-in"].path}>
                   Вход
                 </NavLink>
               ) : (
                 <>
                   <button className={styles.menu__link} onClick={handleClick}>
-                    Василий
+                    {user.firstName}
                   </button>
                   <Menu
                     anchorEl={anchorEl}
