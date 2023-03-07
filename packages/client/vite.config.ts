@@ -1,7 +1,7 @@
-import path from "path";
-import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import dotenv from "dotenv";
+import path from "path";
+import { defineConfig } from "vite";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - нет типов "@types/vite-imagetools"
 import { imagetools } from "vite-imagetools";
@@ -17,6 +17,7 @@ export default defineConfig({
       services: path.resolve(__dirname, "src", "services"),
       styles: path.resolve(__dirname, "src", "styles"),
       theme: path.resolve(__dirname, "src", "theme"),
+      utils: path.resolve(__dirname, "src", "utils"),
     },
   },
   server: {
