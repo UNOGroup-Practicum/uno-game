@@ -1,15 +1,18 @@
-import { useRef } from "react";
-import { Container, Typography, Stack, TextField, Button, Link } from "@mui/material";
-import styles from "./RegisterPage.module.scss";
-import { ROUTES } from "../../constants";
+import { Button, Container, Link, Stack, TextField, Typography } from "@mui/material";
 
-import { Controller, useForm, SubmitHandler } from "react-hook-form";
+import { useRef } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+
 import {
   ERROR_MESSAGE,
   InputNames,
   REQUIRED_MESSAGE,
   validationTemplate,
-} from "../../utils/validation/validation";
+} from "utils/validation/validation";
+
+import { ROUTES } from "../../constants";
+
+import styles from "./RegisterPage.module.scss";
 
 type TFormInput = {
   email: string;

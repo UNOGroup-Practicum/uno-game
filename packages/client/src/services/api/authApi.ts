@@ -1,6 +1,6 @@
-import { LoginRequestData, User, UserDTO } from "./types";
 import { request } from "./apiRequest";
 import { transformUser } from "./transformers";
+import { LoginRequestData, User, UserDTO } from "./types";
 
 export const authAPI = {
   login: (data: LoginRequestData): Promise<"OK"> =>

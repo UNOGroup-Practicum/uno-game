@@ -1,15 +1,14 @@
-import { Container, Link, Typography, Button, Stack, TextField, Box } from "@mui/material";
-import styles from "./LoginPage.module.scss";
+import { Box, Button, Container, Link, Stack, TextField, Typography } from "@mui/material";
+
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+
+import { useDispatch, useSelector } from "services/hooks";
+import { authSelect, authThunks } from "services/slices/auth-slice";
+import { InputNames, REQUIRED_MESSAGE, validationTemplate } from "utils/validation/validation";
+
 import { ROUTES } from "../../constants";
 
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { useDispatch, useSelector } from "../../services/hooks";
-import {
-  InputNames,
-  REQUIRED_MESSAGE,
-  validationTemplate,
-} from "../../utils/validation/validation";
-import { authSelect, authThunks } from "../../services/slices/auth-slice";
+import styles from "./LoginPage.module.scss";
 
 type TFormInput = {
   login: string;

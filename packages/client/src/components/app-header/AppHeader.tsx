@@ -1,29 +1,28 @@
-import clsx from "clsx";
-import * as React from "react";
-import { Link, NavLink } from "react-router-dom";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
 import {
   Container,
   Divider,
-  FormGroup,
   FormControlLabel,
+  FormGroup,
   Menu,
   MenuItem,
   Switch,
 } from "@mui/material";
+import clsx from "clsx";
 
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
-
-import { useTheme } from "theme/useTheme";
-import { Theme } from "theme/ThemeContext";
+import * as React from "react";
+import { Link, NavLink } from "react-router-dom";
 
 import { useDispatch, useSelector } from "services/hooks";
-import { authThunks, authSelect } from "services/slices/auth-slice";
+import { authSelect, authThunks } from "services/slices/auth-slice";
+import { Theme } from "theme/ThemeContext";
+import { useTheme } from "theme/useTheme";
 
 import { Picture } from "components/picture/Picture";
 
-import logo from "assets/images/logo.png?quality=75&imagetools";
 import logoWebp from "assets/images/logo.png?format=webp&quality=75&source&imagetools";
+import logo from "assets/images/logo.png?quality=75&imagetools";
 
 import { ROUTES } from "../../constants";
 

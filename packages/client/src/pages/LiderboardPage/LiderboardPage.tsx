@@ -1,9 +1,9 @@
 import { Container } from "@mui/material";
-import { Stack, Button, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
+
+import { LeaderboardProfile } from "components/leaderboard-profile/LeaderbordProfile";
 
 import styles from "./LiderboardPage.module.scss";
-
-import { LeaderboardProfile } from "../../components/leaderboard-profile/LeaderbordProfile";
 
 export const LiderboardPage = () => {
   const handleFilter = (e: React.MouseEvent<HTMLElement>): void => {

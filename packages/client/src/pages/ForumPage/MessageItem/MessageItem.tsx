@@ -1,8 +1,11 @@
-import styles from "./MessageItem.module.scss";
-import { MessageType } from "../types/types";
-import React from "react";
 import { Avatar } from "@mui/material";
+
+import React from "react";
+
 import { timeOptions } from "../helpers/timeOptions";
+import { MessageType } from "../types/types";
+
+import styles from "./MessageItem.module.scss";
 
 type PropsType = {
   messageData: MessageType;
