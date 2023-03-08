@@ -19,7 +19,7 @@ import advantage4Webp from "assets/images/advantage-4.png?format=webp&quality=75
 import advantage5 from "assets/images/advantage-5.png?quality=75&imagetools";
 import advantage5Webp from "assets/images/advantage-5.png?format=webp&quality=75&source&imagetools";
 
-import { routes } from "../../constants";
+import { ROUTES } from "../../constants";
 
 import styles from "./HomePage.module.scss";
 
@@ -62,7 +62,7 @@ export const HomePage = () => {
             </h1>
             <Button
               variant="contained"
-              href={routes["game-preparing"].path}
+              href={ROUTES.gamePreparing.path}
               color="success"
               size="large"
             >

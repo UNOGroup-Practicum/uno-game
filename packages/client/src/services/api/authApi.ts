@@ -7,7 +7,7 @@ export const authAPI = {
     request.post<"OK", LoginRequestData>("auth/signin", data),
 
   me: async (): Promise<User> => {
-    const result = await request.get<UserDTO>("auth/users");
+    const result = await request.get<UserDTO>("auth/user");
 
     return transformUser(result);
   },

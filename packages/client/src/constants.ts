@@ -1,12 +1,12 @@
 //routes
-export const routes = {
+export const ROUTES = {
   home: {
     path: "/",
   },
-  "sign-in": {
+  signIn: {
     path: "/sign-in",
   },
-  "sign-up": {
+  signUp: {
     path: "/sign-up",
   },
   profile: {
@@ -16,7 +16,7 @@ export const routes = {
     path: "/leaderboard",
   },
   forum: { path: "/forum" },
-  "game-preparing": {
+  gamePreparing: {
     path: "/game-preparing",
   },
   game: {

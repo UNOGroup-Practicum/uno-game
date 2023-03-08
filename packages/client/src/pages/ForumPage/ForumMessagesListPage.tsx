@@ -6,7 +6,7 @@ import { MessageItem } from "./MessageItem/MessageItem";
 import { Avatar, Button, Container, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { currentUserData, forumData } from "./data/data";
-import { routes } from "../../constants";
+import { ROUTES } from "../../constants";
 
 export const ForumMessagesListPage: React.FC = () => {
   const [text, setText] = useState("");
@@ -51,7 +51,7 @@ export const ForumMessagesListPage: React.FC = () => {
         </div>
 
         <h2 className={styles.ForumPage__header}>
-          <NavLink to={routes.forum.path}>{"<"}</NavLink>
+          <NavLink to={ROUTES.forum.path}>{"<"}</NavLink>
           {themeData.themeTitle}
         </h2>
 

@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Container, Typography, Stack, TextField, Button, Link } from "@mui/material";
 import styles from "./RegisterPage.module.scss";
-import { routes } from "../../constants";
+import { ROUTES } from "../../constants";
 
 import { Controller, useForm, SubmitHandler } from "react-hook-form";
 import {
@@ -201,7 +201,7 @@ export const RegisterPage = () => {
           >
             Регистрация
           </Button>
-          <Link href={routes["sign-in"].path} underline="none">
+          <Link href={ROUTES.signIn.path} underline="none">
             <Typography align="center" fontSize="16px" color="text.disabled" fontWeight="bold">
               Войти
             </Typography>

@@ -17,19 +17,20 @@ import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { useTheme } from "theme/useTheme";
 import { Theme } from "theme/ThemeContext";
 
-import { useSelector } from "services/hooks";
-import { authSelect } from "services/slices/auth-slice";
+import { useDispatch, useSelector } from "services/hooks";
+import { authThunks, authSelect } from "services/slices/auth-slice";
 
 import { Picture } from "components/picture/Picture";
 
 import logo from "assets/images/logo.png?quality=75&imagetools";
 import logoWebp from "assets/images/logo.png?format=webp&quality=75&source&imagetools";
 
-import { routes } from "../../constants";
+import { ROUTES } from "../../constants";
 
 import styles from "./AppHeader.module.scss";
 
 export const AppHeader = () => {
+  const dispatch = useDispatch();
   const { user } = useSelector(authSelect);
   const { theme, toggleTheme } = useTheme();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -44,8 +45,9 @@ export const AppHeader = () => {
   };
 
   const handleLogout = (event: React.MouseEvent<HTMLElement>) => {
-    // Todo: приделать logout
     event.preventDefault();
+
+    dispatch(authThunks.logout());
   };
 
   return (
@@ -54,20 +56,20 @@ export const AppHeader = () => {
         <nav className={styles.nav}>
           <ul className={clsx(styles.menu, styles.menu_left)}>
             <li className={styles.menu__item}>
-              <NavLink className={styles.menu__link} to={routes["game-preparing"].path}>
+              <NavLink className={styles.menu__link} to={ROUTES.gamePreparing.path}>
                 ИГРАТЬ СЕЙЧАС
               </NavLink>
             </li>
 
             <li className={styles.menu__item}>
               {/* TODO: создать страницу с правилами и исправить ссылку */}
-              <NavLink className={styles.menu__link} to={routes.home.path}>
+              <NavLink className={styles.menu__link} to={ROUTES.home.path}>
                 Правила
               </NavLink>
             </li>
           </ul>
 
-          <Link to={routes.home.path} className={styles.logo}>
+          <Link to={ROUTES.home.path} className={styles.logo}>
             <Picture webp={logoWebp}>
               <img src={logo} alt="Uno" width="205" height="184" />
             </Picture>
@@ -75,14 +77,14 @@ export const AppHeader = () => {
 
           <ul className={clsx(styles.menu, styles.menu_right)}>
             <li className={styles.menu__item}>
-              <NavLink className={styles.menu__link} to={routes.forum.path}>
+              <NavLink className={styles.menu__link} to={ROUTES.forum.path}>
                 Форум
               </NavLink>
             </li>
 
             <li className={styles.menu__item}>
               {!user ? (
-                <NavLink className={styles.menu__link} to={routes["sign-in"].path}>
+                <NavLink className={styles.menu__link} to={ROUTES.signIn.path}>
                   Вход
                 </NavLink>
               ) : (
@@ -122,7 +124,7 @@ export const AppHeader = () => {
                     <MenuItem sx={{ paddingLeft: 0, paddingRight: 0 }}>
                       <NavLink
                         className={clsx(styles.menu__link, styles["menu__link-v2"])}
-                        to={routes.leaderboard.path}
+                        to={ROUTES.leaderboard.path}
                       >
                         Лидербоард
                       </NavLink>
@@ -131,7 +133,7 @@ export const AppHeader = () => {
                     <MenuItem sx={{ paddingLeft: 0, paddingRight: 0 }}>
                       <NavLink
                         className={clsx(styles.menu__link, styles["menu__link-v2"])}
-                        to={routes.profile.path}
+                        to={ROUTES.profile.path}
                       >
                         Профиль
                       </NavLink>
@@ -140,7 +142,6 @@ export const AppHeader = () => {
                     <Divider />
                     <MenuItem sx={{ paddingLeft: 0, paddingRight: 0 }}>
                       <a
-                        href="#"
                         className={clsx(styles.menu__link, styles["menu__link-v2"])}
                         onClick={handleLogout}
                       >
