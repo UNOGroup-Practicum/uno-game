@@ -1,3 +1,11 @@
 .root {
-  display: flex;
+  flex-grow: 1;
+  margin: 6rem 0;
+  text-align: center;
+
+  .leaderboard__btn {
+    width: 180px;
+    background-color: var(--primary-dark-color);
+    border-radius: 15px;
+  }
 }
