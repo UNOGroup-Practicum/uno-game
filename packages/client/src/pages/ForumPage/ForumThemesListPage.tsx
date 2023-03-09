@@ -1,8 +1,11 @@
-import styles from "./ForumPage.module.scss";
-import { ThemeItem } from "./ThemeItem/ThemeItem";
-import React, { useState, useEffect } from "react";
 import { Button, Container, TextField } from "@mui/material";
+
+import React, { useEffect, useState } from "react";
+
 import { forumData } from "./data/data";
+import { ThemeItem } from "./ThemeItem/ThemeItem";
+
+import styles from "./ForumPage.module.scss";
 
 export const ForumThemesListPage: React.FC = () => {
   const [title, setTitle] = useState("");

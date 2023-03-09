@@ -1,6 +1,5 @@
-import { profilesList } from "./database";
-import * as React from "react";
 import {
+  Avatar,
   Paper,
   Table,
   TableBody,
@@ -9,9 +8,13 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Avatar,
 } from "@mui/material";
-import { createData } from "../../utils/createDataForLeaderboard";
+
+import * as React from "react";
+
+import { createData } from "utils/createDataForLeaderboard";
+
+import { profilesList } from "./database";
 
 type LabelDisplayedRowsArgs = {
   from: number;

@@ -1,7 +1,9 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+
+import { useSelector } from "services/hooks";
+import { authSelect } from "services/slices/auth-slice";
+
 import { ROUTES } from "../../constants";
-import { useSelector } from "../../services/hooks";
-import { authSelect } from "../../services/slices/auth-slice";
 
 export const AuthPagesRoute = () => {
   const location = useLocation();

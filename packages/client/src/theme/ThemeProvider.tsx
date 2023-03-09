@@ -1,9 +1,11 @@
+import { createTheme, ThemeProvider as ThemeProviderMui } from "@mui/material/styles";
+
 import React, { useMemo, useState } from "react";
-import { LOCAL_STORAGE_THEME_KEY, Theme, ThemeContext } from "./ThemeContext";
-import { ThemeProvider as ThemeProviderMui, createTheme } from "@mui/material/styles";
-import { muiPallete, setGlobalStyles } from "./muiPallete";
+
 import { muiComponents } from "./muiComponents";
+import { muiPallete, setGlobalStyles } from "./muiPallete";
 import { muiTypography } from "./muiTypography";
+import { LOCAL_STORAGE_THEME_KEY, Theme, ThemeContext } from "./ThemeContext";
 
 const defaultTheme = (localStorage.getItem(LOCAL_STORAGE_THEME_KEY) as Theme) || Theme.DARK;
 
