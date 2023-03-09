@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { authAPI } from "../api/authApi";
-import { LoginRequestData, User } from "../api/types";
+import { LoginRequestData, RegisterRequestData, User } from "../api/types";
 import type { RootState } from "../store";
 
 type AuthState = {
@@ -46,6 +46,14 @@ export const authThunks = {
       dispatch(thunkMe());
     }
   ),
+
+  register: createAsyncThunk<void, RegisterRequestData, { rejectValue: AuthState["error"] }>(
+    "AUTH/register",
+    async (data, { dispatch }) => {
+      await authAPI.register(data);
+      dispatch(thunkMe());
+    }
+  ),
 };
 
 export const authSlice = createSlice({
@@ -86,6 +94,16 @@ export const authSlice = createSlice({
       state.error = null;
     });
     builder.addCase(authThunks.login.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error?.message || null;
+    });
+
+    // Если register.fulfilled, то запускается authThunks.me - в нем завершение запроса
+    builder.addCase(authThunks.register.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(authThunks.register.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error?.message || null;
     });

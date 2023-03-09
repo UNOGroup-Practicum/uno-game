@@ -94,7 +94,7 @@ export const LoginPage = () => {
               marginTop: "100px",
               marginBottom: "10px",
             }}
-            disabled={!isValid}
+            disabled={!isValid || loading}
           >
             Войти
           </Button>

@@ -3,6 +3,8 @@ import { Button, Container, Link, Stack, TextField, Typography } from "@mui/mate
 import { useRef } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
+import { useDispatch, useSelector } from "services/hooks";
+import { authSelect, authThunks } from "services/slices/auth-slice";
 import {
   ERROR_MESSAGE,
   InputNames,
@@ -25,6 +27,8 @@ type TFormInput = {
 };
 
 export const RegisterPage = () => {
+  const dispatch = useDispatch();
+  const { loading } = useSelector(authSelect);
   const {
     control,
     handleSubmit,
@@ -45,7 +49,8 @@ export const RegisterPage = () => {
   const onSubmit: SubmitHandler<TFormInput> = (data) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { confirm_password, ...result } = data;
-    console.log(result);
+
+    dispatch(authThunks.register(result));
   };
 
   const passwordRef = useRef<HTMLInputElement>();
@@ -200,7 +205,7 @@ export const RegisterPage = () => {
               marginTop: "50px",
               marginBottom: "10px",
             }}
-            disabled={!isValid}
+            disabled={!isValid || loading}
           >
             Регистрация
           </Button>
