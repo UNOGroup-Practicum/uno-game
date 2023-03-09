@@ -1,4 +1,4 @@
-import { Button, Container, Link, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Container, Link, Stack, TextField, Typography } from "@mui/material";
 
 import { useRef } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -28,7 +28,7 @@ type TFormInput = {
 
 export const RegisterPage = () => {
   const dispatch = useDispatch();
-  const { loading } = useSelector(authSelect);
+  const { error: authError, loading } = useSelector(authSelect);
   const {
     control,
     handleSubmit,
@@ -195,6 +195,16 @@ export const RegisterPage = () => {
               )}
             />
           </Stack>
+          {loading && (
+            <Box mt={2} textAlign={"center"}>
+              ...Loading
+            </Box>
+          )}
+          {authError && (
+            <Box mt={2} textAlign={"center"} color={"error.light"}>
+              {authError}
+            </Box>
+          )}
           <Button
             fullWidth={true}
             size="large"

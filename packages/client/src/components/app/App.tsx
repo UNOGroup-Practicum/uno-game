@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 
 import { useDispatch, useSelector } from "services/hooks";
-import { authSelect, authThunks } from "services/slices/auth-slice";
+import { authSelect, authSlice, authThunks } from "services/slices/auth-slice";
 import { Theme } from "theme/ThemeContext";
 import { useTheme } from "theme/useTheme";
 
@@ -25,9 +25,15 @@ import { ROUTES } from "../../constants";
 
 function App() {
   const dispatch = useDispatch();
-  const { user } = useSelector(authSelect);
+  const { error: authError, user } = useSelector(authSelect);
   const { theme } = useTheme();
   const location = useLocation();
+
+  useEffect(() => {
+    if (authError) {
+      dispatch(authSlice.actions.resetError());
+    }
+  }, [location]);
 
   useEffect(() => {
     if (!user) {

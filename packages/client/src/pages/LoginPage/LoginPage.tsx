@@ -17,7 +17,7 @@ type TFormInput = {
 
 export const LoginPage = () => {
   const dispatch = useDispatch();
-  const { loading } = useSelector(authSelect);
+  const { error: authError, loading } = useSelector(authSelect);
   const {
     control,
     handleSubmit,
@@ -81,7 +81,12 @@ export const LoginPage = () => {
           </Stack>
           {loading && (
             <Box mt={2} textAlign={"center"}>
-              ...Загрузка
+              ...Loading
+            </Box>
+          )}
+          {authError && (
+            <Box mt={2} textAlign={"center"} color={"error.light"}>
+              {authError}
             </Box>
           )}
           <Button

@@ -59,7 +59,11 @@ export const authThunks = {
 export const authSlice = createSlice({
   name: "AUTH",
   initialState,
-  reducers: {},
+  reducers: {
+    resetError(state) {
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(authThunks.me.pending, (state) => {
       state.loading = true;
