@@ -46,13 +46,15 @@ function App() {
       <Routes>
         <Route path={ROUTES.home.path} element={<HomePage />} />
 
+        {/* TODO: Route ProfilePage переместить в ProtectedRoute*/}
+        <Route path={ROUTES.profile.path} element={<ProfilePage />} />
+
         <Route element={<AuthPagesRoute />}>
           <Route path={ROUTES.signIn.path} element={<LoginPage />} />
           <Route path={ROUTES.signUp.path} element={<RegisterPage />} />
         </Route>
 
         <Route element={<ProtectedRoute />}>
-          <Route path={ROUTES.profile.path} element={<ProfilePage />} />
           <Route path={ROUTES.leaderboard.path} element={<LiderboardPage />} />
           <Route path={ROUTES.forum.path}>
             <Route index element={<ForumThemesListPage />} />
