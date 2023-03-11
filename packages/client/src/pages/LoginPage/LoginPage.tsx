@@ -1,9 +1,10 @@
 import { Box, Button, Container, Link, Stack, TextField, Typography } from "@mui/material";
 
+import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import { useDispatch, useSelector } from "services/hooks";
-import { authSelect, authThunks } from "services/slices/auth-slice";
+import { authSelect, authSlice, authThunks } from "services/slices/auth-slice";
 import { InputNames, REQUIRED_MESSAGE, validationTemplate } from "utils/validation/validation";
 
 import { ROUTES } from "../../constants";
@@ -18,6 +19,7 @@ type TFormInput = {
 export const LoginPage = () => {
   const dispatch = useDispatch();
   const { error: authError, loading } = useSelector(authSelect);
+  const [authErrorLocal, setAuthErrorLocal] = useState(authError);
   const {
     control,
     handleSubmit,
@@ -30,7 +32,15 @@ export const LoginPage = () => {
     mode: "onChange",
   });
 
-  const onSubmit: SubmitHandler<TFormInput> = (data) => {
+  useEffect(() => {
+    if (authError) {
+      setAuthErrorLocal(authError);
+      dispatch(authSlice.actions.resetError());
+    }
+  }, [dispatch, authError, setAuthErrorLocal]);
+
+  const onSubmit: SubmitHandler<TFormInput> = async (data) => {
+    authErrorLocal && setAuthErrorLocal(null);
     dispatch(authThunks.login(data));
   };
 
@@ -84,9 +94,9 @@ export const LoginPage = () => {
               ...Loading
             </Box>
           )}
-          {authError && (
+          {authErrorLocal && (
             <Box mt={2} textAlign={"center"} color={"error.light"}>
-              {authError}
+              {authErrorLocal}
             </Box>
           )}
           <Button
