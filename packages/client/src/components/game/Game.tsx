@@ -94,10 +94,7 @@ function Game() {
             const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[0].name);
             refTimers.current = { timer1, timer2 };
 
-            const timer = setTimeout(() => {
-              setActiveGamer(gamersList[1].name);
-              clearTimeout(timer);
-            }, 2000);
+            setActiveGamer(gamersList[1].name);
           } else if (action === "takeOneCard") {
             clearIntervals(refTimers);
 
@@ -242,8 +239,8 @@ function Game() {
           );
           console.log(gamersList[1].name, nextActionAndArrayCardsForMoves?.action);
 
-          const timer = setTimeout(() => {
-            if (nextActionAndArrayCardsForMoves?.action === "move") {
+          if (nextActionAndArrayCardsForMoves?.action === "move") {
+            const timer = setTimeout(() => {
               const copiedShuffleArrayCards = shuffleArrayCards?.map((item) => {
                 if (item.status === CardStatus.inHeap) {
                   return { ...item, status: CardStatus.inOutside };
@@ -280,12 +277,16 @@ function Game() {
               );
 
               setActiveGamer(gamersList[0].name);
-            } else if (
-              nextActionAndArrayCardsForMoves?.action === "skip" ||
-              nextActionAndArrayCardsForMoves?.action === "reverse"
-            ) {
-              setActiveGamer(gamersList[0].name);
-            } else if (nextActionAndArrayCardsForMoves?.action === "takeOneCard") {
+
+              clearTimeout(timer);
+            }, 2000);
+          } else if (
+            nextActionAndArrayCardsForMoves?.action === "skip" ||
+            nextActionAndArrayCardsForMoves?.action === "reverse"
+          ) {
+            setActiveGamer(gamersList[0].name);
+          } else if (nextActionAndArrayCardsForMoves?.action === "takeOneCard") {
+            const timer = setTimeout(() => {
               const copiedShuffleArrayCards = [];
               let flag = false;
 
@@ -325,7 +326,11 @@ function Game() {
                 gamersPositions[1].cards[1],
                 countRobotCards.toString()
               );
-            } else if (nextActionAndArrayCardsForMoves?.action === "takeTwoCards") {
+
+              clearTimeout(timer);
+            }, 2000);
+          } else if (nextActionAndArrayCardsForMoves?.action === "takeTwoCards") {
+            const timer = setTimeout(() => {
               const copiedShuffleArrayCards = [];
               let flag = 0;
 
@@ -365,7 +370,11 @@ function Game() {
                 gamersPositions[1].cards[1],
                 countRobotCards.toString()
               );
-            } else if (nextActionAndArrayCardsForMoves?.action === "takeFourCards") {
+
+              clearTimeout(timer);
+            }, 2000);
+          } else if (nextActionAndArrayCardsForMoves?.action === "takeFourCards") {
+            const timer = setTimeout(() => {
               const copiedShuffleArrayCards = [];
               let flag = 0;
 
@@ -405,9 +414,10 @@ function Game() {
                 gamersPositions[1].cards[1],
                 countRobotCards.toString()
               );
-            }
-            clearTimeout(timer);
-          }, 2000);
+
+              clearTimeout(timer);
+            }, 2000);
+          }
         }
       }
 
