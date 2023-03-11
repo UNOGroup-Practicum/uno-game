@@ -1,25 +1,26 @@
-import React from "react";
-import { Container, Button, Grid, Paper, Card, CardContent, Typography } from "@mui/material";
+import { Button, Card, CardContent, Container, Grid, Paper, Typography } from "@mui/material";
 
-import { useTheme } from "theme/useTheme";
+import React from "react";
+
 import { Theme } from "theme/ThemeContext";
+import { useTheme } from "theme/useTheme";
 
 import { Picture } from "components/picture/Picture";
 
-import promoBg from "assets/images/promo_bg.jpg?quality=75&imagetools";
-import promoBgWebp from "assets/images/promo_bg.jpg?format=webp&quality=75&source&imagetools";
-import advantage1 from "assets/images/advantage-1.png?quality=75&imagetools";
 import advantage1Webp from "assets/images/advantage-1.png?format=webp&quality=75&source&imagetools";
-import advantage2 from "assets/images/advantage-2.png?quality=75&imagetools";
+import advantage1 from "assets/images/advantage-1.png?quality=75&imagetools";
 import advantage2Webp from "assets/images/advantage-2.png?format=webp&quality=75&source&imagetools";
-import advantage3 from "assets/images/advantage-3.png?quality=75&imagetools";
+import advantage2 from "assets/images/advantage-2.png?quality=75&imagetools";
 import advantage3Webp from "assets/images/advantage-3.png?format=webp&quality=75&source&imagetools";
-import advantage4 from "assets/images/advantage-4.png?quality=75&imagetools";
+import advantage3 from "assets/images/advantage-3.png?quality=75&imagetools";
 import advantage4Webp from "assets/images/advantage-4.png?format=webp&quality=75&source&imagetools";
-import advantage5 from "assets/images/advantage-5.png?quality=75&imagetools";
+import advantage4 from "assets/images/advantage-4.png?quality=75&imagetools";
 import advantage5Webp from "assets/images/advantage-5.png?format=webp&quality=75&source&imagetools";
+import advantage5 from "assets/images/advantage-5.png?quality=75&imagetools";
+import promoBgWebp from "assets/images/promo_bg.jpg?format=webp&quality=75&source&imagetools";
+import promoBg from "assets/images/promo_bg.jpg?quality=75&imagetools";
 
-import { routes } from "../../constants";
+import { ROUTES } from "../../constants";
 
 import styles from "./HomePage.module.scss";
 
@@ -62,7 +63,7 @@ export const HomePage = () => {
             </h1>
             <Button
               variant="contained"
-              href={routes["game-preparing"].path}
+              href={ROUTES.gamePreparing.path}
               color="success"
               size="large"
             >

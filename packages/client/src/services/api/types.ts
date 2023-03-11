@@ -8,6 +8,15 @@ export type LoginRequestData = {
   password: string;
 };
 
+export type RegisterRequestData = {
+  first_name: string;
+  second_name: string;
+  login: string;
+  email: string;
+  password: string;
+  phone: string;
+};
+
 export type UserDTO = {
   id: number;
   login: string;

@@ -1,5 +1,6 @@
-import { Container, Box, Typography, Link } from "@mui/material";
-import { routes } from "../../constants";
+import { Box, Container, Link, Typography } from "@mui/material";
+
+import { ROUTES } from "../../constants";
 
 export const AppFooter = () => {
   return (
@@ -13,7 +14,7 @@ export const AppFooter = () => {
       }}
     >
       <Container maxWidth="md">
-        <Link href={routes.home.path}>
+        <Link href={ROUTES.home.path}>
           <Typography align="center" fontSize="20px" color="text.secondary" fontWeight="bold">
             Uno
           </Typography>

@@ -1,9 +1,15 @@
-import { Container, Link, Typography, Button, Stack, TextField } from "@mui/material";
-import styles from "./LoginPage.module.scss";
-import { routes } from "../../constants";
+import { Box, Button, Container, Link, Stack, TextField, Typography } from "@mui/material";
 
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { InputNames, validationTemplate } from "../../utils/validation/validation";
+import { useEffect, useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+
+import { useDispatch, useSelector } from "services/hooks";
+import { authSelect, authSlice, authThunks } from "services/slices/auth-slice";
+import { InputNames, REQUIRED_MESSAGE, validationTemplate } from "utils/validation/validation";
+
+import { ROUTES } from "../../constants";
+
+import styles from "./LoginPage.module.scss";
 
 type TFormInput = {
   login: string;
@@ -11,6 +17,9 @@ type TFormInput = {
 };
 
 export const LoginPage = () => {
+  const dispatch = useDispatch();
+  const { error: authError, loading } = useSelector(authSelect);
+  const [authErrorLocal, setAuthErrorLocal] = useState(authError);
   const {
     control,
     handleSubmit,
@@ -23,8 +32,16 @@ export const LoginPage = () => {
     mode: "onChange",
   });
 
-  const onSubmit: SubmitHandler<TFormInput> = (data) => {
-    console.log(data);
+  useEffect(() => {
+    if (authError) {
+      setAuthErrorLocal(authError);
+      dispatch(authSlice.actions.resetError());
+    }
+  }, [dispatch, authError, setAuthErrorLocal]);
+
+  const onSubmit: SubmitHandler<TFormInput> = async (data) => {
+    authErrorLocal && setAuthErrorLocal(null);
+    dispatch(authThunks.login(data));
   };
 
   return (
@@ -55,7 +72,9 @@ export const LoginPage = () => {
             <Controller
               control={control}
               name="password"
-              rules={validationTemplate(InputNames.PASSWORD)}
+              rules={{
+                required: REQUIRED_MESSAGE,
+              }}
               render={({ field }) => (
                 <TextField
                   variant="filled"
@@ -70,6 +89,16 @@ export const LoginPage = () => {
               )}
             />
           </Stack>
+          {loading && (
+            <Box mt={2} textAlign={"center"}>
+              ...Loading
+            </Box>
+          )}
+          {authErrorLocal && (
+            <Box mt={2} textAlign={"center"} color={"error.light"}>
+              {authErrorLocal}
+            </Box>
+          )}
           <Button
             fullWidth={true}
             size="large"
@@ -80,12 +109,12 @@ export const LoginPage = () => {
               marginTop: "100px",
               marginBottom: "10px",
             }}
-            disabled={!isValid}
+            disabled={!isValid || loading}
           >
             Войти
           </Button>
         </form>
-        <Link href={routes["sign-up"].path} underline="none">
+        <Link href={ROUTES.signUp.path} underline="none">
           <Typography align="center" fontSize="16px" color="text.disabled" fontWeight="bold">
             Нет аккаунта?
           </Typography>

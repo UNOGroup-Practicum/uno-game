@@ -1,4 +1,5 @@
 import { Container } from "@mui/material";
+
 import styles from "./ProfilePage.module.scss";
 
 export const ProfilePage = () => {

@@ -1,3 +1,5 @@
+import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
+import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import {
   Button,
   Card,
@@ -8,21 +10,23 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { FormEvent, memo, useCallback, useLayoutEffect, useState } from "react";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
-import { useDispatch } from "../../services/hooks";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { routes } from "../../constants";
-import gamer from "../../assets/images/gamer.png";
-import { gameSlice } from "../../services/slices/gameSlice";
 import { customAlphabet } from "nanoid";
+
+import { FormEvent, memo, useCallback, useLayoutEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+
+import { useDispatch } from "services/hooks";
+import { gameSlice } from "services/slices/gameSlice";
+
+import gamer from "assets/images/gamer.png";
+
+import { ROUTES } from "../../constants";
 
 const nanoid = customAlphabet("123456789", 4);
 
 function GamePreparing() {
-  const [isWithFriendsCardClicked, setIsWithFriendsCardClicked] = useState<true | false>(false);
-  const [isRoomCardClicked, setIsRoomCardClicked] = useState<true | false>(false);
+  const [isWithFriendsCardClicked, setIsWithFriendsCardClicked] = useState<boolean>(false);
+  const [isRoomCardClicked, setIsRoomCardClicked] = useState<boolean>(false);
   const [IDRoom, setIDRoom] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
@@ -44,7 +48,7 @@ function GamePreparing() {
 
   const handleSoloCardClick = useCallback(() => {
     dispatch(gameSlice.actions.setGameVariant("solo"));
-    navigate(routes.game.path);
+    navigate(ROUTES.game.path);
   }, []);
 
   const handleWithFriendsCardClick = useCallback(() => {

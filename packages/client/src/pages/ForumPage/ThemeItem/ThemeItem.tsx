@@ -1,10 +1,12 @@
-import styles from "./ThemeItem.module.scss";
 import React from "react";
-import { timeOptions } from "../helpers/timeOptions";
 import { NavLink } from "react-router-dom";
-import { ThemeType } from "../types/types";
+
+import { ROUTES } from "../../../constants";
 import { ending } from "../helpers/ending";
-import { routes } from "../../../constants";
+import { timeOptions } from "../helpers/timeOptions";
+import { ThemeType } from "../types/types";
+
+import styles from "./ThemeItem.module.scss";
 
 type PropsType = ThemeType;
 
@@ -17,7 +19,7 @@ export const ThemeItem: React.FC<PropsType> = ({
   return (
     <div className={styles.themeItem}>
       <div className={styles.themeItem__wrapper}>
-        <NavLink to={`${routes.forum.path}/${themeId}`}>{themeTitle}</NavLink>
+        <NavLink to={`${ROUTES.forum.path}/${themeId}`}>{themeTitle}</NavLink>
         <p className={styles.item__wrapper_descr}>
           {themeCreationDate.toLocaleString("ru", timeOptions)}
         </p>

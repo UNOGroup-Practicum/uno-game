@@ -1,12 +1,16 @@
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Avatar, Button, Container, TextField } from "@mui/material";
+
+import React, { useEffect, useState } from "react";
+import { NavLink, useParams } from "react-router-dom";
+
+import { ROUTES } from "../../constants";
+
+import { currentUserData, forumData } from "./data/data";
+import { MessageItem } from "./MessageItem/MessageItem";
+
 import styles from "./ForumPage.module.scss";
 import stylesMessageItem from "./MessageItem/MessageItem.module.scss";
-import React, { useState, useEffect } from "react";
-import { NavLink, useParams } from "react-router-dom";
-import { MessageItem } from "./MessageItem/MessageItem";
-import { Avatar, Button, Container, TextField } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { currentUserData, forumData } from "./data/data";
-import { routes } from "../../constants";
 
 export const ForumMessagesListPage: React.FC = () => {
   const [text, setText] = useState("");
@@ -51,7 +55,7 @@ export const ForumMessagesListPage: React.FC = () => {
         </div>
 
         <h2 className={styles.ForumPage__header}>
-          <NavLink to={routes.forum.path}>{"<"}</NavLink>
+          <NavLink to={ROUTES.forum.path}>{"<"}</NavLink>
           {themeData.themeTitle}
         </h2>
 

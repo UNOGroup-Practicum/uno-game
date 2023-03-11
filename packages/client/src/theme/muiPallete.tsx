@@ -1,4 +1,5 @@
 import { GlobalStyles, Theme as ThemeMui } from "@mui/material";
+
 import { Theme } from "./ThemeContext";
 
 export const muiPallete = (mode: Theme) => {
