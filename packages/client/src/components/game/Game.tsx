@@ -1,169 +1,498 @@
-import { memo, useEffect, useRef } from "react";
+import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 import styles from "./Game.module.scss";
-import createBackSideCard from "./utils/createBackSideCard";
 import createShuffleArrayCards from "./utils/createShuffleArrayCards";
-import setCardsAmountForGamer from "./utils/setCardsAmountForGamer";
 import createGamersPositions from "./utils/createGamersPositions";
 import generateCardsDistribution from "./utils/generateCardsDistribution";
 import createUserCards from "./utils/createUserCards";
-import { TCardsDistribution } from "./types/typeAliases";
-import createDigitCard from "./utils/createDigitCard";
+import { useSelector } from "services/hooks";
+import { gameSelect } from "services/slices/gameSlice";
+import { useNavigate } from "react-router-dom";
+import { routes } from "../../constants";
+import cardsDistribution from "./utils/cardsDistribution";
+import { TGamersList, TGamersPositions, TShuffleArrayCards } from "./types/typeAliases";
+import defineFirstGamerMove from "./utils/defineFirstGamerMove";
+import createUserCardsWithCoordinates from "./utils/createUserCardsWithCoordinates";
 import { CardStatus } from "./types/enums";
-import createUNOButton from "./utils/createUNOButton";
-import createRightDirection from "./utils/createRightDirection";
+import signalizeName from "./utils/signalizeName";
+import createNextActionAndArrayCardsForMoves from "./utils/createNextActionAndArrayCardsForMoves";
+import createCanvasCenter from "./utils/createCanvasCenter";
+import setCardsAmountForGamer from "./utils/setCardsAmountForGamer";
+import handleUserClick from "./utils/handleUserClick";
+import countGamerCards from "./utils/countGamerCards";
+import clearIntervals from "./utils/clearIntervals";
+import { Box, Modal, Typography } from "@mui/material";
 
 function Game() {
+  const refFirstGamerMove = useRef(0);
+  const refTimers = useRef<{ timer1: NodeJS.Timer; timer2: NodeJS.Timer }>();
   const ref = useRef<HTMLCanvasElement>(null);
+  const { gameVariant } = useSelector(gameSelect);
+  const navigate = useNavigate();
+  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
+  const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
+  const [gamersList, setGamersList] = useState<TGamersList>([]);
+  const [shuffleArrayCards, setShuffleArrayCards] = useState<TShuffleArrayCards | null>(null);
+  const [gamersPositions, setGamersPositions] = useState<TGamersPositions | null>(null);
+  const [activeGamer, setActiveGamer] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<true | false>(false);
+  const [win, setWin] = useState<string | null>(null);
+
+  useLayoutEffect(() => {
+    const canvas = ref.current as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    setCanvas(canvas);
+    setCtx(ctx);
+    setGamersList([
+      {
+        id: "0",
+        name: "User",
+      },
+      {
+        id: "0",
+        name: "Robot",
+      },
+    ]);
+  }, []);
 
   useEffect(() => {
-    const canvas = ref.current as HTMLCanvasElement;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    if (shuffleArrayCards && ctx && canvas && gamersPositions) {
+      if (activeGamer === gamersList[0].name) {
+        clearIntervals(refTimers);
 
-    const gamersList = [
-      { id: "0", name: "User A" },
-      { id: "1", name: "James" },
-      { id: "2", name: "David" },
-      { id: "3", name: "Matthew" },
-      { id: "4", name: "Danny" },
-      { id: "5", name: "Steven" },
-      { id: "6", name: "George" },
-      { id: "7", name: "Jose" },
-      { id: "8", name: "Paul" },
-      { id: "9", name: "Donald" },
-    ];
+        const gamerCards = countGamerCards(gamersList[0].name, shuffleArrayCards);
 
-    const shuffleArrayCards = createShuffleArrayCards(gamersList);
+        if (gamerCards === 0) {
+          setWin(gamersList[0].name);
+          setIsModalOpen(true);
+          console.log("win", gamersList[0].name);
+        } else {
+          const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[0].name);
+          refTimers.current = { timer1, timer2 };
 
-    const gamersPositions = createGamersPositions(canvas, ctx, gamersList);
+          const action = createNextActionAndArrayCardsForMoves(
+            shuffleArrayCards,
+            gamersList[0].name
+          )?.action;
 
-    const createUserCardsDuringCardsDistribution = createUserCards(
-      canvas,
-      ctx,
-      gamersList,
-      shuffleArrayCards
-    );
+          console.log(gamersList[0].name, action);
 
-    const generator = generateCardsDistribution(0, gamersPositions.length);
+          if (action === "move") {
+            const handleClick = handleUserClick(
+              canvas,
+              ctx,
+              gamersList,
+              shuffleArrayCards,
+              setShuffleArrayCards,
+              setActiveGamer,
+              gamersPositions
+            );
 
-    const cardsDistribution: TCardsDistribution = (xEndPoint: number, yEndPoint: number) => {
-      if (!cardsDistribution.cardsCounter1) {
-        cardsDistribution.cardsCounter1 = 1;
-      }
+            document.addEventListener("click", handleClick);
+          } else if (action === "skip" || action === "reverse") {
+            clearIntervals(refTimers);
 
-      if (!cardsDistribution.cardsCounter2) {
-        cardsDistribution.cardsCounter2 = 1;
-      }
+            const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[0].name);
+            refTimers.current = { timer1, timer2 };
 
-      const point = {
-        x: canvas.width / 2,
-        xMinus40: canvas.width / 2 - 40,
-        y: canvas.height / 2,
-        yMinus60: canvas.height / 2 - 60,
-      };
+            const timer = setTimeout(() => {
+              setActiveGamer(gamersList[1].name);
+              clearTimeout(timer);
+            }, 2000);
+          } else if (action === "takeOneCard") {
+            clearIntervals(refTimers);
 
-      const rate = (point.yMinus60 - 160) / 30;
-      let xSteper = 0;
-      let ySteper = 0;
+            const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[0].name);
+            refTimers.current = { timer1, timer2 };
 
-      function fn() {
-        ctx.clearRect(0, 155, canvas.width, canvas.height - 330);
-        xSteper += ((point.xMinus40 - xEndPoint) / (point.y - 90 - yEndPoint)) * rate;
-        ySteper += 1 * rate;
-        createBackSideCard(ctx, point.xMinus40, point.yMinus60);
-
-        if (yEndPoint < point.y) {
-          createBackSideCard(ctx, point.xMinus40 - xSteper, point.yMinus60 - ySteper);
-
-          if (yEndPoint + ySteper < point.y - 95) {
-            requestAnimationFrame(fn);
-          } else {
-            ctx.clearRect(0, yEndPoint + 30, canvas.width, canvas.height - 330);
-            createBackSideCard(ctx, point.xMinus40, point.yMinus60);
-            const idx = generator.next().value as number;
-
-            if (typeof idx !== "undefined") {
-              cardsDistribution(gamersPositions[idx].cards[0], gamersPositions[idx].cards[1]);
-            }
-
-            if (typeof idx === "undefined") {
-              setCardsAmountForGamer(
-                ctx,
-                gamersPositions[gamersPositions.length - 1].cards[0],
-                gamersPositions[gamersPositions.length - 1].cards[1],
-                cardsDistribution.cardsCounter2.toString()
-              );
-              ctx.clearRect(0, yEndPoint + 30, canvas.width, canvas.height - 330);
-              createBackSideCard(ctx, point.x - 100, point.yMinus60);
-              createUNOButton(ctx, canvas.width / 2 + 140, canvas.height / 2 - 20);
-              createRightDirection(ctx, canvas.width / 2 - 200, canvas.height / 2 - 60);
+            const timer = setTimeout(() => {
+              const copiedShuffleArrayCards = [];
+              let flag = false;
 
               for (let index = 0; index < shuffleArrayCards.length; index++) {
                 if (
+                  shuffleArrayCards[index].owner !== gamersList[0].name &&
+                  shuffleArrayCards[index].owner !== gamersList[1].name &&
                   shuffleArrayCards[index].status === CardStatus.inDeck &&
-                  isFinite(Number(shuffleArrayCards[index].type))
+                  !flag
                 ) {
-                  createDigitCard(
-                    ctx,
-                    point.x + 20,
-                    point.yMinus60,
-                    shuffleArrayCards[index].type,
-                    shuffleArrayCards[index].color as string
-                  );
-                  shuffleArrayCards[index].status = CardStatus.inOutside;
-                  break;
+                  copiedShuffleArrayCards.push({
+                    ...shuffleArrayCards[index],
+                    owner: gamersList[0].name,
+                    status: CardStatus.inHands,
+                  });
+                  flag = true;
+                } else {
+                  copiedShuffleArrayCards.push(shuffleArrayCards[index]);
                 }
               }
-            }
 
-            if (idx === 0) {
+              setShuffleArrayCards(copiedShuffleArrayCards);
+
+              createUserCardsWithCoordinates(
+                canvas as HTMLCanvasElement,
+                ctx as CanvasRenderingContext2D,
+                gamersList[0].name,
+                copiedShuffleArrayCards
+              );
+
+              setActiveGamer(gamersList[1].name);
+
+              clearTimeout(timer);
+            }, 2000);
+          } else if (action === "takeTwoCards") {
+            clearIntervals(refTimers);
+
+            const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[0].name);
+            refTimers.current = { timer1, timer2 };
+
+            const timer = setTimeout(() => {
+              const copiedShuffleArrayCards = [];
+              let flag = 0;
+
+              for (let index = 0; index < shuffleArrayCards.length; index++) {
+                if (
+                  shuffleArrayCards[index].owner !== gamersList[0].name &&
+                  shuffleArrayCards[index].owner !== gamersList[1].name &&
+                  shuffleArrayCards[index].status === CardStatus.inDeck &&
+                  flag !== 2
+                ) {
+                  copiedShuffleArrayCards.push({
+                    ...shuffleArrayCards[index],
+                    owner: gamersList[0].name,
+                    status: CardStatus.inHands,
+                  });
+                  flag++;
+                } else {
+                  copiedShuffleArrayCards.push(shuffleArrayCards[index]);
+                }
+              }
+
+              setShuffleArrayCards(copiedShuffleArrayCards);
+
+              createUserCardsWithCoordinates(
+                canvas as HTMLCanvasElement,
+                ctx as CanvasRenderingContext2D,
+                gamersList[0].name,
+                copiedShuffleArrayCards
+              );
+
+              setActiveGamer(gamersList[1].name);
+
+              clearTimeout(timer);
+            }, 2000);
+          } else if (action === "takeFourCards") {
+            clearIntervals(refTimers);
+
+            const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[0].name);
+            refTimers.current = { timer1, timer2 };
+
+            const timer = setTimeout(() => {
+              const copiedShuffleArrayCards = [];
+              let flag = 0;
+
+              for (let index = 0; index < shuffleArrayCards.length; index++) {
+                if (
+                  shuffleArrayCards[index].owner !== gamersList[0].name &&
+                  shuffleArrayCards[index].owner !== gamersList[1].name &&
+                  shuffleArrayCards[index].status === CardStatus.inDeck &&
+                  flag !== 4
+                ) {
+                  copiedShuffleArrayCards.push({
+                    ...shuffleArrayCards[index],
+                    owner: gamersList[0].name,
+                    status: CardStatus.inHands,
+                  });
+                  flag++;
+                } else {
+                  copiedShuffleArrayCards.push(shuffleArrayCards[index]);
+                }
+              }
+
+              setShuffleArrayCards(copiedShuffleArrayCards);
+
+              createUserCardsWithCoordinates(
+                canvas as HTMLCanvasElement,
+                ctx as CanvasRenderingContext2D,
+                gamersList[0].name,
+                copiedShuffleArrayCards
+              );
+
+              setActiveGamer(gamersList[1].name);
+
+              clearTimeout(timer);
+            }, 2000);
+          }
+        }
+      } else if (activeGamer === gamersList[1].name) {
+        clearIntervals(refTimers);
+
+        const gamerCards = countGamerCards(gamersList[1].name, shuffleArrayCards);
+
+        if (gamerCards === 0) {
+          setWin(gamersList[1].name);
+          setIsModalOpen(true);
+          console.log("win", gamersList[1].name);
+        } else {
+          const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[1].name);
+          refTimers.current = { timer1, timer2 };
+
+          const nextActionAndArrayCardsForMoves = createNextActionAndArrayCardsForMoves(
+            shuffleArrayCards as TShuffleArrayCards,
+            gamersList[1].name
+          );
+          console.log(gamersList[1].name, nextActionAndArrayCardsForMoves?.action);
+
+          const timer = setTimeout(() => {
+            if (nextActionAndArrayCardsForMoves?.action === "move") {
+              const copiedShuffleArrayCards = shuffleArrayCards?.map((item) => {
+                if (item.status === CardStatus.inHeap) {
+                  return { ...item, status: CardStatus.inOutside };
+                } else if (nextActionAndArrayCardsForMoves.cardsForMoves[0].id === item.id) {
+                  return { ...item, status: CardStatus.inHeap };
+                } else {
+                  return item;
+                }
+              });
+
+              setShuffleArrayCards(copiedShuffleArrayCards);
+
+              const countRobotCards = copiedShuffleArrayCards.reduce(
+                (acc, item) =>
+                  item.owner === gamersList[1].name && item.status === CardStatus.inHands
+                    ? (acc += 1)
+                    : acc,
+                0
+              );
+
               setCardsAmountForGamer(
                 ctx,
-                gamersPositions[gamersPositions.length - 1].cards[0],
-                gamersPositions[gamersPositions.length - 1].cards[1],
-                cardsDistribution.cardsCounter2.toString()
+                gamersPositions[1].cards[0],
+                gamersPositions[1].cards[1],
+                countRobotCards.toString()
               );
-            } else {
-              if (idx !== undefined) {
-                setCardsAmountForGamer(
-                  ctx,
-                  gamersPositions[idx - 1].cards[0],
-                  gamersPositions[idx - 1].cards[1],
-                  cardsDistribution.cardsCounter2.toString()
-                );
+
+              createCanvasCenter(
+                canvas as HTMLCanvasElement,
+                ctx as CanvasRenderingContext2D,
+                (gamersPositions as TGamersPositions)[0].cards[1] + 30,
+                copiedShuffleArrayCards,
+                "right"
+              );
+
+              setActiveGamer(gamersList[0].name);
+            } else if (
+              nextActionAndArrayCardsForMoves?.action === "skip" ||
+              nextActionAndArrayCardsForMoves?.action === "reverse"
+            ) {
+              setActiveGamer(gamersList[0].name);
+            } else if (nextActionAndArrayCardsForMoves?.action === "takeOneCard") {
+              const copiedShuffleArrayCards = [];
+              let flag = false;
+
+              for (let index = 0; index < shuffleArrayCards.length; index++) {
+                if (
+                  shuffleArrayCards[index].owner !== gamersList[0].name &&
+                  shuffleArrayCards[index].owner !== gamersList[1].name &&
+                  shuffleArrayCards[index].status === CardStatus.inDeck &&
+                  !flag
+                ) {
+                  copiedShuffleArrayCards.push({
+                    ...shuffleArrayCards[index],
+                    owner: gamersList[1].name,
+                    status: CardStatus.inHands,
+                  });
+                  flag = true;
+                } else {
+                  copiedShuffleArrayCards.push(shuffleArrayCards[index]);
+                }
               }
+
+              setShuffleArrayCards(copiedShuffleArrayCards);
+
+              setActiveGamer(gamersList[0].name);
+
+              const countRobotCards = copiedShuffleArrayCards.reduce(
+                (acc, item) =>
+                  item.owner === gamersList[1].name && item.status === CardStatus.inHands
+                    ? (acc += 1)
+                    : acc,
+                0
+              );
+
+              setCardsAmountForGamer(
+                ctx,
+                gamersPositions[1].cards[0],
+                gamersPositions[1].cards[1],
+                countRobotCards.toString()
+              );
+            } else if (nextActionAndArrayCardsForMoves?.action === "takeTwoCards") {
+              const copiedShuffleArrayCards = [];
+              let flag = 0;
+
+              for (let index = 0; index < shuffleArrayCards.length; index++) {
+                if (
+                  shuffleArrayCards[index].owner !== gamersList[0].name &&
+                  shuffleArrayCards[index].owner !== gamersList[1].name &&
+                  shuffleArrayCards[index].status === CardStatus.inDeck &&
+                  flag !== 2
+                ) {
+                  copiedShuffleArrayCards.push({
+                    ...shuffleArrayCards[index],
+                    owner: gamersList[1].name,
+                    status: CardStatus.inHands,
+                  });
+                  flag++;
+                } else {
+                  copiedShuffleArrayCards.push(shuffleArrayCards[index]);
+                }
+              }
+
+              setShuffleArrayCards(copiedShuffleArrayCards);
+
+              setActiveGamer(gamersList[0].name);
+
+              const countRobotCards = copiedShuffleArrayCards.reduce(
+                (acc, item) =>
+                  item.owner === gamersList[1].name && item.status === CardStatus.inHands
+                    ? (acc += 1)
+                    : acc,
+                0
+              );
+
+              setCardsAmountForGamer(
+                ctx,
+                gamersPositions[1].cards[0],
+                gamersPositions[1].cards[1],
+                countRobotCards.toString()
+              );
+            } else if (nextActionAndArrayCardsForMoves?.action === "takeFourCards") {
+              const copiedShuffleArrayCards = [];
+              let flag = 0;
+
+              for (let index = 0; index < shuffleArrayCards.length; index++) {
+                if (
+                  shuffleArrayCards[index].owner !== gamersList[0].name &&
+                  shuffleArrayCards[index].owner !== gamersList[1].name &&
+                  shuffleArrayCards[index].status === CardStatus.inDeck &&
+                  flag !== 4
+                ) {
+                  copiedShuffleArrayCards.push({
+                    ...shuffleArrayCards[index],
+                    owner: gamersList[1].name,
+                    status: CardStatus.inHands,
+                  });
+                  flag++;
+                } else {
+                  copiedShuffleArrayCards.push(shuffleArrayCards[index]);
+                }
+              }
+
+              setShuffleArrayCards(copiedShuffleArrayCards);
+
+              setActiveGamer(gamersList[0].name);
+
+              const countRobotCards = copiedShuffleArrayCards.reduce(
+                (acc, item) =>
+                  item.owner === gamersList[1].name && item.status === CardStatus.inHands
+                    ? (acc += 1)
+                    : acc,
+                0
+              );
+
+              setCardsAmountForGamer(
+                ctx,
+                gamersPositions[1].cards[0],
+                gamersPositions[1].cards[1],
+                countRobotCards.toString()
+              );
             }
-
-            cardsDistribution.cardsCounter1++;
-
-            if (cardsDistribution.cardsCounter1 === gamersPositions.length) {
-              cardsDistribution.cardsCounter2++;
-              cardsDistribution.cardsCounter1 = 1;
-            }
-          }
-        } else {
-          createBackSideCard(ctx, point.xMinus40 - xSteper, point.yMinus60 + ySteper);
-
-          if (point.y + 180 + ySteper < yEndPoint) {
-            requestAnimationFrame(fn);
-          } else {
-            ctx.clearRect(0, point.y, canvas.width, point.y - 175);
-            createBackSideCard(ctx, point.xMinus40, point.yMinus60);
-            const idx = generator.next().value as number;
-            cardsDistribution(gamersPositions[idx].cards[0], gamersPositions[idx].cards[1]);
-            createUserCardsDuringCardsDistribution();
-          }
+            clearTimeout(timer);
+          }, 2000);
         }
       }
 
-      fn();
-    };
+      if (refFirstGamerMove.current === 0) {
+        const firstGamerMove = defineFirstGamerMove(shuffleArrayCards, gamersList);
+        if (firstGamerMove === gamersList[0].name) {
+          setActiveGamer(gamersList[0].name);
+        } else {
+          setActiveGamer(gamersList[1].name);
+        }
+      }
+      refFirstGamerMove.current++;
+    }
+  }, [shuffleArrayCards, gamersPositions, activeGamer]);
 
-    cardsDistribution(gamersPositions[0].cards[0], gamersPositions[0].cards[1]);
-  }, []);
+  useEffect(() => {
+    if (canvas && ctx) {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
 
-  return <canvas ref={ref} className={styles.canvas} />;
+      if (gameVariant === "solo") {
+        const shuffleArrayCards = createShuffleArrayCards(gamersList);
+
+        const gamersPositions = createGamersPositions(canvas, ctx, gamersList);
+
+        setGamersPositions(gamersPositions);
+
+        const createUserCardsDuringCardsDistribution = createUserCards(
+          canvas,
+          ctx,
+          gamersList,
+          shuffleArrayCards
+        );
+
+        const generator = generateCardsDistribution(0, gamersPositions.length);
+        cardsDistribution(
+          canvas,
+          ctx,
+          generator,
+          gamersPositions,
+          shuffleArrayCards,
+          createUserCardsDuringCardsDistribution,
+          setShuffleArrayCards,
+          gamersPositions[0].cards[0],
+          gamersPositions[0].cards[1]
+        );
+      } else if (gameVariant === "withFriends") {
+        console.log("заглушка");
+      } else {
+        navigate(routes.home.path);
+      }
+    }
+  }, [gameVariant, canvas, ctx]);
+
+  return (
+    <>
+      <Modal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            minWidth: 400,
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Typography id="modal-modal-title" variant="h6" component="h6">
+            Победитель: {win}
+          </Typography>
+        </Box>
+      </Modal>
+      <canvas ref={ref} className={styles.canvas} />
+    </>
+  );
 }
 
 export default memo(Game);

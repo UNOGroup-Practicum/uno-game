@@ -1,5 +1,5 @@
 import { CardType } from "../types/enums";
-import { TShuffleArrayCards } from "../types/typeAliases";
+import { TGamersList, TShuffleArrayCards } from "../types/typeAliases";
 import createDigitCard from "./createDigitCard";
 import createOrderColorCard from "./createOrderColorCard";
 import createReverseStrokeCard from "./createReverseStrokeCard";
@@ -10,7 +10,7 @@ import createTakeTwoCard from "./createTakeTwoCard";
 export default function createUserCards(
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
-  gamersList: { id: string; name: string }[],
+  gamersList: TGamersList,
   shuffleArrayCards: TShuffleArrayCards
 ) {
   const userCards: TShuffleArrayCards = [];
