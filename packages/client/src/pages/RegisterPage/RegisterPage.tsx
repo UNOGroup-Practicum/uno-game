@@ -1,8 +1,10 @@
-import { Button, Container, Link, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Container, Link, Stack, TextField, Typography } from "@mui/material";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
+import { useDispatch, useSelector } from "services/hooks";
+import { authSelect, authSlice, authThunks } from "services/slices/auth-slice";
 import {
   ERROR_MESSAGE,
   InputNames,
@@ -25,6 +27,9 @@ type TFormInput = {
 };
 
 export const RegisterPage = () => {
+  const dispatch = useDispatch();
+  const { error: authError, loading } = useSelector(authSelect);
+  const [authErrorLocal, setAuthErrorLocal] = useState(authError);
   const {
     control,
     handleSubmit,
@@ -42,10 +47,19 @@ export const RegisterPage = () => {
     mode: "onChange",
   });
 
+  useEffect(() => {
+    if (authError) {
+      setAuthErrorLocal(authError);
+      dispatch(authSlice.actions.resetError());
+    }
+  }, [dispatch, authError, setAuthErrorLocal]);
+
   const onSubmit: SubmitHandler<TFormInput> = (data) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { confirm_password, ...result } = data;
-    console.log(result);
+
+    authErrorLocal && setAuthErrorLocal(null);
+    dispatch(authThunks.register(result));
   };
 
   const passwordRef = useRef<HTMLInputElement>();
@@ -190,6 +204,16 @@ export const RegisterPage = () => {
               )}
             />
           </Stack>
+          {loading && (
+            <Box mt={2} textAlign={"center"}>
+              ...Loading
+            </Box>
+          )}
+          {authErrorLocal && (
+            <Box mt={2} textAlign={"center"} color={"error.light"}>
+              {authErrorLocal}
+            </Box>
+          )}
           <Button
             fullWidth={true}
             size="large"
@@ -200,7 +224,7 @@ export const RegisterPage = () => {
               marginTop: "50px",
               marginBottom: "10px",
             }}
-            disabled={!isValid}
+            disabled={!isValid || loading}
           >
             Регистрация
           </Button>
