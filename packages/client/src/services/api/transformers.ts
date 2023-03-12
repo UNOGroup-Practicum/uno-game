@@ -17,3 +17,15 @@ export const transformUser = (data: UserDTO): User => {
 export const transformUsers = (data: UserDTO[]): User[] => {
   return data.map((user) => transformUser(user));
 };
+
+export const transformUserForRequest = (data: User): Omit<UserDTO, "avatar"> => {
+  return {
+    id: data.id,
+    login: data.login,
+    first_name: data.firstName,
+    second_name: data.secondName,
+    display_name: data.displayName,
+    phone: data.phone,
+    email: data.email,
+  };
+};

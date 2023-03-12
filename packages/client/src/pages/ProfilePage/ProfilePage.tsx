@@ -1,23 +1,22 @@
-import { Container, Link, Typography, Button, Stack, TextField, Avatar } from "@mui/material";
-import styles from "./ProfilePage.module.scss";
-import { ROUTES } from "../../constants";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { InputNames, validationTemplate } from "../../utils/validation/validation";
-import React, { useEffect, useState } from "react";
-import { currentUserData } from "../ForumPage/data/data";
-import changeAvatar from "../../../public/change-avatar.png";
+import EditIcon from "@mui/icons-material/Edit";
+import { Avatar, Button, Container, Link, Stack, TextField, Typography } from "@mui/material";
 
-type TFormInput = {
-  email: string;
-  login: string;
-  display_name: string;
-  first_name: string;
-  second_name: string;
-  phone: string;
-};
+import React, { useEffect, useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+
+import { User } from "services/api/types";
+import { authSelect } from "services/slices/auth-slice";
+import { InputNames, validationTemplate } from "utils/validation/validation";
+
+import { ROUTES } from "../../constants";
+import { transformUserForRequest } from "../../services/api/transformers";
+
+import styles from "./ProfilePage.module.scss";
 
 export const ProfilePage: React.FC = () => {
   const [isInputChanged, setIsInputChanged] = useState(false);
+  const { user } = useSelector(authSelect);
   const {
     control,
     handleSubmit,
@@ -25,14 +24,14 @@ export const ProfilePage: React.FC = () => {
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
-      ...currentUserData,
+      ...user,
     },
     mode: "onChange",
   });
 
   useEffect(() => {
-    reset(currentUserData);
-  }, [currentUserData]);
+    user && reset(user);
+  }, [user]);
 
   const onChangeAvatar = (event: React.FormEvent<HTMLInputElement>) => {
     const eventTargetFiles = event.currentTarget.files;
@@ -46,16 +45,18 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
-  const onSubmit: SubmitHandler<TFormInput> = (data) => {
+  const onSubmit: SubmitHandler<User> = (data) => {
     // здесь будет отправка данных
-    console.log(JSON.stringify(data, null, 2));
+    console.log(JSON.stringify(transformUserForRequest(data), null, 2));
   };
-
   return (
     <main className={styles.profile}>
       <Container maxWidth="md">
         <section className={styles.profile__photo}>
-          <Avatar src={currentUserData.avatar} sx={{ width: 100, height: 100 }} />
+          <Avatar
+            src={`${import.meta.env.VITE_API_ENDPOINT}/resources${user?.avatar}`}
+            sx={{ width: 100, height: 100 }}
+          />
           <div className={styles.profile__photo_edit}>
             <input
               className={styles.profile__photo_edit_input}
@@ -65,7 +66,7 @@ export const ProfilePage: React.FC = () => {
               onInput={onChangeAvatar}
               title=""
             />
-            <img src={changeAvatar} alt="photo" className={styles.profile__photo_edit_img} />
+            <EditIcon className={styles.profile__photo_edit_img} />
           </div>
         </section>
 
@@ -114,7 +115,7 @@ export const ProfilePage: React.FC = () => {
               )}
             />
             <Controller
-              name="display_name"
+              name="displayName"
               rules={validationTemplate(InputNames.NAME)}
               control={control}
               render={({ field }) => (
@@ -126,13 +127,13 @@ export const ProfilePage: React.FC = () => {
                   onChange={field.onChange}
                   onInput={() => setIsInputChanged(true)}
                   value={field.value}
-                  error={!!errors.display_name?.message}
-                  helperText={errors.display_name?.message}
+                  error={!!errors.displayName?.message}
+                  helperText={errors.displayName?.message}
                 />
               )}
             />
             <Controller
-              name="first_name"
+              name="firstName"
               rules={validationTemplate(InputNames.NAME)}
               control={control}
               render={({ field }) => (
@@ -144,13 +145,13 @@ export const ProfilePage: React.FC = () => {
                   onChange={field.onChange}
                   onInput={() => setIsInputChanged(true)}
                   value={field.value}
-                  error={!!errors.first_name?.message}
-                  helperText={errors.first_name?.message}
+                  error={!!errors.firstName?.message}
+                  helperText={errors.firstName?.message}
                 />
               )}
             />
             <Controller
-              name="second_name"
+              name="secondName"
               rules={validationTemplate(InputNames.NAME)}
               control={control}
               render={({ field }) => (
@@ -162,8 +163,8 @@ export const ProfilePage: React.FC = () => {
                   onChange={field.onChange}
                   onInput={() => setIsInputChanged(true)}
                   value={field.value}
-                  error={!!errors.second_name?.message}
-                  helperText={errors.second_name?.message}
+                  error={!!errors.secondName?.message}
+                  helperText={errors.secondName?.message}
                 />
               )}
             />
