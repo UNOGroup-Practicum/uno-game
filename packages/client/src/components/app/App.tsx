@@ -1,23 +1,27 @@
 import { useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import GamePage from "../../pages/GamePage";
-import { useDispatch, useSelector } from "../../services/hooks";
-import { authThunks, authSelect } from "../../services/slices/auth-slice";
-import { useTheme } from "../../theme/useTheme";
+
+import { useDispatch, useSelector } from "services/hooks";
+import { authSelect, authThunks } from "services/slices/auth-slice";
+import { Theme } from "theme/ThemeContext";
+import { useTheme } from "theme/useTheme";
+
+import { ForumMessagesListPage } from "pages/ForumPage/ForumMessagesListPage";
+import { ForumThemesListPage } from "pages/ForumPage/ForumThemesListPage";
+import GamePage from "pages/GamePage";
+import GamePreparingPage from "pages/GamePreparingPage";
+import { HomePage } from "pages/HomePage/HomePage";
+import { LiderboardPage } from "pages/LiderboardPage/LiderboardPage";
+import { LoginPage } from "pages/LoginPage/LoginPage";
+import { ProfilePage } from "pages/ProfilePage/ProfilePage";
+import { RegisterPage } from "pages/RegisterPage/RegisterPage";
+
+import { AppFooter } from "components/app-footer/AppFooter";
+import { AppHeader } from "components/app-header/AppHeader";
+import { AuthPagesRoute } from "components/auth-pages-route/AuthPagesRoute";
+import { ProtectedRoute } from "components/protected-route/ProtectedRoute";
+
 import { ROUTES } from "../../constants";
-import { HomePage } from "../../pages/HomePage/HomePage";
-import { LiderboardPage } from "../../pages/LiderboardPage/LiderboardPage";
-import { AppHeader } from "../../components/app-header/AppHeader";
-import { AppFooter } from "../../components/app-footer/AppFooter";
-import { LoginPage } from "../../pages/LoginPage/LoginPage";
-import { RegisterPage } from "../../pages/RegisterPage/RegisterPage";
-import { ProfilePage } from "../../pages/ProfilePage/ProfilePage";
-import { Theme } from "../../theme/ThemeContext";
-import { ForumThemesListPage } from "../../pages/ForumPage/ForumThemesListPage";
-import { ForumMessagesListPage } from "../../pages/ForumPage/ForumMessagesListPage";
-import GamePreparingPage from "../../pages/GamePreparingPage";
-import { ProtectedRoute } from "../protected-route/ProtectedRoute";
-import { AuthPagesRoute } from "../auth-pages-route/AuthPagesRoute";
 
 function App() {
   const dispatch = useDispatch();

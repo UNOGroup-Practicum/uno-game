@@ -1,5 +1,6 @@
 import gamer from "../../../assets/images/gamer.png";
 import { Color, Font } from "../types/enums";
+
 import setCardsAmountForGamer from "./setCardsAmountForGamer";
 
 export default function createGamersPositions(

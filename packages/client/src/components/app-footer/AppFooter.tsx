@@ -1,4 +1,5 @@
-import { Container, Box, Typography, Link } from "@mui/material";
+import { Box, Container, Link, Typography } from "@mui/material";
+
 import { ROUTES } from "../../constants";
 
 export const AppFooter = () => {

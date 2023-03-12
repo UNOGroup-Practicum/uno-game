@@ -1,6 +1,6 @@
-import { LoginRequestData, User, UserDTO } from "./types";
 import { request } from "./apiRequest";
 import { transformUser } from "./transformers";
+import { LoginRequestData, RegisterRequestData, User, UserDTO } from "./types";
 
 export const authAPI = {
   login: (data: LoginRequestData): Promise<"OK"> =>
@@ -13,4 +13,7 @@ export const authAPI = {
   },
 
   logout: (): Promise<"OK"> => request.post<"OK", null>("auth/logout"),
+
+  register: (data: RegisterRequestData): Promise<"OK"> =>
+    request.post<"OK", LoginRequestData>("auth/signup", data),
 };

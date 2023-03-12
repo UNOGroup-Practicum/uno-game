@@ -1,16 +1,18 @@
 import { memo, useEffect, useRef } from "react";
-import styles from "./Game.module.scss";
-import createBackSideCard from "./utils/createBackSideCard";
-import createShuffleArrayCards from "./utils/createShuffleArrayCards";
-import setCardsAmountForGamer from "./utils/setCardsAmountForGamer";
-import createGamersPositions from "./utils/createGamersPositions";
-import generateCardsDistribution from "./utils/generateCardsDistribution";
-import createUserCards from "./utils/createUserCards";
-import { TCardsDistribution } from "./types/typeAliases";
-import createDigitCard from "./utils/createDigitCard";
+
 import { CardStatus } from "./types/enums";
-import createUNOButton from "./utils/createUNOButton";
+import { TCardsDistribution } from "./types/typeAliases";
+import createBackSideCard from "./utils/createBackSideCard";
+import createDigitCard from "./utils/createDigitCard";
+import createGamersPositions from "./utils/createGamersPositions";
 import createRightDirection from "./utils/createRightDirection";
+import createShuffleArrayCards from "./utils/createShuffleArrayCards";
+import createUNOButton from "./utils/createUNOButton";
+import createUserCards from "./utils/createUserCards";
+import generateCardsDistribution from "./utils/generateCardsDistribution";
+import setCardsAmountForGamer from "./utils/setCardsAmountForGamer";
+
+import styles from "./Game.module.scss";
 
 function Game() {
   const ref = useRef<HTMLCanvasElement>(null);

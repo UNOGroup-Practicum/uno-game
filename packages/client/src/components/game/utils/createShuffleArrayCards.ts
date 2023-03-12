@@ -1,4 +1,4 @@
-import { Color, CardType, CardStatus } from "../types/enums";
+import { CardStatus, CardType, Color } from "../types/enums";
 import { TShuffleArrayCards } from "../types/typeAliases";
 
 export default function createShuffleArrayCards(gamersList: { id: string; name: string }[]) {

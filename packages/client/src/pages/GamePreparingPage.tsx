@@ -1,4 +1,4 @@
-import GamePreparing from "../components/game-preparing/GamePreparing";
+import GamePreparing from "components/game-preparing/GamePreparing";
 
 function GamePreparingPage() {
   return <GamePreparing />;

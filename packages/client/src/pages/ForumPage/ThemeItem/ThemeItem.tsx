@@ -1,10 +1,12 @@
-import styles from "./ThemeItem.module.scss";
 import React from "react";
-import { timeOptions } from "../helpers/timeOptions";
 import { NavLink } from "react-router-dom";
-import { ThemeType } from "../types/types";
-import { ending } from "../helpers/ending";
+
 import { ROUTES } from "../../../constants";
+import { ending } from "../helpers/ending";
+import { timeOptions } from "../helpers/timeOptions";
+import { ThemeType } from "../types/types";
+
+import styles from "./ThemeItem.module.scss";
 
 type PropsType = ThemeType;
 
