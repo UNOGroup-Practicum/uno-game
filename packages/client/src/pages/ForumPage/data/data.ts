@@ -5,7 +5,7 @@ export const forumData: ThemeType[] = [
     themeId: 1,
     themeCreatorUser: {
       id: 1,
-      displayName: "Евгений",
+      display_name: "Евгений",
       avatar:
         "https://banner2.cleanpng.com/20180717/cz/kisspng-avatar-youtube-person-kahoot-a-roommate-who-plays-with-a-cell-phone-5b4d74010dd214.7783760115318026250566.jpg",
     },
@@ -16,7 +16,7 @@ export const forumData: ThemeType[] = [
         messageId: 1,
         messageCreatorUser: {
           id: 1,
-          displayName: "Евгений",
+          display_name: "Евгений",
           avatar:
             "https://banner2.cleanpng.com/20180717/cz/kisspng-avatar-youtube-person-kahoot-a-roommate-who-plays-with-a-cell-phone-5b4d74010dd214.7783760115318026250566.jpg",
         },
@@ -28,7 +28,7 @@ export const forumData: ThemeType[] = [
         messageId: 2,
         messageCreatorUser: {
           id: 2,
-          displayName: "Пётр",
+          display_name: "Пётр",
           avatar:
             "https://cdn2.vectorstock.com/i/1000x1000/95/11/man-with-glasses-avatar-simple-icon-vector-6759511.jpg",
         },
@@ -42,7 +42,7 @@ export const forumData: ThemeType[] = [
     themeId: 2,
     themeCreatorUser: {
       id: 2,
-      displayName: "Пётр",
+      display_name: "Пётр",
       avatar:
         "https://cdn2.vectorstock.com/i/1000x1000/95/11/man-with-glasses-avatar-simple-icon-vector-6759511.jpg",
     },
@@ -51,9 +51,10 @@ export const forumData: ThemeType[] = [
     themeMessages: [
       {
         messageId: 1,
+        // TODO исправить типизацию
         messageCreatorUser: {
           id: 1,
-          displayName: "Евгений",
+          display_name: "Евгений",
           avatar:
             "https://banner2.cleanpng.com/20180717/cz/kisspng-avatar-youtube-person-kahoot-a-roommate-who-plays-with-a-cell-phone-5b4d74010dd214.7783760115318026250566.jpg",
         },
@@ -65,7 +66,7 @@ export const forumData: ThemeType[] = [
         messageId: 2,
         messageCreatorUser: {
           id: 2,
-          displayName: "Пётр",
+          display_name: "Пётр",
           avatar:
             "https://cdn2.vectorstock.com/i/1000x1000/95/11/man-with-glasses-avatar-simple-icon-vector-6759511.jpg",
         },
@@ -77,7 +78,7 @@ export const forumData: ThemeType[] = [
         messageId: 3,
         messageCreatorUser: {
           id: 1,
-          displayName: "Евгений",
+          display_name: "Евгений",
           avatar:
             "https://banner2.cleanpng.com/20180717/cz/kisspng-avatar-youtube-person-kahoot-a-roommate-who-plays-with-a-cell-phone-5b4d74010dd214.7783760115318026250566.jpg",
         },
@@ -91,12 +92,12 @@ export const forumData: ThemeType[] = [
 
 export const currentUserData: UserType = {
   id: 1,
-  displayName: "Евгений",
+  display_name: "Евгений",
   avatar:
     "https://banner2.cleanpng.com/20180717/cz/kisspng-avatar-youtube-person-kahoot-a-roommate-who-plays-with-a-cell-phone-5b4d74010dd214.7783760115318026250566.jpg",
   email: "evgeniy@yandex.ru",
-  login: "Евгений",
-  firstName: "Евгений",
-  secondName: "Абашин",
+  login: "Evgeniy",
+  first_name: "Евгений",
+  second_name: "Абашин",
   phone: "+79998887766",
 };

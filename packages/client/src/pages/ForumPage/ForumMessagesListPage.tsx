@@ -40,7 +40,7 @@ export const ForumMessagesListPage: React.FC = () => {
           <div className={stylesMessageItem.MessageItem__user}>
             <Avatar alt="Avatar" src={themeData.themeCreatorUser.avatar} />
             <p className={stylesMessageItem.MessageItem__user_username}>
-              {themeData.themeCreatorUser.displayName}
+              {themeData.themeCreatorUser.display_name}
             </p>
           </div>
           {themeData.themeCreatorUser.id === currentUserData.id && (

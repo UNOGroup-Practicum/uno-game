@@ -1,12 +1,12 @@
 export type UserType = {
   id: number;
-  login?: string;
-  firstName?: string;
-  secondName?: string;
-  displayName: string;
+  login: string;
+  first_name: string;
+  second_name: string;
+  display_name: string;
   avatar: string;
-  phone?: string;
-  email?: string;
+  phone: string;
+  email: string;
 };
 export type MessageType = {
   messageId: number;

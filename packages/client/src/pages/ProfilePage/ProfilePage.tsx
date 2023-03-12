@@ -1,39 +1,38 @@
-import { Container, Link, Typography, Button, Stack, TextField, Box, Avatar } from "@mui/material";
+import { Container, Link, Typography, Button, Stack, TextField, Avatar } from "@mui/material";
 import styles from "./ProfilePage.module.scss";
 import { ROUTES } from "../../constants";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { useDispatch, useSelector } from "../../services/hooks";
-import {
-  InputNames,
-  REQUIRED_MESSAGE,
-  validationTemplate,
-} from "../../utils/validation/validation";
-import { authSelect, authThunks } from "../../services/slices/auth-slice";
-import React from "react";
+import { InputNames, validationTemplate } from "../../utils/validation/validation";
+import React, { useEffect, useState } from "react";
 import { currentUserData } from "../ForumPage/data/data";
 import changeAvatar from "../../../public/change-avatar.png";
 
 type TFormInput = {
   email: string;
   login: string;
-  password: string;
+  display_name: string;
+  first_name: string;
+  second_name: string;
+  phone: string;
 };
 
 export const ProfilePage: React.FC = () => {
-  const dispatch = useDispatch();
-  const { loading } = useSelector(authSelect);
+  const [isInputChanged, setIsInputChanged] = useState(false);
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
-      email: "",
-      login: "",
-      password: "",
+      ...currentUserData,
     },
     mode: "onChange",
   });
+
+  useEffect(() => {
+    reset(currentUserData);
+  }, [currentUserData]);
 
   const onChangeAvatar = (event: React.FormEvent<HTMLInputElement>) => {
     const eventTargetFiles = event.currentTarget.files;
@@ -42,19 +41,20 @@ export const ProfilePage: React.FC = () => {
       const formData = new FormData();
       formData.append("avatar", newAvatar);
 
-      // здесь будет отправка formData на сервер
+      // здесь будет отправка formData
       console.log(newAvatar);
     }
   };
 
   const onSubmit: SubmitHandler<TFormInput> = (data) => {
-    dispatch(authThunks.login(data));
+    // здесь будет отправка данных
+    console.log(JSON.stringify(data, null, 2));
   };
 
   return (
-    <div className={styles.profile}>
+    <main className={styles.profile}>
       <Container maxWidth="md">
-        <div className={styles.profile__photo}>
+        <section className={styles.profile__photo}>
           <Avatar src={currentUserData.avatar} sx={{ width: 100, height: 100 }} />
           <div className={styles.profile__photo_edit}>
             <input
@@ -67,25 +67,28 @@ export const ProfilePage: React.FC = () => {
             />
             <img src={changeAvatar} alt="photo" className={styles.profile__photo_edit_img} />
           </div>
-        </div>
+        </section>
 
         <form
-          name="login-form"
-          className={styles.profile__form_auth}
+          name="profile-form"
+          className={styles.profile__form}
           onSubmit={handleSubmit(onSubmit)}
+          noValidate
         >
           <Stack spacing={3}>
             <Controller
-              control={control}
               name="email"
               rules={validationTemplate(InputNames.EMAIL)}
+              control={control}
               render={({ field }) => (
                 <TextField
-                  variant="filled"
-                  label="Email"
+                  label="Почта"
                   type="email"
                   id="email"
+                  variant="standard"
+                  InputLabelProps={{ shrink: false }}
                   onChange={field.onChange}
+                  onInput={() => setIsInputChanged(true)}
                   value={field.value}
                   error={!!errors.email?.message}
                   helperText={errors.email?.message}
@@ -93,16 +96,17 @@ export const ProfilePage: React.FC = () => {
               )}
             />
             <Controller
-              control={control}
               name="login"
               rules={validationTemplate(InputNames.LOGIN)}
+              control={control}
               render={({ field }) => (
                 <TextField
-                  variant="filled"
                   label="Логин"
-                  type="text"
                   id="login"
+                  variant="standard"
+                  InputLabelProps={{ shrink: false }}
                   onChange={field.onChange}
+                  onInput={() => setIsInputChanged(true)}
                   value={field.value}
                   error={!!errors.login?.message}
                   helperText={errors.login?.message}
@@ -110,30 +114,80 @@ export const ProfilePage: React.FC = () => {
               )}
             />
             <Controller
+              name="display_name"
+              rules={validationTemplate(InputNames.NAME)}
               control={control}
-              name="password"
-              rules={{
-                required: REQUIRED_MESSAGE,
-              }}
               render={({ field }) => (
                 <TextField
-                  variant="filled"
-                  label="Пароль"
-                  type="password"
-                  id="password"
+                  label="Отображаемое имя"
+                  id="display_name"
+                  variant="standard"
+                  InputLabelProps={{ shrink: false }}
                   onChange={field.onChange}
+                  onInput={() => setIsInputChanged(true)}
                   value={field.value}
-                  error={!!errors.password?.message}
-                  helperText={errors.password?.message}
+                  error={!!errors.display_name?.message}
+                  helperText={errors.display_name?.message}
+                />
+              )}
+            />
+            <Controller
+              name="first_name"
+              rules={validationTemplate(InputNames.NAME)}
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label="Имя"
+                  id="first_name"
+                  variant="standard"
+                  InputLabelProps={{ shrink: false }}
+                  onChange={field.onChange}
+                  onInput={() => setIsInputChanged(true)}
+                  value={field.value}
+                  error={!!errors.first_name?.message}
+                  helperText={errors.first_name?.message}
+                />
+              )}
+            />
+            <Controller
+              name="second_name"
+              rules={validationTemplate(InputNames.NAME)}
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  variant="standard"
+                  label="Фамилия"
+                  id="second_name"
+                  InputLabelProps={{ shrink: false }}
+                  onChange={field.onChange}
+                  onInput={() => setIsInputChanged(true)}
+                  value={field.value}
+                  error={!!errors.second_name?.message}
+                  helperText={errors.second_name?.message}
+                />
+              )}
+            />
+            <Controller
+              name="phone"
+              rules={validationTemplate(InputNames.PHONE)}
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  type="tel"
+                  label="Телефон"
+                  id="phone"
+                  variant="standard"
+                  InputLabelProps={{ shrink: false }}
+                  onChange={field.onChange}
+                  onInput={() => setIsInputChanged(true)}
+                  value={field.value}
+                  error={!!errors.phone?.message}
+                  helperText={errors.phone?.message}
                 />
               )}
             />
           </Stack>
-          {loading && (
-            <Box mt={2} textAlign={"center"}>
-              ...Загрузка
-            </Box>
-          )}
+
           <Button
             fullWidth={true}
             size="large"
@@ -141,20 +195,21 @@ export const ProfilePage: React.FC = () => {
             variant="contained"
             color="warning"
             sx={{
-              marginTop: "100px",
+              marginTop: "50px",
               marginBottom: "10px",
             }}
-            disabled={!isValid}
+            disabled={!(isValid && isInputChanged)}
           >
-            Войти
+            Сохранить
           </Button>
         </form>
-        <Link href={ROUTES.signUp.path} underline="none">
+
+        <Link href={ROUTES.profile.path} underline="none">
           <Typography align="center" fontSize="16px" color="text.disabled" fontWeight="bold">
-            Нет аккаунта?
+            Сменить пароль
           </Typography>
         </Link>
       </Container>
-    </div>
+    </main>
   );
 };
