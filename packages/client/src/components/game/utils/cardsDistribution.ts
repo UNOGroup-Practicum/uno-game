@@ -13,6 +13,7 @@ const cardsDistribution: TCardsDistribution = (
   shuffleArrayCards,
   createUserCardsDuringCardsDistribution,
   setShuffleArrayCards,
+  setIsButtonExitDisplayed,
   xEndPoint,
   yEndPoint
 ) => {
@@ -60,6 +61,7 @@ const cardsDistribution: TCardsDistribution = (
             shuffleArrayCards,
             createUserCardsDuringCardsDistribution,
             setShuffleArrayCards,
+            setIsButtonExitDisplayed,
             gamersPositions[idx].cards[0],
             gamersPositions[idx].cards[1]
           );
@@ -94,6 +96,7 @@ const cardsDistribution: TCardsDistribution = (
             }
           }
           setShuffleArrayCards(shuffleArrayCards);
+          setIsButtonExitDisplayed(true);
           delete cardsDistribution.cardsCounter1;
           delete cardsDistribution.cardsCounter2;
         }
@@ -140,6 +143,7 @@ const cardsDistribution: TCardsDistribution = (
           shuffleArrayCards,
           createUserCardsDuringCardsDistribution,
           setShuffleArrayCards,
+          setIsButtonExitDisplayed,
           gamersPositions[idx].cards[0],
           gamersPositions[idx].cards[1]
         );

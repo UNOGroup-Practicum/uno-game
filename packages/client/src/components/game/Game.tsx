@@ -1,4 +1,5 @@
-import { Box, Modal, Typography } from "@mui/material";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { Box, Button, Modal, Typography } from "@mui/material";
 
 import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -44,6 +45,7 @@ function Game() {
   const [activeGamer, setActiveGamer] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<true | false>(false);
   const [win, setWin] = useState<string | null>(null);
+  const [isButtonExitDisplayed, setIsButtonExitDisplayed] = useState<true | false>(false);
 
   useLayoutEffect(() => {
     const canvas = ref.current as HTMLCanvasElement;
@@ -469,6 +471,7 @@ function Game() {
           shuffleArrayCards,
           createUserCardsDuringCardsDistribution,
           setShuffleArrayCards,
+          setIsButtonExitDisplayed,
           gamersPositions[0].cards[0],
           gamersPositions[0].cards[1]
         );
@@ -482,6 +485,15 @@ function Game() {
 
   return (
     <>
+      {isButtonExitDisplayed && (
+        <Button
+          variant="contained"
+          sx={{ position: "absolute", top: "10px", left: "10px", zIndex: "1" }}
+          onClick={() => navigate(ROUTES.gamePreparing.path)}
+        >
+          <LogoutIcon sx={{ transform: "rotate(180deg)" }} />
+        </Button>
+      )}
       <Modal
         open={isModalOpen}
         onClose={() => {
