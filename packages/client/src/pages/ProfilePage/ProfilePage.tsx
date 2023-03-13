@@ -5,18 +5,20 @@ import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
-import { User } from "services/api/types";
+import { transformUserForRequest } from "services/api/transformers";
+import { User, UserDTO } from "services/api/types";
 import { authSelect } from "services/slices/auth-slice";
 import { InputNames, validationTemplate } from "utils/validation/validation";
 
 import { ROUTES } from "../../constants";
-import { transformUserForRequest } from "../../services/api/transformers";
 
 import styles from "./ProfilePage.module.scss";
 
 export const ProfilePage: React.FC = () => {
   const [isInputChanged, setIsInputChanged] = useState(false);
   const { user } = useSelector(authSelect);
+  const transformedUser = transformUserForRequest(user as User);
+
   const {
     control,
     handleSubmit,
@@ -24,13 +26,13 @@ export const ProfilePage: React.FC = () => {
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
-      ...user,
+      ...(transformedUser as UserDTO),
     },
     mode: "onChange",
   });
 
   useEffect(() => {
-    user && reset(user);
+    reset(transformedUser);
   }, [user]);
 
   const onChangeAvatar = (event: React.FormEvent<HTMLInputElement>) => {
@@ -45,9 +47,9 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
-  const onSubmit: SubmitHandler<User> = (data) => {
+  const onSubmit: SubmitHandler<UserDTO> = (data) => {
     // здесь будет отправка данных
-    console.log(JSON.stringify(transformUserForRequest(data), null, 2));
+    console.log(JSON.stringify(data, null, 2));
   };
   return (
     <main className={styles.profile}>
@@ -115,7 +117,7 @@ export const ProfilePage: React.FC = () => {
               )}
             />
             <Controller
-              name="displayName"
+              name="display_name"
               rules={validationTemplate(InputNames.NAME)}
               control={control}
               render={({ field }) => (
@@ -127,13 +129,13 @@ export const ProfilePage: React.FC = () => {
                   onChange={field.onChange}
                   onInput={() => setIsInputChanged(true)}
                   value={field.value}
-                  error={!!errors.displayName?.message}
-                  helperText={errors.displayName?.message}
+                  error={!!errors.display_name?.message}
+                  helperText={errors.display_name?.message}
                 />
               )}
             />
             <Controller
-              name="firstName"
+              name="first_name"
               rules={validationTemplate(InputNames.NAME)}
               control={control}
               render={({ field }) => (
@@ -145,13 +147,13 @@ export const ProfilePage: React.FC = () => {
                   onChange={field.onChange}
                   onInput={() => setIsInputChanged(true)}
                   value={field.value}
-                  error={!!errors.firstName?.message}
-                  helperText={errors.firstName?.message}
+                  error={!!errors.first_name?.message}
+                  helperText={errors.first_name?.message}
                 />
               )}
             />
             <Controller
-              name="secondName"
+              name="second_name"
               rules={validationTemplate(InputNames.NAME)}
               control={control}
               render={({ field }) => (
@@ -163,8 +165,8 @@ export const ProfilePage: React.FC = () => {
                   onChange={field.onChange}
                   onInput={() => setIsInputChanged(true)}
                   value={field.value}
-                  error={!!errors.secondName?.message}
-                  helperText={errors.secondName?.message}
+                  error={!!errors.second_name?.message}
+                  helperText={errors.second_name?.message}
                 />
               )}
             />
