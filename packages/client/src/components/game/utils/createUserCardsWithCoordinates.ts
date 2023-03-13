@@ -1,5 +1,6 @@
 import { CardStatus, CardType } from "../types/enums";
 import { TShuffleArrayCards } from "../types/typeAliases";
+
 import createDigitCard from "./createDigitCard";
 import createOrderColorCard from "./createOrderColorCard";
 import createReverseStrokeCard from "./createReverseStrokeCard";

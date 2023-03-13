@@ -1,5 +1,6 @@
 import { CardStatus } from "../types/enums";
 import { TGamersList, TGamersPositions, TShuffleArrayCards } from "../types/typeAliases";
+
 import createCanvasCenter from "./createCanvasCenter";
 import createGamerName from "./createGamerName";
 import createNextActionAndArrayCardsForMoves from "./createNextActionAndArrayCardsForMoves";

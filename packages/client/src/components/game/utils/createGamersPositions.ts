@@ -1,5 +1,6 @@
 import gamer from "../../../assets/images/gamer.png";
 import { TGamersList, TGamersPositions } from "../types/typeAliases";
+
 import createGamerName from "./createGamerName";
 import setCardsAmountForGamer from "./setCardsAmountForGamer";
 

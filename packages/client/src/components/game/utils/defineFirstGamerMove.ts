@@ -1,4 +1,5 @@
 import { TGamersList, TShuffleArrayCards } from "../types/typeAliases";
+
 import createNextActionAndArrayCardsForMoves from "./createNextActionAndArrayCardsForMoves";
 
 export default function defineFirstGamerMove(

@@ -1,4 +1,5 @@
 import { TGamersPositions } from "../types/typeAliases";
+
 import createGamerName from "./createGamerName";
 
 export default function signalizeName(

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "services/hooks";
 import { gameSelect, gameSlice } from "services/slices/gameSlice";
 
-import { routes } from "../../constants";
+import { ROUTES } from "../../constants";
 
 import { CardStatus } from "./types/enums";
 import { TGamersList, TGamersPositions, TShuffleArrayCards } from "./types/typeAliases";
@@ -473,7 +473,7 @@ function Game() {
       } else if (gameVariant === "withFriends") {
         console.log("заглушка");
       } else {
-        navigate(routes.home.path);
+        navigate(ROUTES.home.path);
       }
     }
   }, [gameVariant, canvas, ctx]);
