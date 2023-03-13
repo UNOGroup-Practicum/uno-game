@@ -4,6 +4,7 @@ import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from "services/hooks";
+import { authSelect } from "services/slices/auth-slice";
 import { gameSelect, gameSlice } from "services/slices/gameSlice";
 
 import { ROUTES } from "../../constants";
@@ -32,6 +33,7 @@ function Game() {
   const refTimers = useRef<{ timer1: NodeJS.Timer; timer2: NodeJS.Timer }>();
   const ref = useRef<HTMLCanvasElement>(null);
   const { gameVariant } = useSelector(gameSelect);
+  const { user } = useSelector(authSelect);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
@@ -51,7 +53,7 @@ function Game() {
     setGamersList([
       {
         id: "0",
-        name: "User",
+        name: user?.firstName || "User",
       },
       {
         id: "0",
