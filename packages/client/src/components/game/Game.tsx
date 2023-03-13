@@ -1,26 +1,31 @@
-import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
-import styles from "./Game.module.scss";
-import createShuffleArrayCards from "./utils/createShuffleArrayCards";
-import createGamersPositions from "./utils/createGamersPositions";
-import generateCardsDistribution from "./utils/generateCardsDistribution";
-import createUserCards from "./utils/createUserCards";
-import { useSelector } from "services/hooks";
-import { gameSelect } from "services/slices/gameSlice";
-import { useNavigate } from "react-router-dom";
-import { routes } from "../../constants";
-import cardsDistribution from "./utils/cardsDistribution";
-import { TGamersList, TGamersPositions, TShuffleArrayCards } from "./types/typeAliases";
-import defineFirstGamerMove from "./utils/defineFirstGamerMove";
-import createUserCardsWithCoordinates from "./utils/createUserCardsWithCoordinates";
-import { CardStatus } from "./types/enums";
-import signalizeName from "./utils/signalizeName";
-import createNextActionAndArrayCardsForMoves from "./utils/createNextActionAndArrayCardsForMoves";
-import createCanvasCenter from "./utils/createCanvasCenter";
-import setCardsAmountForGamer from "./utils/setCardsAmountForGamer";
-import handleUserClick from "./utils/handleUserClick";
-import countGamerCards from "./utils/countGamerCards";
-import clearIntervals from "./utils/clearIntervals";
 import { Box, Modal, Typography } from "@mui/material";
+
+import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { useDispatch, useSelector } from "services/hooks";
+import { gameSelect, gameSlice } from "services/slices/gameSlice";
+
+import { routes } from "../../constants";
+
+import { CardStatus } from "./types/enums";
+import { TGamersList, TGamersPositions, TShuffleArrayCards } from "./types/typeAliases";
+import cardsDistribution from "./utils/cardsDistribution";
+import clearIntervals from "./utils/clearIntervals";
+import countGamerCards from "./utils/countGamerCards";
+import createCanvasCenter from "./utils/createCanvasCenter";
+import createGamersPositions from "./utils/createGamersPositions";
+import createNextActionAndArrayCardsForMoves from "./utils/createNextActionAndArrayCardsForMoves";
+import createShuffleArrayCards from "./utils/createShuffleArrayCards";
+import createUserCards from "./utils/createUserCards";
+import createUserCardsWithCoordinates from "./utils/createUserCardsWithCoordinates";
+import defineFirstGamerMove from "./utils/defineFirstGamerMove";
+import generateCardsDistribution from "./utils/generateCardsDistribution";
+import handleUserClick from "./utils/handleUserClick";
+import setCardsAmountForGamer from "./utils/setCardsAmountForGamer";
+import signalizeName from "./utils/signalizeName";
+
+import styles from "./Game.module.scss";
 
 function Game() {
   const refFirstGamerMove = useRef(0);
@@ -28,6 +33,7 @@ function Game() {
   const ref = useRef<HTMLCanvasElement>(null);
   const { gameVariant } = useSelector(gameSelect);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
   const [gamersList, setGamersList] = useState<TGamersList>([]);
@@ -59,12 +65,12 @@ function Game() {
       if (activeGamer === gamersList[0].name) {
         clearIntervals(refTimers);
 
-        const gamerCards = countGamerCards(gamersList[0].name, shuffleArrayCards);
+        const gamerCards = countGamerCards(gamersList[1].name, shuffleArrayCards);
 
         if (gamerCards === 0) {
-          setWin(gamersList[0].name);
+          setWin(gamersList[1].name);
           setIsModalOpen(true);
-          console.log("win", gamersList[0].name);
+          console.log("win", gamersList[1].name);
         } else {
           const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[0].name);
           refTimers.current = { timer1, timer2 };
@@ -223,12 +229,12 @@ function Game() {
       } else if (activeGamer === gamersList[1].name) {
         clearIntervals(refTimers);
 
-        const gamerCards = countGamerCards(gamersList[1].name, shuffleArrayCards);
+        const gamerCards = countGamerCards(gamersList[0].name, shuffleArrayCards);
 
         if (gamerCards === 0) {
-          setWin(gamersList[1].name);
+          setWin(gamersList[0].name);
           setIsModalOpen(true);
-          console.log("win", gamersList[1].name);
+          console.log("win", gamersList[0].name);
         } else {
           const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[1].name);
           refTimers.current = { timer1, timer2 };
@@ -476,7 +482,10 @@ function Game() {
     <>
       <Modal
         open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          dispatch(gameSlice.actions.setGameVariant(null));
+        }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >

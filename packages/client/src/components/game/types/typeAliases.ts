@@ -40,8 +40,8 @@ export type TCardsDistribution = {
     xEndPoint: number,
     yEndPoint: number
   ): void;
-  cardsCounter1: number;
-  cardsCounter2: number;
+  cardsCounter1: number | undefined;
+  cardsCounter2: number | undefined;
 };
 
 export type TGamersList = { id: string; name: string }[];

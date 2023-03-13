@@ -1,8 +1,8 @@
 import { CardStatus } from "../types/enums";
 import { TCardsDistribution } from "../types/typeAliases";
+
 import createBackSideCard from "./createBackSideCard";
 import createDigitCard from "./createDigitCard";
-
 import setCardsAmountForGamer from "./setCardsAmountForGamer";
 
 const cardsDistribution: TCardsDistribution = (
@@ -70,7 +70,7 @@ const cardsDistribution: TCardsDistribution = (
             ctx,
             gamersPositions[gamersPositions.length - 1].cards[0],
             gamersPositions[gamersPositions.length - 1].cards[1],
-            cardsDistribution.cardsCounter2.toString()
+            (cardsDistribution.cardsCounter2 as number).toString()
           );
           ctx.clearRect(0, yEndPoint + 30, canvas.width, canvas.height - 330);
           createBackSideCard(ctx, point.x - 100, point.yMinus60);
@@ -94,6 +94,8 @@ const cardsDistribution: TCardsDistribution = (
             }
           }
           setShuffleArrayCards(shuffleArrayCards);
+          delete cardsDistribution.cardsCounter1;
+          delete cardsDistribution.cardsCounter2;
         }
 
         if (idx === 0) {
@@ -101,7 +103,7 @@ const cardsDistribution: TCardsDistribution = (
             ctx,
             gamersPositions[gamersPositions.length - 1].cards[0],
             gamersPositions[gamersPositions.length - 1].cards[1],
-            cardsDistribution.cardsCounter2.toString()
+            (cardsDistribution.cardsCounter2 as number).toString()
           );
         } else {
           if (idx !== undefined) {
@@ -109,15 +111,15 @@ const cardsDistribution: TCardsDistribution = (
               ctx,
               gamersPositions[idx - 1].cards[0],
               gamersPositions[idx - 1].cards[1],
-              cardsDistribution.cardsCounter2.toString()
+              (cardsDistribution.cardsCounter2 as number).toString()
             );
           }
         }
 
-        cardsDistribution.cardsCounter1++;
+        (cardsDistribution.cardsCounter1 as number)++;
 
         if (cardsDistribution.cardsCounter1 === gamersPositions.length) {
-          cardsDistribution.cardsCounter2++;
+          (cardsDistribution.cardsCounter2 as number)++;
           cardsDistribution.cardsCounter1 = 1;
         }
       }
