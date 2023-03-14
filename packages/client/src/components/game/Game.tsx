@@ -32,6 +32,7 @@ import styles from "./Game.module.scss";
 function Game() {
   const refFirstGamerMove = useRef(0);
   const refTimers = useRef<{ timer1: NodeJS.Timer; timer2: NodeJS.Timer }>();
+  const refCountTakeOneCard = useRef(0);
   const ref = useRef<HTMLCanvasElement>(null);
   const { gameVariant } = useSelector(gameSelect);
   const { user } = useSelector(authSelect);
@@ -98,60 +99,55 @@ function Game() {
             );
 
             document.addEventListener("click", handleClick);
-          } else if (action === "skip" || action === "reverse") {
-            clearIntervals(refTimers);
 
-            const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[0].name);
-            refTimers.current = { timer1, timer2 };
-
+            refCountTakeOneCard.current = 0;
+          } else if (action === "skipTurn" || action === "reverseStroke") {
             setActiveGamer(gamersList[1].name);
           } else if (action === "takeOneCard") {
-            clearIntervals(refTimers);
+            if (refCountTakeOneCard.current === 0) {
+              const timer = setTimeout(() => {
+                const copiedShuffleArrayCards = [];
+                let flag = false;
 
-            const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[0].name);
-            refTimers.current = { timer1, timer2 };
-
-            const timer = setTimeout(() => {
-              const copiedShuffleArrayCards = [];
-              let flag = false;
-
-              for (let index = 0; index < shuffleArrayCards.length; index++) {
-                if (
-                  shuffleArrayCards[index].owner !== gamersList[0].name &&
-                  shuffleArrayCards[index].owner !== gamersList[1].name &&
-                  shuffleArrayCards[index].status === CardStatus.inDeck &&
-                  !flag
-                ) {
-                  copiedShuffleArrayCards.push({
-                    ...shuffleArrayCards[index],
-                    owner: gamersList[0].name,
-                    status: CardStatus.inHands,
-                  });
-                  flag = true;
-                } else {
-                  copiedShuffleArrayCards.push(shuffleArrayCards[index]);
+                for (let index = 0; index < shuffleArrayCards.length; index++) {
+                  if (
+                    shuffleArrayCards[index].owner !== gamersList[0].name &&
+                    shuffleArrayCards[index].owner !== gamersList[1].name &&
+                    shuffleArrayCards[index].status === CardStatus.inDeck &&
+                    !flag
+                  ) {
+                    copiedShuffleArrayCards.push({
+                      ...shuffleArrayCards[index],
+                      owner: gamersList[0].name,
+                      status: CardStatus.inHands,
+                    });
+                    flag = true;
+                  } else {
+                    copiedShuffleArrayCards.push(shuffleArrayCards[index]);
+                  }
                 }
-              }
 
-              setShuffleArrayCards(copiedShuffleArrayCards);
+                setShuffleArrayCards(copiedShuffleArrayCards);
 
-              createUserCardsWithCoordinates(
-                canvas as HTMLCanvasElement,
-                ctx as CanvasRenderingContext2D,
-                gamersList[0].name,
-                copiedShuffleArrayCards
-              );
+                createUserCardsWithCoordinates(
+                  canvas as HTMLCanvasElement,
+                  ctx as CanvasRenderingContext2D,
+                  gamersList[0].name,
+                  copiedShuffleArrayCards
+                );
 
+                setActiveGamer(gamersList[0].name);
+
+                refCountTakeOneCard.current++;
+
+                clearTimeout(timer);
+              }, 2000);
+            } else {
               setActiveGamer(gamersList[1].name);
 
-              clearTimeout(timer);
-            }, 2000);
+              refCountTakeOneCard.current = 0;
+            }
           } else if (action === "takeTwoCards") {
-            clearIntervals(refTimers);
-
-            const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[0].name);
-            refTimers.current = { timer1, timer2 };
-
             const timer = setTimeout(() => {
               const copiedShuffleArrayCards = [];
               let flag = 0;
@@ -188,11 +184,6 @@ function Game() {
               clearTimeout(timer);
             }, 2000);
           } else if (action === "takeFourCards") {
-            clearIntervals(refTimers);
-
-            const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[0].name);
-            refTimers.current = { timer1, timer2 };
-
             const timer = setTimeout(() => {
               const copiedShuffleArrayCards = [];
               let flag = 0;
@@ -288,57 +279,67 @@ function Game() {
 
               setActiveGamer(gamersList[0].name);
 
+              refCountTakeOneCard.current = 0;
+
               clearTimeout(timer);
             }, 2000);
           } else if (
-            nextActionAndArrayCardsForMoves?.action === "skip" ||
-            nextActionAndArrayCardsForMoves?.action === "reverse"
+            nextActionAndArrayCardsForMoves?.action === "skipTurn" ||
+            nextActionAndArrayCardsForMoves?.action === "reverseStroke"
           ) {
             setActiveGamer(gamersList[0].name);
           } else if (nextActionAndArrayCardsForMoves?.action === "takeOneCard") {
-            const timer = setTimeout(() => {
-              const copiedShuffleArrayCards = [];
-              let flag = false;
+            if (refCountTakeOneCard.current === 0) {
+              const timer = setTimeout(() => {
+                const copiedShuffleArrayCards = [];
+                let flag = false;
 
-              for (let index = 0; index < shuffleArrayCards.length; index++) {
-                if (
-                  shuffleArrayCards[index].owner !== gamersList[0].name &&
-                  shuffleArrayCards[index].owner !== gamersList[1].name &&
-                  shuffleArrayCards[index].status === CardStatus.inDeck &&
-                  !flag
-                ) {
-                  copiedShuffleArrayCards.push({
-                    ...shuffleArrayCards[index],
-                    owner: gamersList[1].name,
-                    status: CardStatus.inHands,
-                  });
-                  flag = true;
-                } else {
-                  copiedShuffleArrayCards.push(shuffleArrayCards[index]);
+                for (let index = 0; index < shuffleArrayCards.length; index++) {
+                  if (
+                    shuffleArrayCards[index].owner !== gamersList[0].name &&
+                    shuffleArrayCards[index].owner !== gamersList[1].name &&
+                    shuffleArrayCards[index].status === CardStatus.inDeck &&
+                    !flag
+                  ) {
+                    copiedShuffleArrayCards.push({
+                      ...shuffleArrayCards[index],
+                      owner: gamersList[1].name,
+                      status: CardStatus.inHands,
+                    });
+                    flag = true;
+                  } else {
+                    copiedShuffleArrayCards.push(shuffleArrayCards[index]);
+                  }
                 }
-              }
 
-              setShuffleArrayCards(copiedShuffleArrayCards);
+                setShuffleArrayCards(copiedShuffleArrayCards);
 
+                const countRobotCards = copiedShuffleArrayCards.reduce(
+                  (acc, item) =>
+                    item.owner === gamersList[1].name && item.status === CardStatus.inHands
+                      ? (acc += 1)
+                      : acc,
+                  0
+                );
+
+                setCardsAmountForGamer(
+                  ctx,
+                  gamersPositions[1].cards[0],
+                  gamersPositions[1].cards[1],
+                  countRobotCards.toString()
+                );
+
+                setActiveGamer(gamersList[1].name);
+
+                refCountTakeOneCard.current++;
+
+                clearTimeout(timer);
+              }, 2000);
+            } else {
               setActiveGamer(gamersList[0].name);
 
-              const countRobotCards = copiedShuffleArrayCards.reduce(
-                (acc, item) =>
-                  item.owner === gamersList[1].name && item.status === CardStatus.inHands
-                    ? (acc += 1)
-                    : acc,
-                0
-              );
-
-              setCardsAmountForGamer(
-                ctx,
-                gamersPositions[1].cards[0],
-                gamersPositions[1].cards[1],
-                countRobotCards.toString()
-              );
-
-              clearTimeout(timer);
-            }, 2000);
+              refCountTakeOneCard.current = 0;
+            }
           } else if (nextActionAndArrayCardsForMoves?.action === "takeTwoCards") {
             const timer = setTimeout(() => {
               const copiedShuffleArrayCards = [];

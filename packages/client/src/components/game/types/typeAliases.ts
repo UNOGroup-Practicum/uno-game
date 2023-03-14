@@ -16,8 +16,8 @@ export type TShuffleArrayCards = {
     | "9"
     | "orderColor"
     | "skipTurn"
-    | "takeTwo"
-    | "takeFour"
+    | "takeTwoCards"
+    | "takeFourCards"
     | "reverseStroke";
   color?: Color;
   value: number;

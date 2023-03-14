@@ -45,7 +45,7 @@ const cardsDistribution: TCardsDistribution = (
     if (yEndPoint < point.y) {
       createBackSideCard(ctx, point.xMinus40 - xSteper, point.yMinus60 - ySteper);
 
-      if (yEndPoint + ySteper < point.y - 95) {
+      if (yEndPoint + ySteper < point.y - 100) {
         requestAnimationFrame(fn);
       } else {
         ctx.clearRect(0, yEndPoint + 30, canvas.width, canvas.height - 330);
