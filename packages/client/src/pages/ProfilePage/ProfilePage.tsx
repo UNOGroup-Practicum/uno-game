@@ -5,8 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
-import { transformUserForRequest } from "services/api/transformers";
-import { User, UserDTO } from "services/api/types";
+import { UpdateUserRequestData } from "services/api/types";
 import { authSelect } from "services/slices/auth-slice";
 import { InputNames, validationTemplate } from "utils/validation/validation";
 
@@ -17,7 +16,14 @@ import styles from "./ProfilePage.module.scss";
 export const ProfilePage: React.FC = () => {
   const [isInputChanged, setIsInputChanged] = useState(false);
   const { user } = useSelector(authSelect);
-  const transformedUser = transformUserForRequest(user as User);
+  const transformedUser: UpdateUserRequestData = {
+    login: user?.login || "",
+    first_name: user?.firstName || "",
+    second_name: user?.secondName || "",
+    display_name: user?.displayName || "",
+    phone: user?.phone || "",
+    email: user?.email || "",
+  };
 
   const {
     control,
@@ -26,7 +32,7 @@ export const ProfilePage: React.FC = () => {
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
-      ...(transformedUser as UserDTO),
+      ...transformedUser,
     },
     mode: "onChange",
   });
@@ -47,7 +53,7 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
-  const onSubmit: SubmitHandler<UserDTO> = (data) => {
+  const onSubmit: SubmitHandler<UpdateUserRequestData> = (data) => {
     // здесь будет отправка данных
     console.log(JSON.stringify(data, null, 2));
   };
