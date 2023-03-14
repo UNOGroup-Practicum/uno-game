@@ -43,6 +43,7 @@ function GamePreparing() {
     } else {
       setIsWithFriendsCardClicked(false);
       setIsRoomCardClicked(false);
+      dispatch(gameSlice.actions.setGameVariant(null));
     }
   }, [searchParams]);
 

@@ -38,5 +38,6 @@ export enum CardType {
 export enum CardStatus {
   inDeck = "in deck",
   inHands = "in hands",
+  inHeap = "in heap",
   inOutside = "in outside",
 }
