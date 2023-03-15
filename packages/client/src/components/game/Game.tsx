@@ -49,6 +49,8 @@ function Game() {
 
     const generator = generateCardsDistribution(0, gamersPositions.length);
 
+    // TODO: Исчинить типы
+    // @ts-ignore
     const cardsDistribution: TCardsDistribution = (xEndPoint: number, yEndPoint: number) => {
       if (!cardsDistribution.cardsCounter1) {
         cardsDistribution.cardsCounter1 = 1;
