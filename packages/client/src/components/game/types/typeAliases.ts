@@ -29,11 +29,7 @@ export type TCardsDistribution = {
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
     generator: Generator,
-    gamersPositions: {
-      name: [number, number, string];
-      image: [number, number];
-      cards: [number, number, string];
-    }[],
+    gamersPositions: TGamersPositions,
     shuffleArrayCards: TShuffleArrayCards,
     createUserCardsDuringCardsDistribution: () => void,
     setShuffleArrayCards: React.Dispatch<React.SetStateAction<TShuffleArrayCards | null>>,
