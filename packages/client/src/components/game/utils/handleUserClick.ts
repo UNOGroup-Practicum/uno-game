@@ -91,8 +91,7 @@ export default function handleUserClick(
             canvas as HTMLCanvasElement,
             ctx as CanvasRenderingContext2D,
             (gamersPositions as TGamersPositions)[0].cards[1] + 30,
-            copiedShuffleArrayCards,
-            "right"
+            copiedShuffleArrayCards
           );
         }
 

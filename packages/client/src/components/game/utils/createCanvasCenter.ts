@@ -13,8 +13,7 @@ export default function createCanvasCenter(
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
   yEndPoint: number,
-  shuffleArrayCards: TShuffleArrayCards,
-  direction: "right" | "left"
+  shuffleArrayCards: TShuffleArrayCards
 ) {
   const point = {
     x: canvas.width / 2,
@@ -25,13 +24,6 @@ export default function createCanvasCenter(
 
   ctx.clearRect(0, yEndPoint + 30, canvas.width, canvas.height - 330);
   createBackSideCard(ctx, point.x - 100, point.yMinus60);
-  //createUNOButton(ctx, canvas.width / 2 + 140, canvas.height / 2 - 20);
-
-  if (direction === "right") {
-    //createRightDirection(ctx, canvas.width / 2 - 200, canvas.height / 2 - 60);
-  } else if (direction === "left") {
-    //createLeftDirection(ctx, canvas.width / 2 - 200, canvas.height / 2 - 60);
-  }
 
   for (let index = 0; index < shuffleArrayCards.length; index++) {
     if (shuffleArrayCards[index].status === CardStatus.inHeap) {

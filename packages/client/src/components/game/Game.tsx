@@ -301,8 +301,7 @@ function Game() {
                 canvas as HTMLCanvasElement,
                 ctx as CanvasRenderingContext2D,
                 (gamersPositions as TGamersPositions)[0].cards[1] + 30,
-                copiedShuffleArrayCards,
-                "right"
+                copiedShuffleArrayCards
               );
 
               setActiveGamer(gamersList[0].name);
@@ -466,7 +465,12 @@ function Game() {
       }
 
       if (refFirstGamerMove.current === 0) {
-        const firstGamerMove = defineFirstGamerMove(shuffleArrayCards, gamersList);
+        const firstGamerMove = defineFirstGamerMove(
+          shuffleArrayCards,
+          gamersList,
+          cardColor,
+          setCardColor
+        );
         if (firstGamerMove === gamersList[0].name) {
           setActiveGamer(gamersList[0].name);
         } else {
