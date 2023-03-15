@@ -1,5 +1,5 @@
 import LogoutIcon from "@mui/icons-material/Logout";
-import { Box, Button, Modal, Typography } from "@mui/material";
+import { Box, Button, ButtonGroup, Chip, Modal, Typography } from "@mui/material";
 
 import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,7 @@ import { gameSelect, gameSlice } from "services/slices/gameSlice";
 
 import { ROUTES } from "../../constants";
 
-import { CardStatus } from "./types/enums";
+import { CardStatus, Color } from "./types/enums";
 import { TGamersList, TGamersPositions, TShuffleArrayCards } from "./types/typeAliases";
 import cardsDistribution from "./utils/cardsDistribution";
 import clearIntervals from "./utils/clearIntervals";
@@ -45,8 +45,10 @@ function Game() {
   const [gamersPositions, setGamersPositions] = useState<TGamersPositions | null>(null);
   const [activeGamer, setActiveGamer] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<true | false>(false);
+  const [isModalCardColorOpen, setIsModalCardColorOpen] = useState<true | false>(false);
   const [win, setWin] = useState<string | null>(null);
   const [isButtonExitDisplayed, setIsButtonExitDisplayed] = useState<true | false>(false);
+  const [cardColor, setCardColor] = useState<Color | null>(null);
 
   useLayoutEffect(() => {
     const canvas = ref.current as HTMLCanvasElement;
@@ -75,17 +77,16 @@ function Game() {
         if (gamerCards === 0) {
           setWin(gamersList[1].name);
           setIsModalOpen(true);
-          console.log("win", gamersList[1].name);
         } else {
           const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[0].name);
           refTimers.current = { timer1, timer2 };
 
           const action = createNextActionAndArrayCardsForMoves(
             shuffleArrayCards,
-            gamersList[0].name
+            gamersList[0].name,
+            cardColor,
+            setCardColor
           )?.action;
-
-          console.log(gamersList[0].name, action);
 
           if (action === "move") {
             const handleClick = handleUserClick(
@@ -95,7 +96,9 @@ function Game() {
               shuffleArrayCards,
               setShuffleArrayCards,
               setActiveGamer,
-              gamersPositions
+              gamersPositions,
+              cardColor,
+              setCardColor
             );
 
             document.addEventListener("click", handleClick);
@@ -219,6 +222,31 @@ function Game() {
 
               clearTimeout(timer);
             }, 2000);
+          } else if (
+            action === "selectCardColorForTakeFourCards" ||
+            action === "selectCardColorForOrderColor"
+          ) {
+            const timer = setTimeout(() => {
+              const arrCardsWithColors = shuffleArrayCards.filter(
+                (item) =>
+                  item.owner === gamersList[1].name &&
+                  item.status === CardStatus.inHands &&
+                  item.color
+              );
+
+              const arrColors = [Color.yellow, Color.red, Color.blue, Color.green];
+              const randomColor = arrColors[Math.floor(Math.random() * arrColors.length)];
+
+              if (arrCardsWithColors[0].color) {
+                setCardColor(arrCardsWithColors[0].color as Color);
+              } else {
+                setCardColor(randomColor);
+              }
+
+              setActiveGamer(gamersList[0].name);
+
+              clearTimeout(timer);
+            }, 2000);
           }
         }
       } else if (activeGamer === gamersList[1].name) {
@@ -229,16 +257,16 @@ function Game() {
         if (gamerCards === 0) {
           setWin(gamersList[0].name);
           setIsModalOpen(true);
-          console.log("win", gamersList[0].name);
         } else {
           const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[1].name);
           refTimers.current = { timer1, timer2 };
 
           const nextActionAndArrayCardsForMoves = createNextActionAndArrayCardsForMoves(
             shuffleArrayCards as TShuffleArrayCards,
-            gamersList[1].name
+            gamersList[1].name,
+            cardColor,
+            setCardColor
           );
-          console.log(gamersList[1].name, nextActionAndArrayCardsForMoves?.action);
 
           if (nextActionAndArrayCardsForMoves?.action === "move") {
             const timer = setTimeout(() => {
@@ -428,6 +456,11 @@ function Game() {
 
               clearTimeout(timer);
             }, 2000);
+          } else if (
+            nextActionAndArrayCardsForMoves?.action === "selectCardColorForTakeFourCards" ||
+            nextActionAndArrayCardsForMoves?.action === "selectCardColorForOrderColor"
+          ) {
+            setIsModalCardColorOpen(true);
           }
         }
       }
@@ -442,7 +475,7 @@ function Game() {
       }
       refFirstGamerMove.current++;
     }
-  }, [shuffleArrayCards, gamersPositions, activeGamer]);
+  }, [shuffleArrayCards, gamersPositions, activeGamer, cardColor]);
 
   useEffect(() => {
     if (canvas && ctx) {
@@ -495,9 +528,33 @@ function Game() {
           <LogoutIcon sx={{ transform: "rotate(180deg)" }} />
         </Button>
       )}
+      {cardColor && (
+        <Chip
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            zIndex: "1",
+            width: "36px",
+            height: "36px",
+            borderRadius: "20px",
+            transform: "translate(-50%, -50%)",
+          }}
+          color={
+            cardColor === Color.yellow
+              ? "warning"
+              : cardColor === Color.red
+              ? "error"
+              : cardColor === Color.blue
+              ? "primary"
+              : "success"
+          }
+        />
+      )}
       <Modal
         open={isModalOpen}
         onClose={() => {
+          setCardColor(null);
           setIsModalOpen(false);
           dispatch(gameSlice.actions.setGameVariant(null));
         }}
@@ -522,6 +579,62 @@ function Game() {
           <Typography id="modal-modal-title" variant="h6" component="h6">
             Победитель: {win}
           </Typography>
+        </Box>
+      </Modal>
+      <Modal
+        open={isModalCardColorOpen}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            minWidth: 400,
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <ButtonGroup variant="contained" aria-label="outlined primary button group">
+            <Button
+              onClick={() => {
+                setCardColor(Color.yellow);
+                setIsModalCardColorOpen(false);
+              }}
+              sx={{ width: "80px", height: "40px" }}
+              color="warning"
+            />
+            <Button
+              onClick={() => {
+                setCardColor(Color.red);
+                setIsModalCardColorOpen(false);
+              }}
+              sx={{ width: "80px", height: "40px" }}
+              color="error"
+            />
+            <Button
+              onClick={() => {
+                setCardColor(Color.blue);
+                setIsModalCardColorOpen(false);
+              }}
+              sx={{ width: "80px", height: "40px" }}
+              color="primary"
+            />
+            <Button
+              onClick={() => {
+                setCardColor(Color.green);
+                setIsModalCardColorOpen(false);
+              }}
+              sx={{ width: "80px", height: "40px" }}
+              color="success"
+            />
+          </ButtonGroup>
         </Box>
       </Modal>
       <canvas ref={ref} className={styles.canvas} />

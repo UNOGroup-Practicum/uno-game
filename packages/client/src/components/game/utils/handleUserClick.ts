@@ -1,4 +1,4 @@
-import { CardStatus } from "../types/enums";
+import { CardStatus, Color } from "../types/enums";
 import { TGamersList, TGamersPositions, TShuffleArrayCards } from "../types/typeAliases";
 
 import createCanvasCenter from "./createCanvasCenter";
@@ -13,7 +13,9 @@ export default function handleUserClick(
   shuffleArrayCards: TShuffleArrayCards,
   setShuffleArrayCards: (arg0: TShuffleArrayCards) => void,
   setActiveGamer: (arg0: string) => void,
-  gamersPositions: TGamersPositions
+  gamersPositions: TGamersPositions,
+  cardColor: Color | null,
+  setCardColor: React.Dispatch<React.SetStateAction<Color | null>>
 ) {
   function handleClick(e: { clientX: number; clientY: number }) {
     const element = createUserCardsWithCoordinates(
@@ -35,12 +37,25 @@ export default function handleUserClick(
     if (element) {
       const nextActionAndArrayCardsForMoves = createNextActionAndArrayCardsForMoves(
         shuffleArrayCards as TShuffleArrayCards,
-        gamersList[0].name
+        gamersList[0].name,
+        cardColor,
+        setCardColor
       );
 
-      const index = nextActionAndArrayCardsForMoves?.cardsForMoves.findIndex(
-        (item) => item.id === element.data.id
-      );
+      let index = null;
+
+      if (!cardColor) {
+        index = nextActionAndArrayCardsForMoves?.cardsForMoves.findIndex(
+          (item) => item.id === element.data.id
+        );
+      } else {
+        index = nextActionAndArrayCardsForMoves?.cardsForMoves.findIndex(
+          (item) =>
+            (item.id === element.data.id && element.data.color === cardColor) ||
+            element.data.type === "takeFourCards" ||
+            element.data.type === "orderColor"
+        );
+      }
 
       if (index !== -1) {
         const copiedShuffleArrayCards = shuffleArrayCards?.map((item) => {
@@ -82,6 +97,9 @@ export default function handleUserClick(
         }
 
         setActiveGamer(gamersList[1].name);
+
+        setCardColor(null);
+
         document.removeEventListener("click", handleClick);
       }
     }

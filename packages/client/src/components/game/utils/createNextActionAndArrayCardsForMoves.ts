@@ -1,8 +1,13 @@
-import { CardStatus } from "../types/enums";
+import { CardStatus, Color } from "../types/enums";
 import { TShuffleArrayCards } from "../types/typeAliases";
 
 type TCreateNextActionAndArrayCardsForMoves = {
-  (shuffleArrayCards: TShuffleArrayCards, gamerName: string):
+  (
+    shuffleArrayCards: TShuffleArrayCards,
+    gamerName: string,
+    cardColor: Color | null,
+    setCardColor: React.Dispatch<React.SetStateAction<Color | null>>
+  ):
     | {
         action:
           | "move"
@@ -11,7 +16,9 @@ type TCreateNextActionAndArrayCardsForMoves = {
           | "takeOneCard"
           | "takeTwoCards"
           | "takeFourCards"
-          | "orderColor";
+          | "selectCardColorForTakeFourCards"
+          | "orderColor"
+          | "selectCardColorForOrderColor";
         cardsForMoves: TShuffleArrayCards;
       }
     | undefined;
@@ -35,7 +42,9 @@ function loopAndPush(
 
 const createNextActionAndArrayCardsForMoves: TCreateNextActionAndArrayCardsForMoves = (
   shuffleArrayCards,
-  gamerName
+  gamerName,
+  cardColor,
+  setCardColor
 ) => {
   if (!createNextActionAndArrayCardsForMoves.counter) {
     createNextActionAndArrayCardsForMoves.counter = 0;
@@ -73,9 +82,8 @@ const createNextActionAndArrayCardsForMoves: TCreateNextActionAndArrayCardsForMo
     cardInHeap.owner !== gamerName
   ) {
     if (createNextActionAndArrayCardsForMoves.counter === 0) {
-      const obj = { action: cardInHeap?.type, cardsForMoves: [] };
       createNextActionAndArrayCardsForMoves.counter++;
-      return obj;
+      return { action: cardInHeap?.type, cardsForMoves: [] };
     } else {
       loopAndPush(gamerCards, cardInHeap, arr);
 
@@ -132,24 +140,106 @@ const createNextActionAndArrayCardsForMoves: TCreateNextActionAndArrayCardsForMo
         return { action: "takeOneCard", cardsForMoves: [] };
       }
     }
-  } else if (
-    (cardInHeap?.type === "takeFourCards" || cardInHeap?.type === "orderColor") &&
-    cardInHeap.owner === gamerName
-  ) {
+  } else if (cardInHeap?.type === "takeFourCards" && cardInHeap.owner !== gamerName) {
+    if (createNextActionAndArrayCardsForMoves.counter === 0) {
+      createNextActionAndArrayCardsForMoves.counter++;
+      return { action: "selectCardColorForTakeFourCards", cardsForMoves: [] };
+    } else {
+      if (cardColor) {
+        for (let index = 0; index < gamerCards.length; index++) {
+          if (gamerCards[index].type === "takeTwoCards" && gamerCards[index].color === cardColor) {
+            arr.push(gamerCards[index]);
+          }
+        }
+
+        if (arr.length) {
+          createNextActionAndArrayCardsForMoves.counter = 0;
+          setCardColor(null);
+          return { action: "move", cardsForMoves: arr };
+        } else {
+          return { action: "takeFourCards", cardsForMoves: [] };
+        }
+      } else {
+        for (let index = 0; index < gamerCards.length; index++) {
+          if (gamerCards[index].type === "takeTwoCards" && gamerCards[index].color === cardColor) {
+            arr.push(gamerCards[index]);
+          }
+        }
+
+        if (arr.length) {
+          createNextActionAndArrayCardsForMoves.counter = 0;
+          setCardColor(null);
+          return { action: "move", cardsForMoves: arr };
+        } else {
+          return { action: "takeOneCard", cardsForMoves: [] };
+        }
+      }
+    }
+  } else if (cardInHeap?.type === "takeFourCards" && cardInHeap.owner === gamerName && cardColor) {
     for (let index = 0; index < gamerCards.length; index++) {
-      arr.push(gamerCards[index]);
+      if (
+        gamerCards[index].color === cardColor ||
+        gamerCards[index].type === "orderColor" ||
+        gamerCards[index].type === "takeFourCards"
+      ) {
+        arr.push(gamerCards[index]);
+      }
     }
 
     if (arr.length) {
       createNextActionAndArrayCardsForMoves.counter = 0;
+      if (cardInHeap.owner === "Robot") {
+        const timer = setTimeout(() => {
+          setCardColor(null);
+          clearTimeout(timer);
+        }, 2000);
+      }
       return { action: "move", cardsForMoves: arr };
     } else {
-      return { action: "skipTurn", cardsForMoves: [] };
+      return { action: "takeOneCard", cardsForMoves: [] };
     }
-  } else if (cardInHeap?.type === "takeFourCards" && cardInHeap.owner !== gamerName) {
-    return { action: "takeFourCards", cardsForMoves: [] };
   } else if (cardInHeap?.type === "orderColor" && cardInHeap.owner !== gamerName) {
-    return { action: "skipTurn", cardsForMoves: [] };
+    if (createNextActionAndArrayCardsForMoves.counter === 0) {
+      createNextActionAndArrayCardsForMoves.counter++;
+      return { action: "selectCardColorForOrderColor", cardsForMoves: [] };
+    } else {
+      for (let index = 0; index < gamerCards.length; index++) {
+        if (gamerCards[index].color === cardColor) {
+          arr.push(gamerCards[index]);
+        }
+      }
+
+      if (arr.length) {
+        createNextActionAndArrayCardsForMoves.counter = 0;
+        setCardColor(null);
+        return { action: "move", cardsForMoves: arr };
+      } else {
+        return { action: "takeOneCard", cardsForMoves: [] };
+      }
+    }
+  } else if (cardInHeap?.type === "orderColor" && cardInHeap.owner === gamerName && cardColor) {
+    for (let index = 0; index < gamerCards.length; index++) {
+      if (
+        gamerCards[index].color === cardColor ||
+        gamerCards[index].type === "orderColor" ||
+        gamerCards[index].type === "takeFourCards"
+      ) {
+        arr.push(gamerCards[index]);
+      }
+    }
+
+    if (arr.length) {
+      createNextActionAndArrayCardsForMoves.counter = 0;
+      if (cardInHeap.owner === "Robot") {
+        const timer = setTimeout(() => {
+          setCardColor(null);
+          clearTimeout(timer);
+        }, 2000);
+      }
+      return { action: "move", cardsForMoves: arr };
+    } else {
+      return { action: "takeOneCard", cardsForMoves: [] };
+    }
   }
 };
 
