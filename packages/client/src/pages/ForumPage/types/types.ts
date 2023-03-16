@@ -10,13 +10,13 @@ export type UserType = {
 };
 export type MessageType = {
   messageId: number;
-  messageCreatorUser: UserType;
+  messageCreatorUser: Pick<UserType, "id" | "display_name" | "avatar">;
   messageText: string;
   messageCreationDate: Date;
 };
 export type ThemeType = {
   themeId: number;
-  themeCreatorUser: UserType;
+  themeCreatorUser: Pick<UserType, "id" | "display_name" | "avatar">;
   themeTitle: string;
   themeCreationDate: Date;
   themeMessages: MessageType[];
