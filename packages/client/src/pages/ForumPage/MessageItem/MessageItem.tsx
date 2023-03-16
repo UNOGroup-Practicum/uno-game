@@ -16,7 +16,7 @@ export const MessageItem: React.FC<PropsType> = ({ messageData }) => {
       <div className={styles.MessageItem__user}>
         <Avatar alt="Avatar" src={messageData.messageCreatorUser.avatar} />
         <p className={styles.MessageItem__user_username}>
-          {messageData.messageCreatorUser.username}
+          {messageData.messageCreatorUser.display_name}
         </p>
       </div>
 
