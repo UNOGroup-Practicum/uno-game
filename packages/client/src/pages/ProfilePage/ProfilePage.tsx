@@ -1,5 +1,5 @@
 import EditIcon from "@mui/icons-material/Edit";
-import { Avatar, Button, Container, Link, Stack, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Button, Container, Link, Stack, TextField, Typography } from "@mui/material";
 
 import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -7,15 +7,23 @@ import { useSelector } from "react-redux";
 
 import { UpdateUserRequestData } from "services/api/types";
 import { authSelect } from "services/slices/auth-slice";
+import { userSelect, userSlice, userThunks } from "services/slices/user-slice";
 import { InputNames, validationTemplate } from "utils/validation/validation";
 
 import { ROUTES } from "../../constants";
+import { useDispatch } from "../../services/hooks";
 
 import styles from "./ProfilePage.module.scss";
 
 export const ProfilePage: React.FC = () => {
+  const dispatch = useDispatch();
+
+  const { error, isLoading } = useSelector(userSelect);
+
   const [isInputChanged, setIsInputChanged] = useState(false);
+
   const { user } = useSelector(authSelect);
+
   const transformedUser: UpdateUserRequestData = {
     login: user?.login || "",
     first_name: user?.firstName || "",
@@ -41,15 +49,20 @@ export const ProfilePage: React.FC = () => {
     reset(transformedUser);
   }, [user]);
 
-  const onChangeAvatar = (event: React.FormEvent<HTMLInputElement>) => {
+  const onChangeAvatar = async (event: React.FormEvent<HTMLInputElement>) => {
     const eventTargetFiles = event.currentTarget.files;
+
     if (eventTargetFiles) {
       const newAvatar = eventTargetFiles[0];
+
       const formData = new FormData();
       formData.append("avatar", newAvatar);
 
-      // здесь будет отправка formData
-      console.log(newAvatar);
+      await dispatch(userThunks.changeUserAvatar(formData));
+
+      setTimeout(() => {
+        dispatch(userSlice.actions.resetError());
+      }, 2000);
     }
   };
 
@@ -72,10 +85,17 @@ export const ProfilePage: React.FC = () => {
               accept=".jpg, .jpeg, .png"
               name="avatar"
               onInput={onChangeAvatar}
+              disabled={isLoading || !!error}
               title=""
             />
-            <EditIcon className={styles.profile__photo_edit_img} />
+            {!isLoading && <EditIcon className={styles.profile__photo_edit_img} />}
           </div>
+          {isLoading && <div className={styles.profile__photo_loading}>загрузка...</div>}
+          {error && (
+            <Box mt={2} textAlign={"center"} color={"error.light"}>
+              {error}
+            </Box>
+          )}
         </section>
 
         <form
