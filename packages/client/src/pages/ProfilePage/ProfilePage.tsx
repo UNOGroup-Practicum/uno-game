@@ -6,12 +6,12 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
 import { UpdateUserRequestData } from "services/api/types";
+import { useDispatch } from "services/hooks";
 import { authSelect } from "services/slices/auth-slice";
 import { userSelect, userSlice, userThunks } from "services/slices/user-slice";
 import { InputNames, validationTemplate } from "utils/validation/validation";
 
 import { ROUTES } from "../../constants";
-import { useDispatch } from "../../services/hooks";
 
 import styles from "./ProfilePage.module.scss";
 
@@ -49,20 +49,22 @@ export const ProfilePage: React.FC = () => {
     reset(transformedUser);
   }, [user]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(userSlice.actions.resetError());
+    }, 2000);
+  }, [error]);
+
   const onChangeAvatar = async (event: React.FormEvent<HTMLInputElement>) => {
     const eventTargetFiles = event.currentTarget.files;
 
-    if (eventTargetFiles) {
+    if (eventTargetFiles?.length === 1) {
       const newAvatar = eventTargetFiles[0];
 
       const formData = new FormData();
       formData.append("avatar", newAvatar);
 
-      await dispatch(userThunks.changeUserAvatar(formData));
-
-      setTimeout(() => {
-        dispatch(userSlice.actions.resetError());
-      }, 2000);
+      dispatch(userThunks.changeUserAvatar(formData));
     }
   };
 

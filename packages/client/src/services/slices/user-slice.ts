@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
+import { transformUser } from "../api/transformers";
 import { userAPI } from "../api/userApi";
 import { RootState } from "../store";
 
-import { authThunks } from "./auth-slice";
+import { authSlice } from "./auth-slice";
 
 type UserState = {
   isLoading: boolean;
@@ -17,10 +18,11 @@ export const initialState: UserState = {
 
 export const userThunks = {
   changeUserAvatar: createAsyncThunk<void, FormData, { rejectValue: UserState["error"] }>(
-    "USER/register",
+    "USER/avatar",
     async (data, { dispatch }) => {
-      await userAPI.changeUserAvatar(data);
-      dispatch(authThunks.me());
+      const result = await userAPI.changeUserAvatar(data);
+      const newUser = transformUser(result);
+      dispatch(authSlice.actions.setUser(newUser));
     }
   ),
 };
