@@ -10,12 +10,11 @@ import { gameSelect, gameSlice } from "services/slices/gameSlice";
 
 import { ROUTES } from "../../constants";
 
-import { CardStatus, Color } from "./types/enums";
+import { Color } from "./types/enums";
 import { TGamersList, TGamersPositions, TShuffleArrayCards } from "./types/typeAliases";
 import cardsDistribution from "./utils/cardsDistribution";
 import clearIntervals from "./utils/clearIntervals";
 import countGamerCards from "./utils/countGamerCards";
-import createCanvasCenter from "./utils/createCanvasCenter";
 import createGamersPositions from "./utils/createGamersPositions";
 import createNextActionAndArrayCardsForMoves from "./utils/createNextActionAndArrayCardsForMoves";
 import createShuffleArrayCards from "./utils/createShuffleArrayCards";
@@ -23,16 +22,23 @@ import createUserCards from "./utils/createUserCards";
 import createUserCardsWithCoordinates from "./utils/createUserCardsWithCoordinates";
 import defineFirstGamerMove from "./utils/defineFirstGamerMove";
 import generateCardsDistribution from "./utils/generateCardsDistribution";
+import handleActionTakeOneCard from "./utils/handleActionTakeOneCard";
+import handleActionTakeTwoOrFourCards from "./utils/handleActionTakeTwoOrFourCards";
+import handleRobotActionMove from "./utils/handleRobotActionMove";
 import handleUserClick from "./utils/handleUserClick";
-import setCardsAmountForGamer from "./utils/setCardsAmountForGamer";
 import signalizeName from "./utils/signalizeName";
 
 import styles from "./Game.module.scss";
 
 function Game() {
   const refFirstGamerMove = useRef(0);
-  const refTimers = useRef<{ timer1: NodeJS.Timer; timer2: NodeJS.Timer }>();
+  const refTimers = useRef<{ timer1: number; timer2: number }>();
   const refCountTakeOneCard = useRef(0);
+  const refCountTakeTwoCards = useRef(0);
+  const refCountTakeFourCards = useRef(0);
+  const refCountOrderColor = useRef(0);
+  const refCardColor = useRef<Color | null>(null);
+  const refCountSkipTurn = useRef(0);
   const ref = useRef<HTMLCanvasElement>(null);
   const { gameVariant } = useSelector(gameSelect);
   const { user } = useSelector(authSelect);
@@ -68,7 +74,7 @@ function Game() {
   }, []);
 
   useEffect(() => {
-    if (shuffleArrayCards && ctx && canvas && gamersPositions) {
+    if (shuffleArrayCards && ctx && canvas && gamersPositions && !isModalCardColorOpen) {
       if (activeGamer === gamersList[0].name) {
         clearIntervals(refTimers);
 
@@ -81,14 +87,27 @@ function Game() {
           const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[0].name);
           refTimers.current = { timer1, timer2 };
 
-          const action = createNextActionAndArrayCardsForMoves(
+          const nextActionAndArrayCardsForMoves = createNextActionAndArrayCardsForMoves(
             shuffleArrayCards,
             gamersList[0].name,
-            cardColor,
-            setCardColor
-          )?.action;
+            refCountTakeTwoCards,
+            refCountSkipTurn,
+            refCountTakeFourCards,
+            setCardColor,
+            gamersList,
+            refCardColor,
+            setIsModalCardColorOpen,
+            refCountOrderColor
+          );
 
-          if (action === "move") {
+          if (nextActionAndArrayCardsForMoves?.action === "move") {
+            const cardsWithCoordinates = createUserCardsWithCoordinates(
+              canvas,
+              ctx,
+              gamersList[0].name,
+              shuffleArrayCards
+            );
+
             const handleClick = handleUserClick(
               canvas,
               ctx,
@@ -97,156 +116,56 @@ function Game() {
               setShuffleArrayCards,
               setActiveGamer,
               gamersPositions,
-              cardColor,
+              cardsWithCoordinates,
+              nextActionAndArrayCardsForMoves.cardsForMoves,
+              refCardColor,
               setCardColor
             );
 
             document.addEventListener("click", handleClick);
 
             refCountTakeOneCard.current = 0;
-          } else if (action === "skipTurn" || action === "reverseStroke") {
-            setActiveGamer(gamersList[1].name);
-          } else if (action === "takeOneCard") {
-            if (refCountTakeOneCard.current === 0) {
-              const timer = setTimeout(() => {
-                const copiedShuffleArrayCards = [];
-                let flag = false;
-
-                for (let index = 0; index < shuffleArrayCards.length; index++) {
-                  if (
-                    shuffleArrayCards[index].owner !== gamersList[0].name &&
-                    shuffleArrayCards[index].owner !== gamersList[1].name &&
-                    shuffleArrayCards[index].status === CardStatus.inDeck &&
-                    !flag
-                  ) {
-                    copiedShuffleArrayCards.push({
-                      ...shuffleArrayCards[index],
-                      owner: gamersList[0].name,
-                      status: CardStatus.inHands,
-                    });
-                    flag = true;
-                  } else {
-                    copiedShuffleArrayCards.push(shuffleArrayCards[index]);
-                  }
-                }
-
-                setShuffleArrayCards(copiedShuffleArrayCards);
-
-                createUserCardsWithCoordinates(
-                  canvas as HTMLCanvasElement,
-                  ctx as CanvasRenderingContext2D,
-                  gamersList[0].name,
-                  copiedShuffleArrayCards
-                );
-
-                setActiveGamer(gamersList[0].name);
-
-                refCountTakeOneCard.current++;
-
-                clearTimeout(timer);
-              }, 2000);
-            } else {
-              setActiveGamer(gamersList[1].name);
-
-              refCountTakeOneCard.current = 0;
-            }
-          } else if (action === "takeTwoCards") {
-            const timer = setTimeout(() => {
-              const copiedShuffleArrayCards = [];
-              let flag = 0;
-
-              for (let index = 0; index < shuffleArrayCards.length; index++) {
-                if (
-                  shuffleArrayCards[index].owner !== gamersList[0].name &&
-                  shuffleArrayCards[index].owner !== gamersList[1].name &&
-                  shuffleArrayCards[index].status === CardStatus.inDeck &&
-                  flag !== 2
-                ) {
-                  copiedShuffleArrayCards.push({
-                    ...shuffleArrayCards[index],
-                    owner: gamersList[0].name,
-                    status: CardStatus.inHands,
-                  });
-                  flag++;
-                } else {
-                  copiedShuffleArrayCards.push(shuffleArrayCards[index]);
-                }
-              }
-
-              setShuffleArrayCards(copiedShuffleArrayCards);
-
-              createUserCardsWithCoordinates(
-                canvas as HTMLCanvasElement,
-                ctx as CanvasRenderingContext2D,
-                gamersList[0].name,
-                copiedShuffleArrayCards
-              );
-
-              setActiveGamer(gamersList[1].name);
-
-              clearTimeout(timer);
-            }, 2000);
-          } else if (action === "takeFourCards") {
-            const timer = setTimeout(() => {
-              const copiedShuffleArrayCards = [];
-              let flag = 0;
-
-              for (let index = 0; index < shuffleArrayCards.length; index++) {
-                if (
-                  shuffleArrayCards[index].owner !== gamersList[0].name &&
-                  shuffleArrayCards[index].owner !== gamersList[1].name &&
-                  shuffleArrayCards[index].status === CardStatus.inDeck &&
-                  flag !== 4
-                ) {
-                  copiedShuffleArrayCards.push({
-                    ...shuffleArrayCards[index],
-                    owner: gamersList[0].name,
-                    status: CardStatus.inHands,
-                  });
-                  flag++;
-                } else {
-                  copiedShuffleArrayCards.push(shuffleArrayCards[index]);
-                }
-              }
-
-              setShuffleArrayCards(copiedShuffleArrayCards);
-
-              createUserCardsWithCoordinates(
-                canvas as HTMLCanvasElement,
-                ctx as CanvasRenderingContext2D,
-                gamersList[0].name,
-                copiedShuffleArrayCards
-              );
-
-              setActiveGamer(gamersList[1].name);
-
-              clearTimeout(timer);
-            }, 2000);
+          } else if (nextActionAndArrayCardsForMoves?.action === "takeOneCard") {
+            handleActionTakeOneCard(
+              refCountTakeOneCard,
+              shuffleArrayCards,
+              gamersList,
+              setShuffleArrayCards,
+              canvas,
+              ctx,
+              gamersList[0].name,
+              setActiveGamer,
+              gamersPositions
+            );
           } else if (
-            action === "selectCardColorForTakeFourCards" ||
-            action === "selectCardColorForOrderColor"
+            nextActionAndArrayCardsForMoves?.action === "skipTurn" ||
+            nextActionAndArrayCardsForMoves?.action === "reverseStroke"
           ) {
-            const timer = setTimeout(() => {
-              const arrCardsWithColors = shuffleArrayCards.filter(
-                (item) =>
-                  item.owner === gamersList[1].name &&
-                  item.status === CardStatus.inHands &&
-                  item.color
-              );
-
-              const arrColors = [Color.yellow, Color.red, Color.blue, Color.green];
-              const randomColor = arrColors[Math.floor(Math.random() * arrColors.length)];
-
-              if (arrCardsWithColors[0].color) {
-                setCardColor(arrCardsWithColors[0].color as Color);
-              } else {
-                setCardColor(randomColor);
-              }
-
-              setActiveGamer(gamersList[0].name);
-
-              clearTimeout(timer);
-            }, 2000);
+            setActiveGamer(gamersList[1].name);
+          } else if (nextActionAndArrayCardsForMoves?.action === "takeTwoCards") {
+            handleActionTakeTwoOrFourCards(
+              2,
+              shuffleArrayCards,
+              gamersList,
+              setShuffleArrayCards,
+              canvas,
+              ctx,
+              setActiveGamer,
+              gamersList[0].name,
+              gamersPositions
+            );
+          } else if (nextActionAndArrayCardsForMoves?.action === "takeFourCards") {
+            handleActionTakeTwoOrFourCards(
+              4,
+              shuffleArrayCards,
+              gamersList,
+              setShuffleArrayCards,
+              canvas,
+              ctx,
+              setActiveGamer,
+              gamersList[0].name,
+              gamersPositions
+            );
           }
         }
       } else if (activeGamer === gamersList[1].name) {
@@ -264,202 +183,74 @@ function Game() {
           const nextActionAndArrayCardsForMoves = createNextActionAndArrayCardsForMoves(
             shuffleArrayCards as TShuffleArrayCards,
             gamersList[1].name,
-            cardColor,
-            setCardColor
+            refCountTakeTwoCards,
+            refCountSkipTurn,
+            refCountTakeFourCards,
+            setCardColor,
+            gamersList,
+            refCardColor,
+            setIsModalCardColorOpen,
+            refCountOrderColor
           );
 
           if (nextActionAndArrayCardsForMoves?.action === "move") {
-            const timer = setTimeout(() => {
-              const copiedShuffleArrayCards = shuffleArrayCards?.map((item) => {
-                if (item.status === CardStatus.inHeap) {
-                  return { ...item, status: CardStatus.inOutside };
-                } else if (nextActionAndArrayCardsForMoves.cardsForMoves[0].id === item.id) {
-                  return { ...item, status: CardStatus.inHeap };
-                } else {
-                  return item;
-                }
-              });
-
-              setShuffleArrayCards(copiedShuffleArrayCards);
-
-              const countRobotCards = copiedShuffleArrayCards.reduce(
-                (acc, item) =>
-                  item.owner === gamersList[1].name && item.status === CardStatus.inHands
-                    ? (acc += 1)
-                    : acc,
-                0
-              );
-
-              setCardsAmountForGamer(
-                ctx,
-                gamersPositions[1].cards[0],
-                gamersPositions[1].cards[1],
-                countRobotCards.toString()
-              );
-
-              createCanvasCenter(
-                canvas as HTMLCanvasElement,
-                ctx as CanvasRenderingContext2D,
-                (gamersPositions as TGamersPositions)[0].cards[1] + 30,
-                copiedShuffleArrayCards
-              );
-
-              setActiveGamer(gamersList[0].name);
-
-              refCountTakeOneCard.current = 0;
-
-              clearTimeout(timer);
-            }, 2000);
+            handleRobotActionMove(
+              shuffleArrayCards,
+              nextActionAndArrayCardsForMoves,
+              setShuffleArrayCards,
+              canvas,
+              ctx,
+              gamersPositions,
+              setActiveGamer,
+              refCountTakeOneCard,
+              gamersList
+            );
+          } else if (nextActionAndArrayCardsForMoves?.action === "takeOneCard") {
+            handleActionTakeOneCard(
+              refCountTakeOneCard,
+              shuffleArrayCards,
+              gamersList,
+              setShuffleArrayCards,
+              canvas,
+              ctx,
+              gamersList[1].name,
+              setActiveGamer,
+              gamersPositions
+            );
           } else if (
             nextActionAndArrayCardsForMoves?.action === "skipTurn" ||
             nextActionAndArrayCardsForMoves?.action === "reverseStroke"
           ) {
             setActiveGamer(gamersList[0].name);
-          } else if (nextActionAndArrayCardsForMoves?.action === "takeOneCard") {
-            if (refCountTakeOneCard.current === 0) {
-              const timer = setTimeout(() => {
-                const copiedShuffleArrayCards = [];
-                let flag = false;
-
-                for (let index = 0; index < shuffleArrayCards.length; index++) {
-                  if (
-                    shuffleArrayCards[index].owner !== gamersList[0].name &&
-                    shuffleArrayCards[index].owner !== gamersList[1].name &&
-                    shuffleArrayCards[index].status === CardStatus.inDeck &&
-                    !flag
-                  ) {
-                    copiedShuffleArrayCards.push({
-                      ...shuffleArrayCards[index],
-                      owner: gamersList[1].name,
-                      status: CardStatus.inHands,
-                    });
-                    flag = true;
-                  } else {
-                    copiedShuffleArrayCards.push(shuffleArrayCards[index]);
-                  }
-                }
-
-                setShuffleArrayCards(copiedShuffleArrayCards);
-
-                const countRobotCards = copiedShuffleArrayCards.reduce(
-                  (acc, item) =>
-                    item.owner === gamersList[1].name && item.status === CardStatus.inHands
-                      ? (acc += 1)
-                      : acc,
-                  0
-                );
-
-                setCardsAmountForGamer(
-                  ctx,
-                  gamersPositions[1].cards[0],
-                  gamersPositions[1].cards[1],
-                  countRobotCards.toString()
-                );
-
-                setActiveGamer(gamersList[1].name);
-
-                refCountTakeOneCard.current++;
-
-                clearTimeout(timer);
-              }, 2000);
-            } else {
-              setActiveGamer(gamersList[0].name);
-
-              refCountTakeOneCard.current = 0;
-            }
           } else if (nextActionAndArrayCardsForMoves?.action === "takeTwoCards") {
-            const timer = setTimeout(() => {
-              const copiedShuffleArrayCards = [];
-              let flag = 0;
-
-              for (let index = 0; index < shuffleArrayCards.length; index++) {
-                if (
-                  shuffleArrayCards[index].owner !== gamersList[0].name &&
-                  shuffleArrayCards[index].owner !== gamersList[1].name &&
-                  shuffleArrayCards[index].status === CardStatus.inDeck &&
-                  flag !== 2
-                ) {
-                  copiedShuffleArrayCards.push({
-                    ...shuffleArrayCards[index],
-                    owner: gamersList[1].name,
-                    status: CardStatus.inHands,
-                  });
-                  flag++;
-                } else {
-                  copiedShuffleArrayCards.push(shuffleArrayCards[index]);
-                }
-              }
-
-              setShuffleArrayCards(copiedShuffleArrayCards);
-
-              setActiveGamer(gamersList[0].name);
-
-              const countRobotCards = copiedShuffleArrayCards.reduce(
-                (acc, item) =>
-                  item.owner === gamersList[1].name && item.status === CardStatus.inHands
-                    ? (acc += 1)
-                    : acc,
-                0
-              );
-
-              setCardsAmountForGamer(
-                ctx,
-                gamersPositions[1].cards[0],
-                gamersPositions[1].cards[1],
-                countRobotCards.toString()
-              );
-
-              clearTimeout(timer);
-            }, 2000);
+            handleActionTakeTwoOrFourCards(
+              2,
+              shuffleArrayCards,
+              gamersList,
+              setShuffleArrayCards,
+              canvas,
+              ctx,
+              setActiveGamer,
+              gamersList[1].name,
+              gamersPositions
+            );
           } else if (nextActionAndArrayCardsForMoves?.action === "takeFourCards") {
-            const timer = setTimeout(() => {
-              const copiedShuffleArrayCards = [];
-              let flag = 0;
-
-              for (let index = 0; index < shuffleArrayCards.length; index++) {
-                if (
-                  shuffleArrayCards[index].owner !== gamersList[0].name &&
-                  shuffleArrayCards[index].owner !== gamersList[1].name &&
-                  shuffleArrayCards[index].status === CardStatus.inDeck &&
-                  flag !== 4
-                ) {
-                  copiedShuffleArrayCards.push({
-                    ...shuffleArrayCards[index],
-                    owner: gamersList[1].name,
-                    status: CardStatus.inHands,
-                  });
-                  flag++;
-                } else {
-                  copiedShuffleArrayCards.push(shuffleArrayCards[index]);
-                }
-              }
-
-              setShuffleArrayCards(copiedShuffleArrayCards);
-
-              setActiveGamer(gamersList[0].name);
-
-              const countRobotCards = copiedShuffleArrayCards.reduce(
-                (acc, item) =>
-                  item.owner === gamersList[1].name && item.status === CardStatus.inHands
-                    ? (acc += 1)
-                    : acc,
-                0
-              );
-
-              setCardsAmountForGamer(
-                ctx,
-                gamersPositions[1].cards[0],
-                gamersPositions[1].cards[1],
-                countRobotCards.toString()
-              );
-
-              clearTimeout(timer);
-            }, 2000);
+            handleActionTakeTwoOrFourCards(
+              4,
+              shuffleArrayCards,
+              gamersList,
+              setShuffleArrayCards,
+              canvas,
+              ctx,
+              setActiveGamer,
+              gamersList[1].name,
+              gamersPositions
+            );
           } else if (
             nextActionAndArrayCardsForMoves?.action === "selectCardColorForTakeFourCards" ||
             nextActionAndArrayCardsForMoves?.action === "selectCardColorForOrderColor"
           ) {
-            setIsModalCardColorOpen(true);
+            setActiveGamer(gamersList[1].name);
           }
         }
       }
@@ -468,8 +259,13 @@ function Game() {
         const firstGamerMove = defineFirstGamerMove(
           shuffleArrayCards,
           gamersList,
-          cardColor,
-          setCardColor
+          refCountTakeTwoCards,
+          refCountSkipTurn,
+          refCountTakeFourCards,
+          setCardColor,
+          refCardColor,
+          setIsModalCardColorOpen,
+          refCountOrderColor
         );
         if (firstGamerMove === gamersList[0].name) {
           setActiveGamer(gamersList[0].name);
@@ -479,7 +275,7 @@ function Game() {
       }
       refFirstGamerMove.current++;
     }
-  }, [shuffleArrayCards, gamersPositions, activeGamer, cardColor]);
+  }, [shuffleArrayCards, gamersPositions, activeGamer, isModalCardColorOpen]);
 
   useEffect(() => {
     if (canvas && ctx) {
@@ -543,22 +339,13 @@ function Game() {
             height: "36px",
             borderRadius: "20px",
             transform: "translate(-50%, -50%)",
+            background: cardColor,
           }}
-          color={
-            cardColor === Color.yellow
-              ? "warning"
-              : cardColor === Color.red
-              ? "error"
-              : cardColor === Color.blue
-              ? "primary"
-              : "success"
-          }
         />
       )}
       <Modal
         open={isModalOpen}
         onClose={() => {
-          setCardColor(null);
           setIsModalOpen(false);
           dispatch(gameSlice.actions.setGameVariant(null));
         }}
@@ -608,32 +395,36 @@ function Game() {
           <ButtonGroup variant="contained" aria-label="outlined primary button group">
             <Button
               onClick={() => {
-                setCardColor(Color.yellow);
                 setIsModalCardColorOpen(false);
+                refCardColor.current = Color.yellow;
+                setCardColor(Color.yellow);
               }}
               sx={{ width: "80px", height: "40px" }}
               color="warning"
             />
             <Button
               onClick={() => {
-                setCardColor(Color.red);
                 setIsModalCardColorOpen(false);
+                refCardColor.current = Color.red;
+                setCardColor(Color.red);
               }}
               sx={{ width: "80px", height: "40px" }}
               color="error"
             />
             <Button
               onClick={() => {
-                setCardColor(Color.blue);
                 setIsModalCardColorOpen(false);
+                refCardColor.current = Color.blue;
+                setCardColor(Color.blue);
               }}
               sx={{ width: "80px", height: "40px" }}
               color="primary"
             />
             <Button
               onClick={() => {
-                setCardColor(Color.green);
                 setIsModalCardColorOpen(false);
+                refCardColor.current = Color.green;
+                setCardColor(Color.green);
               }}
               sx={{ width: "80px", height: "40px" }}
               color="success"

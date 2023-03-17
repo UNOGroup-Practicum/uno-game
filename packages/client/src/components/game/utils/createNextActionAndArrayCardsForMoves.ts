@@ -1,12 +1,23 @@
 import { CardStatus, Color } from "../types/enums";
-import { TShuffleArrayCards } from "../types/typeAliases";
+import { TGamersList, TShuffleArrayCards } from "../types/typeAliases";
+
+import defineCardColorByRobot from "./defineCardColorByRobot";
+import loopOnMatchToCardColor from "./loopOnMatchToCardColor";
+import loopOnMatchToTakeTwoCardsAndCardColor from "./loopOnMatchToTakeTwoCardsAndCardColor";
+import loopOnMatchToTypeOrColor from "./loopOnMatchToTypeOrColor";
 
 type TCreateNextActionAndArrayCardsForMoves = {
   (
     shuffleArrayCards: TShuffleArrayCards,
     gamerName: string,
-    cardColor: Color | null,
-    setCardColor: React.Dispatch<React.SetStateAction<Color | null>>
+    refCountTakeTwoCards: React.MutableRefObject<number>,
+    refCountSkipTurn: React.MutableRefObject<number>,
+    refCountTakeFourCards: React.MutableRefObject<number>,
+    setCardColor: React.Dispatch<React.SetStateAction<Color | null>>,
+    gamersList: TGamersList,
+    refCardColor: React.MutableRefObject<Color | null>,
+    setIsModalCardColorOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    refCountOrderColor: React.MutableRefObject<number>
   ):
     | {
         action:
@@ -16,58 +27,28 @@ type TCreateNextActionAndArrayCardsForMoves = {
           | "takeOneCard"
           | "takeTwoCards"
           | "takeFourCards"
-          | "selectCardColorForTakeFourCards"
           | "orderColor"
+          | "selectCardColorForTakeFourCards"
           | "selectCardColorForOrderColor";
         cardsForMoves: TShuffleArrayCards;
       }
     | undefined;
-  counter: number | undefined;
 };
-
-function loopAndPush(
-  gamerCards: TShuffleArrayCards,
-  cardInHeap: TShuffleArrayCards[0],
-  arr: TShuffleArrayCards
-) {
-  for (let index = 0; index < gamerCards.length; index++) {
-    if (
-      gamerCards[index].type === cardInHeap?.type ||
-      gamerCards[index].color === cardInHeap?.color
-    ) {
-      arr.push(gamerCards[index]);
-    }
-  }
-}
-
-function loopAndPush2(
-  gamerCards: TShuffleArrayCards,
-  cardInHeap: TShuffleArrayCards[0],
-  arr: TShuffleArrayCards,
-  cardColor: Color | null
-) {
-  for (let index = 0; index < gamerCards.length; index++) {
-    if (
-      gamerCards[index].color === cardColor ||
-      gamerCards[index].type === "orderColor" ||
-      gamerCards[index].type === "takeFourCards"
-    ) {
-      arr.push(gamerCards[index]);
-    }
-  }
-}
 
 const createNextActionAndArrayCardsForMoves: TCreateNextActionAndArrayCardsForMoves = (
   shuffleArrayCards,
   gamerName,
-  cardColor,
-  setCardColor
+  refCountTakeTwoCards,
+  refCountSkipTurn,
+  refCountTakeFourCards,
+  setCardColor,
+  gamersList,
+  refCardColor,
+  setIsModalCardColorOpen,
+  refCountOrderColor
 ) => {
-  if (!createNextActionAndArrayCardsForMoves.counter) {
-    createNextActionAndArrayCardsForMoves.counter = 0;
-  }
-
   const cardInHeap = shuffleArrayCards.find((item) => item.status === CardStatus.inHeap);
+
   const gamerCards = shuffleArrayCards.reduce(
     (acc: TShuffleArrayCards, item) =>
       gamerName === item.owner && item.status === CardStatus.inHands ? acc.concat(item) : acc,
@@ -89,51 +70,36 @@ const createNextActionAndArrayCardsForMoves: TCreateNextActionAndArrayCardsForMo
     }
 
     if (arr.length) {
-      createNextActionAndArrayCardsForMoves.counter = 0;
+      if (cardInHeap?.owner === gamersList[1].name) {
+        refCardColor.current = null;
+        setCardColor(null);
+      }
+
       return { action: "move", cardsForMoves: arr };
     } else {
       return { action: "takeOneCard", cardsForMoves: [] };
     }
-  } else if (
-    (cardInHeap?.type === "skipTurn" || cardInHeap?.type === "reverseStroke") &&
-    cardInHeap.owner !== gamerName
-  ) {
-    if (createNextActionAndArrayCardsForMoves.counter === 0) {
-      createNextActionAndArrayCardsForMoves.counter++;
-      return { action: cardInHeap?.type, cardsForMoves: [] };
-    } else {
-      loopAndPush(gamerCards, cardInHeap, arr);
+  } else if (cardInHeap?.type === "skipTurn" || cardInHeap?.type === "reverseStroke") {
+    if (cardInHeap.owner !== gamerName && refCountSkipTurn.current === 0) {
+      refCountSkipTurn.current++;
+
+      return { action: "skipTurn", cardsForMoves: [] };
+    } else if (
+      (cardInHeap.owner !== gamerName && refCountSkipTurn.current !== 0) ||
+      cardInHeap.owner === gamerName
+    ) {
+      loopOnMatchToTypeOrColor(gamerCards, cardInHeap, arr);
 
       if (arr.length) {
-        createNextActionAndArrayCardsForMoves.counter = 0;
+        refCountSkipTurn.current = 0;
+
         return { action: "move", cardsForMoves: arr };
       } else {
         return { action: "takeOneCard", cardsForMoves: [] };
       }
     }
-  } else if (
-    (cardInHeap?.type === "skipTurn" || cardInHeap?.type === "reverseStroke") &&
-    cardInHeap.owner === gamerName
-  ) {
-    loopAndPush(gamerCards, cardInHeap, arr);
-
-    if (arr.length) {
-      createNextActionAndArrayCardsForMoves.counter = 0;
-      return { action: "move", cardsForMoves: arr };
-    } else {
-      return { action: "takeOneCard", cardsForMoves: [] };
-    }
-  } else if (cardInHeap?.type === "takeTwoCards" && cardInHeap.owner === gamerName) {
-    loopAndPush(gamerCards, cardInHeap, arr);
-
-    if (arr.length) {
-      createNextActionAndArrayCardsForMoves.counter = 0;
-      return { action: "move", cardsForMoves: arr };
-    } else {
-      return { action: "takeOneCard", cardsForMoves: [] };
-    }
-  } else if (cardInHeap?.type === "takeTwoCards" && cardInHeap.owner !== gamerName) {
-    if (createNextActionAndArrayCardsForMoves.counter === 0) {
+  } else if (cardInHeap?.type === "takeTwoCards") {
+    if (cardInHeap.owner !== gamerName && refCountTakeTwoCards.current === 0) {
       for (let index = 0; index < gamerCards.length; index++) {
         if (gamerCards[index].type === cardInHeap?.type) {
           arr.push(gamerCards[index]);
@@ -141,93 +107,161 @@ const createNextActionAndArrayCardsForMoves: TCreateNextActionAndArrayCardsForMo
       }
 
       if (arr.length) {
-        createNextActionAndArrayCardsForMoves.counter = 0;
+        refCountTakeTwoCards.current = 0;
+
         return { action: "move", cardsForMoves: arr };
       } else {
-        createNextActionAndArrayCardsForMoves.counter++;
+        refCountTakeTwoCards.current++;
+
         return { action: "takeTwoCards", cardsForMoves: [] };
       }
-    } else {
-      loopAndPush(gamerCards, cardInHeap, arr);
+    } else if (
+      (cardInHeap.owner !== gamerName && refCountTakeTwoCards.current !== 0) ||
+      cardInHeap.owner === gamerName
+    ) {
+      loopOnMatchToTypeOrColor(gamerCards, cardInHeap, arr);
 
       if (arr.length) {
-        createNextActionAndArrayCardsForMoves.counter = 0;
+        refCountTakeTwoCards.current = 0;
+
+        return { action: "move", cardsForMoves: arr };
+      } else {
+        refCountTakeTwoCards.current++;
+
+        return { action: "takeOneCard", cardsForMoves: [] };
+      }
+    }
+  } else if (cardInHeap?.type === "takeFourCards") {
+    if (cardInHeap.owner === gamersList[1].name && refCountTakeFourCards.current === 0) {
+      defineCardColorByRobot(shuffleArrayCards, gamersList, refCardColor, setCardColor);
+
+      loopOnMatchToTakeTwoCardsAndCardColor(gamerCards, refCardColor, arr);
+
+      if (arr.length) {
+        refCountTakeFourCards.current = 0;
+
+        return { action: "move", cardsForMoves: arr };
+      } else {
+        refCountTakeFourCards.current = 1;
+
+        return { action: "takeFourCards", cardsForMoves: [] };
+      }
+    } else if (cardInHeap.owner === gamersList[1].name && refCountTakeFourCards.current === 1) {
+      loopOnMatchToCardColor(gamerCards, refCardColor, arr);
+
+      if (arr.length) {
+        refCountTakeFourCards.current = 0;
+
+        const timer = setTimeout(() => {
+          refCardColor.current = null;
+          setCardColor(null);
+          clearTimeout(timer);
+        }, 2000);
+
         return { action: "move", cardsForMoves: arr };
       } else {
         return { action: "takeOneCard", cardsForMoves: [] };
       }
-    }
-  } else if (cardInHeap?.type === "takeFourCards" && cardInHeap.owner !== gamerName) {
-    if (createNextActionAndArrayCardsForMoves.counter === 0) {
-      createNextActionAndArrayCardsForMoves.counter++;
+    } else if (cardInHeap.owner === gamersList[0].name && refCountTakeFourCards.current === 0) {
+      refCountTakeFourCards.current = 2;
+
+      setIsModalCardColorOpen(true);
+
       return { action: "selectCardColorForTakeFourCards", cardsForMoves: [] };
-    } else {
-      for (let index = 0; index < gamerCards.length; index++) {
-        if (gamerCards[index].type === "takeTwoCards" && gamerCards[index].color === cardColor) {
-          arr.push(gamerCards[index]);
-        }
-      }
+    } else if (cardInHeap.owner === gamersList[0].name && refCountTakeFourCards.current === 2) {
+      loopOnMatchToTakeTwoCardsAndCardColor(gamerCards, refCardColor, arr);
 
       if (arr.length) {
-        createNextActionAndArrayCardsForMoves.counter = 0;
-        return { action: "move", cardsForMoves: arr };
-      } else {
-        return { action: cardColor ? "takeFourCards" : "takeOneCard", cardsForMoves: [] };
-      }
-    }
-  } else if (cardInHeap?.type === "takeFourCards" && cardInHeap.owner === gamerName && cardColor) {
-    loopAndPush2(gamerCards, cardInHeap, arr, cardColor);
+        refCountTakeFourCards.current = 0;
 
-    if (arr.length) {
-      createNextActionAndArrayCardsForMoves.counter = 0;
-      if (cardInHeap.owner === "Robot") {
         const timer = setTimeout(() => {
+          refCardColor.current = null;
           setCardColor(null);
           clearTimeout(timer);
         }, 2000);
+
+        return { action: "move", cardsForMoves: arr };
+      } else {
+        refCountTakeFourCards.current = 3;
+
+        return { action: "takeFourCards", cardsForMoves: [] };
       }
-      return { action: "move", cardsForMoves: arr };
-    } else {
-      return { action: "takeOneCard", cardsForMoves: [] };
-    }
-  } else if (cardInHeap?.type === "orderColor" && cardInHeap.owner !== gamerName) {
-    if (createNextActionAndArrayCardsForMoves.counter === 0) {
-      createNextActionAndArrayCardsForMoves.counter++;
-      return { action: "selectCardColorForOrderColor", cardsForMoves: [] };
-    } else {
-      for (let index = 0; index < gamerCards.length; index++) {
-        if (gamerCards[index].color === cardColor) {
-          arr.push(gamerCards[index]);
-        }
-      }
+    } else if (cardInHeap.owner === gamersList[0].name && refCountTakeFourCards.current === 3) {
+      loopOnMatchToCardColor(gamerCards, refCardColor, arr);
 
       if (arr.length) {
-        createNextActionAndArrayCardsForMoves.counter = 0;
-        if (cardInHeap.owner === "Robot") {
-          const timer = setTimeout(() => {
-            setCardColor(null);
-            clearTimeout(timer);
-          }, 2000);
-        }
+        refCountTakeFourCards.current = 0;
+
         return { action: "move", cardsForMoves: arr };
       } else {
         return { action: "takeOneCard", cardsForMoves: [] };
       }
     }
-  } else if (cardInHeap?.type === "orderColor" && cardInHeap.owner === gamerName && cardColor) {
-    loopAndPush2(gamerCards, cardInHeap, arr, cardColor);
+  } else if (cardInHeap?.type === "orderColor") {
+    if (cardInHeap.owner === gamersList[1].name && refCountOrderColor.current === 0) {
+      defineCardColorByRobot(shuffleArrayCards, gamersList, refCardColor, setCardColor);
 
-    if (arr.length) {
-      createNextActionAndArrayCardsForMoves.counter = 0;
-      if (cardInHeap.owner === "Robot") {
+      loopOnMatchToCardColor(gamerCards, refCardColor, arr);
+
+      if (arr.length) {
+        refCountOrderColor.current = 0;
+
+        return { action: "move", cardsForMoves: arr };
+      } else {
+        refCountOrderColor.current = 1;
+
+        return { action: "takeOneCard", cardsForMoves: [] };
+      }
+    } else if (cardInHeap.owner === gamersList[1].name && refCountOrderColor.current === 1) {
+      loopOnMatchToCardColor(gamerCards, refCardColor, arr);
+
+      if (arr.length) {
+        refCountOrderColor.current = 0;
+
         const timer = setTimeout(() => {
+          refCardColor.current = null;
           setCardColor(null);
           clearTimeout(timer);
         }, 2000);
+
+        return { action: "move", cardsForMoves: arr };
+      } else {
+        return { action: "takeOneCard", cardsForMoves: [] };
       }
-      return { action: "move", cardsForMoves: arr };
-    } else {
-      return { action: "takeOneCard", cardsForMoves: [] };
+    } else if (cardInHeap.owner === gamersList[0].name && refCountOrderColor.current === 0) {
+      refCountOrderColor.current = 2;
+
+      setIsModalCardColorOpen(true);
+
+      return { action: "selectCardColorForOrderColor", cardsForMoves: [] };
+    } else if (cardInHeap.owner === gamersList[0].name && refCountOrderColor.current === 2) {
+      loopOnMatchToCardColor(gamerCards, refCardColor, arr);
+
+      if (arr.length) {
+        refCountOrderColor.current = 0;
+
+        const timer = setTimeout(() => {
+          refCardColor.current = null;
+          setCardColor(null);
+          clearTimeout(timer);
+        }, 2000);
+
+        return { action: "move", cardsForMoves: arr };
+      } else {
+        refCountOrderColor.current = 3;
+
+        return { action: "takeOneCard", cardsForMoves: [] };
+      }
+    } else if (cardInHeap.owner === gamersList[0].name && refCountOrderColor.current === 3) {
+      loopOnMatchToCardColor(gamerCards, refCardColor, arr);
+
+      if (arr.length) {
+        refCountOrderColor.current = 0;
+
+        return { action: "move", cardsForMoves: arr };
+      } else {
+        return { action: "takeOneCard", cardsForMoves: [] };
+      }
     }
   }
 };

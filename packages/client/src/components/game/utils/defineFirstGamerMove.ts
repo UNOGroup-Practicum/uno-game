@@ -6,8 +6,13 @@ import createNextActionAndArrayCardsForMoves from "./createNextActionAndArrayCar
 export default function defineFirstGamerMove(
   shuffleArrayCards: TShuffleArrayCards,
   gamersList: TGamersList,
-  cardColor: Color | null,
-  setCardColor: React.Dispatch<React.SetStateAction<Color | null>>
+  refCountTakeTwoCards: React.MutableRefObject<number>,
+  refCountSkipTurn: React.MutableRefObject<number>,
+  refCountTakeFourCards: React.MutableRefObject<number>,
+  setCardColor: React.Dispatch<React.SetStateAction<Color | null>>,
+  refCardColor: React.MutableRefObject<Color | null>,
+  setIsModalCardColorOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  refCountOrderColor: React.MutableRefObject<number>
 ) {
   let name: string | null = null;
 
@@ -18,8 +23,14 @@ export default function defineFirstGamerMove(
       const nextActionAndArrayCardsForMoves = createNextActionAndArrayCardsForMoves(
         shuffleArrayCards,
         gamersList[index].name,
-        cardColor,
-        setCardColor
+        refCountTakeTwoCards,
+        refCountSkipTurn,
+        refCountTakeFourCards,
+        setCardColor,
+        gamersList,
+        refCardColor,
+        setIsModalCardColorOpen,
+        refCountOrderColor
       );
 
       if (nextActionAndArrayCardsForMoves?.action === "move") {

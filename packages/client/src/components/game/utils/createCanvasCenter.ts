@@ -23,7 +23,17 @@ export default function createCanvasCenter(
   };
 
   ctx.clearRect(0, yEndPoint + 30, canvas.width, canvas.height - 330);
-  createBackSideCard(ctx, point.x - 100, point.yMinus60);
+
+  const amountCardsinDeck = shuffleArrayCards.reduce(
+    (acc, item) => (item.status === CardStatus.inDeck ? (acc += 1) : acc),
+    0
+  );
+
+  if (amountCardsinDeck) {
+    createBackSideCard(ctx, point.x - 100, point.yMinus60);
+  } else {
+    ctx.clearRect(point.x - 100, point.yMinus60 - 2, 80, 124);
+  }
 
   for (let index = 0; index < shuffleArrayCards.length; index++) {
     if (shuffleArrayCards[index].status === CardStatus.inHeap) {

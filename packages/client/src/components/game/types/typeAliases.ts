@@ -48,3 +48,13 @@ export type TGamersPositions = {
   image: [number, number];
   cards: [number, number, string];
 }[];
+
+export type TUserCards = {
+  data: TShuffleArrayCards[0];
+  coord: {
+    xLeft: number;
+    xRight: number;
+    yTop: number;
+    yBottom: number;
+  };
+}[];
