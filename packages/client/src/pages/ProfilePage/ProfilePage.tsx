@@ -50,9 +50,11 @@ export const ProfilePage: React.FC = () => {
   }, [user]);
 
   useEffect(() => {
-    setTimeout(() => {
-      dispatch(userSlice.actions.resetError());
-    }, 2000);
+    if (error) {
+      setTimeout(() => {
+        dispatch(userSlice.actions.resetError());
+      }, 2000);
+    }
   }, [error]);
 
   const onChangeAvatar = async (event: React.FormEvent<HTMLInputElement>) => {

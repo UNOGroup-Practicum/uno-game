@@ -1,7 +1,10 @@
 import { request } from "./apiRequest";
-import { UserDTO } from "./types";
+import { transformUser } from "./transformers";
+import { User, UserDTO } from "./types";
 
 export const userAPI = {
-  changeUserAvatar: (data: FormData): Promise<UserDTO> =>
-    request.put<UserDTO, FormData>("user/profile/avatar", data),
+  changeUserAvatar: async (data: FormData): Promise<User> => {
+    const result = await request.put<UserDTO, FormData>("user/profile/avatar", data);
+    return transformUser(result);
+  },
 };
