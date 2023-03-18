@@ -61,8 +61,7 @@ export const AppHeader = () => {
             </li>
 
             <li className={styles.menu__item}>
-              {/* TODO: создать страницу с правилами и исправить ссылку */}
-              <NavLink className={styles.menu__link} to={ROUTES.home.path}>
+              <NavLink className={styles.menu__link} to={ROUTES.rules.path}>
                 Правила
               </NavLink>
             </li>
