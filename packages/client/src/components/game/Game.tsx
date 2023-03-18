@@ -1,173 +1,440 @@
-import { memo, useEffect, useRef } from "react";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { Box, Button, ButtonGroup, Chip, Modal, Typography } from "@mui/material";
 
-import { CardStatus } from "./types/enums";
-import { TCardsDistribution } from "./types/typeAliases";
-import createBackSideCard from "./utils/createBackSideCard";
-import createDigitCard from "./utils/createDigitCard";
+import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { useDispatch, useSelector } from "services/hooks";
+import { authSelect } from "services/slices/auth-slice";
+import { gameSelect, gameSlice } from "services/slices/gameSlice";
+
+import { ROUTES } from "../../constants";
+
+import { Color } from "./types/enums";
+import { TGamersList, TGamersPositions, TShuffleArrayCards } from "./types/typeAliases";
+import cardsDistribution from "./utils/cardsDistribution";
+import clearIntervals from "./utils/clearIntervals";
+import countGamerCards from "./utils/countGamerCards";
 import createGamersPositions from "./utils/createGamersPositions";
-import createRightDirection from "./utils/createRightDirection";
+import createNextActionAndArrayCardsForMoves from "./utils/createNextActionAndArrayCardsForMoves";
 import createShuffleArrayCards from "./utils/createShuffleArrayCards";
-import createUNOButton from "./utils/createUNOButton";
 import createUserCards from "./utils/createUserCards";
+import createUserCardsWithCoordinates from "./utils/createUserCardsWithCoordinates";
+import defineFirstGamerMove from "./utils/defineFirstGamerMove";
 import generateCardsDistribution from "./utils/generateCardsDistribution";
-import setCardsAmountForGamer from "./utils/setCardsAmountForGamer";
+import handleActionTakeOneCard from "./utils/handleActionTakeOneCard";
+import handleActionTakeTwoOrFourCards from "./utils/handleActionTakeTwoOrFourCards";
+import handleRobotActionMove from "./utils/handleRobotActionMove";
+import handleUserClick from "./utils/handleUserClick";
+import signalizeName from "./utils/signalizeName";
 
 import styles from "./Game.module.scss";
 
 function Game() {
+  const refFirstGamerMove = useRef(0);
+  const refTimers = useRef<{ timer1: number; timer2: number }>();
+  const refCountTakeOneCard = useRef(0);
+  const refCountTakeTwoCards = useRef(0);
+  const refCountTakeFourCards = useRef(0);
+  const refCountOrderColor = useRef(0);
+  const refCardColor = useRef<Color | null>(null);
+  const refCountSkipTurn = useRef(0);
   const ref = useRef<HTMLCanvasElement>(null);
+  const { gameVariant } = useSelector(gameSelect);
+  const { user } = useSelector(authSelect);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
+  const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
+  const [gamersList, setGamersList] = useState<TGamersList>([]);
+  const [shuffleArrayCards, setShuffleArrayCards] = useState<TShuffleArrayCards | null>(null);
+  const [gamersPositions, setGamersPositions] = useState<TGamersPositions | null>(null);
+  const [activeGamer, setActiveGamer] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<true | false>(false);
+  const [isModalCardColorOpen, setIsModalCardColorOpen] = useState<true | false>(false);
+  const [win, setWin] = useState<string | null>(null);
+  const [isButtonExitDisplayed, setIsButtonExitDisplayed] = useState<true | false>(false);
+  const [cardColor, setCardColor] = useState<Color | null>(null);
+
+  useLayoutEffect(() => {
+    const canvas = ref.current as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    setCanvas(canvas);
+    setCtx(ctx);
+    setGamersList([
+      {
+        id: "0",
+        name: user?.firstName || "User",
+      },
+      {
+        id: "0",
+        name: "Robot",
+      },
+    ]);
+  }, []);
 
   useEffect(() => {
-    const canvas = ref.current as HTMLCanvasElement;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    if (shuffleArrayCards && ctx && canvas && gamersPositions && !isModalCardColorOpen) {
+      if (activeGamer === gamersList[0].name) {
+        clearIntervals(refTimers);
 
-    const gamersList = [
-      { id: "0", name: "User A" },
-      { id: "1", name: "James" },
-      { id: "2", name: "David" },
-      { id: "3", name: "Matthew" },
-      { id: "4", name: "Danny" },
-      { id: "5", name: "Steven" },
-      { id: "6", name: "George" },
-      { id: "7", name: "Jose" },
-      { id: "8", name: "Paul" },
-      { id: "9", name: "Donald" },
-    ];
+        const gamerCards = countGamerCards(gamersList[1].name, shuffleArrayCards);
 
-    const shuffleArrayCards = createShuffleArrayCards(gamersList);
-
-    const gamersPositions = createGamersPositions(canvas, ctx, gamersList);
-
-    const createUserCardsDuringCardsDistribution = createUserCards(
-      canvas,
-      ctx,
-      gamersList,
-      shuffleArrayCards
-    );
-
-    const generator = generateCardsDistribution(0, gamersPositions.length);
-
-    // TODO: Исчинить типы
-    // @ts-ignore
-    const cardsDistribution: TCardsDistribution = (xEndPoint: number, yEndPoint: number) => {
-      if (!cardsDistribution.cardsCounter1) {
-        cardsDistribution.cardsCounter1 = 1;
-      }
-
-      if (!cardsDistribution.cardsCounter2) {
-        cardsDistribution.cardsCounter2 = 1;
-      }
-
-      const point = {
-        x: canvas.width / 2,
-        xMinus40: canvas.width / 2 - 40,
-        y: canvas.height / 2,
-        yMinus60: canvas.height / 2 - 60,
-      };
-
-      const rate = (point.yMinus60 - 160) / 30;
-      let xSteper = 0;
-      let ySteper = 0;
-
-      function fn() {
-        ctx.clearRect(0, 155, canvas.width, canvas.height - 330);
-        xSteper += ((point.xMinus40 - xEndPoint) / (point.y - 90 - yEndPoint)) * rate;
-        ySteper += 1 * rate;
-        createBackSideCard(ctx, point.xMinus40, point.yMinus60);
-
-        if (yEndPoint < point.y) {
-          createBackSideCard(ctx, point.xMinus40 - xSteper, point.yMinus60 - ySteper);
-
-          if (yEndPoint + ySteper < point.y - 95) {
-            requestAnimationFrame(fn);
-          } else {
-            ctx.clearRect(0, yEndPoint + 30, canvas.width, canvas.height - 330);
-            createBackSideCard(ctx, point.xMinus40, point.yMinus60);
-            const idx = generator.next().value as number;
-
-            if (typeof idx !== "undefined") {
-              cardsDistribution(gamersPositions[idx].cards[0], gamersPositions[idx].cards[1]);
-            }
-
-            if (typeof idx === "undefined") {
-              setCardsAmountForGamer(
-                ctx,
-                gamersPositions[gamersPositions.length - 1].cards[0],
-                gamersPositions[gamersPositions.length - 1].cards[1],
-                cardsDistribution.cardsCounter2.toString()
-              );
-              ctx.clearRect(0, yEndPoint + 30, canvas.width, canvas.height - 330);
-              createBackSideCard(ctx, point.x - 100, point.yMinus60);
-              createUNOButton(ctx, canvas.width / 2 + 140, canvas.height / 2 - 20);
-              createRightDirection(ctx, canvas.width / 2 - 200, canvas.height / 2 - 60);
-
-              for (let index = 0; index < shuffleArrayCards.length; index++) {
-                if (
-                  shuffleArrayCards[index].status === CardStatus.inDeck &&
-                  isFinite(Number(shuffleArrayCards[index].type))
-                ) {
-                  createDigitCard(
-                    ctx,
-                    point.x + 20,
-                    point.yMinus60,
-                    shuffleArrayCards[index].type,
-                    shuffleArrayCards[index].color as string
-                  );
-                  shuffleArrayCards[index].status = CardStatus.inOutside;
-                  break;
-                }
-              }
-            }
-
-            if (idx === 0) {
-              setCardsAmountForGamer(
-                ctx,
-                gamersPositions[gamersPositions.length - 1].cards[0],
-                gamersPositions[gamersPositions.length - 1].cards[1],
-                cardsDistribution.cardsCounter2.toString()
-              );
-            } else {
-              if (idx !== undefined) {
-                setCardsAmountForGamer(
-                  ctx,
-                  gamersPositions[idx - 1].cards[0],
-                  gamersPositions[idx - 1].cards[1],
-                  cardsDistribution.cardsCounter2.toString()
-                );
-              }
-            }
-
-            cardsDistribution.cardsCounter1++;
-
-            if (cardsDistribution.cardsCounter1 === gamersPositions.length) {
-              cardsDistribution.cardsCounter2++;
-              cardsDistribution.cardsCounter1 = 1;
-            }
-          }
+        if (gamerCards === 0) {
+          setWin(gamersList[1].name);
+          setIsModalOpen(true);
         } else {
-          createBackSideCard(ctx, point.xMinus40 - xSteper, point.yMinus60 + ySteper);
+          const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[0].name);
+          refTimers.current = { timer1, timer2 };
 
-          if (point.y + 180 + ySteper < yEndPoint) {
-            requestAnimationFrame(fn);
-          } else {
-            ctx.clearRect(0, point.y, canvas.width, point.y - 175);
-            createBackSideCard(ctx, point.xMinus40, point.yMinus60);
-            const idx = generator.next().value as number;
-            cardsDistribution(gamersPositions[idx].cards[0], gamersPositions[idx].cards[1]);
-            createUserCardsDuringCardsDistribution();
+          const nextActionAndArrayCardsForMoves = createNextActionAndArrayCardsForMoves(
+            shuffleArrayCards,
+            gamersList[0].name,
+            refCountTakeTwoCards,
+            refCountSkipTurn,
+            refCountTakeFourCards,
+            setCardColor,
+            gamersList,
+            refCardColor,
+            setIsModalCardColorOpen,
+            refCountOrderColor
+          );
+
+          if (nextActionAndArrayCardsForMoves?.action === "move") {
+            const cardsWithCoordinates = createUserCardsWithCoordinates(
+              canvas,
+              ctx,
+              gamersList[0].name,
+              shuffleArrayCards
+            );
+
+            const handleClick = handleUserClick(
+              canvas,
+              ctx,
+              gamersList,
+              shuffleArrayCards,
+              setShuffleArrayCards,
+              setActiveGamer,
+              gamersPositions,
+              cardsWithCoordinates,
+              nextActionAndArrayCardsForMoves.cardsForMoves,
+              refCardColor,
+              setCardColor
+            );
+
+            document.addEventListener("click", handleClick);
+
+            refCountTakeOneCard.current = 0;
+          } else if (nextActionAndArrayCardsForMoves?.action === "takeOneCard") {
+            handleActionTakeOneCard(
+              refCountTakeOneCard,
+              shuffleArrayCards,
+              gamersList,
+              setShuffleArrayCards,
+              canvas,
+              ctx,
+              gamersList[0].name,
+              setActiveGamer,
+              gamersPositions
+            );
+          } else if (
+            nextActionAndArrayCardsForMoves?.action === "skipTurn" ||
+            nextActionAndArrayCardsForMoves?.action === "reverseStroke"
+          ) {
+            setActiveGamer(gamersList[1].name);
+          } else if (nextActionAndArrayCardsForMoves?.action === "takeTwoCards") {
+            handleActionTakeTwoOrFourCards(
+              2,
+              shuffleArrayCards,
+              gamersList,
+              setShuffleArrayCards,
+              canvas,
+              ctx,
+              setActiveGamer,
+              gamersList[0].name,
+              gamersPositions
+            );
+          } else if (nextActionAndArrayCardsForMoves?.action === "takeFourCards") {
+            handleActionTakeTwoOrFourCards(
+              4,
+              shuffleArrayCards,
+              gamersList,
+              setShuffleArrayCards,
+              canvas,
+              ctx,
+              setActiveGamer,
+              gamersList[0].name,
+              gamersPositions
+            );
+          }
+        }
+      } else if (activeGamer === gamersList[1].name) {
+        clearIntervals(refTimers);
+
+        const gamerCards = countGamerCards(gamersList[0].name, shuffleArrayCards);
+
+        if (gamerCards === 0) {
+          setWin(gamersList[0].name);
+          setIsModalOpen(true);
+        } else {
+          const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[1].name);
+          refTimers.current = { timer1, timer2 };
+
+          const nextActionAndArrayCardsForMoves = createNextActionAndArrayCardsForMoves(
+            shuffleArrayCards as TShuffleArrayCards,
+            gamersList[1].name,
+            refCountTakeTwoCards,
+            refCountSkipTurn,
+            refCountTakeFourCards,
+            setCardColor,
+            gamersList,
+            refCardColor,
+            setIsModalCardColorOpen,
+            refCountOrderColor
+          );
+
+          if (nextActionAndArrayCardsForMoves?.action === "move") {
+            handleRobotActionMove(
+              shuffleArrayCards,
+              nextActionAndArrayCardsForMoves,
+              setShuffleArrayCards,
+              canvas,
+              ctx,
+              gamersPositions,
+              setActiveGamer,
+              refCountTakeOneCard,
+              gamersList
+            );
+          } else if (nextActionAndArrayCardsForMoves?.action === "takeOneCard") {
+            handleActionTakeOneCard(
+              refCountTakeOneCard,
+              shuffleArrayCards,
+              gamersList,
+              setShuffleArrayCards,
+              canvas,
+              ctx,
+              gamersList[1].name,
+              setActiveGamer,
+              gamersPositions
+            );
+          } else if (
+            nextActionAndArrayCardsForMoves?.action === "skipTurn" ||
+            nextActionAndArrayCardsForMoves?.action === "reverseStroke"
+          ) {
+            setActiveGamer(gamersList[0].name);
+          } else if (nextActionAndArrayCardsForMoves?.action === "takeTwoCards") {
+            handleActionTakeTwoOrFourCards(
+              2,
+              shuffleArrayCards,
+              gamersList,
+              setShuffleArrayCards,
+              canvas,
+              ctx,
+              setActiveGamer,
+              gamersList[1].name,
+              gamersPositions
+            );
+          } else if (nextActionAndArrayCardsForMoves?.action === "takeFourCards") {
+            handleActionTakeTwoOrFourCards(
+              4,
+              shuffleArrayCards,
+              gamersList,
+              setShuffleArrayCards,
+              canvas,
+              ctx,
+              setActiveGamer,
+              gamersList[1].name,
+              gamersPositions
+            );
+          } else if (
+            nextActionAndArrayCardsForMoves?.action === "selectCardColorForTakeFourCards" ||
+            nextActionAndArrayCardsForMoves?.action === "selectCardColorForOrderColor"
+          ) {
+            setActiveGamer(gamersList[1].name);
           }
         }
       }
 
-      fn();
-    };
+      if (refFirstGamerMove.current === 0) {
+        const firstGamerMove = defineFirstGamerMove(
+          shuffleArrayCards,
+          gamersList,
+          refCountTakeTwoCards,
+          refCountSkipTurn,
+          refCountTakeFourCards,
+          setCardColor,
+          refCardColor,
+          setIsModalCardColorOpen,
+          refCountOrderColor
+        );
+        if (firstGamerMove === gamersList[0].name) {
+          setActiveGamer(gamersList[0].name);
+        } else {
+          setActiveGamer(gamersList[1].name);
+        }
+      }
+      refFirstGamerMove.current++;
+    }
+  }, [shuffleArrayCards, gamersPositions, activeGamer, isModalCardColorOpen]);
 
-    cardsDistribution(gamersPositions[0].cards[0], gamersPositions[0].cards[1]);
-  }, []);
+  useEffect(() => {
+    if (canvas && ctx) {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
 
-  return <canvas ref={ref} className={styles.canvas} />;
+      if (gameVariant === "solo") {
+        const shuffleArrayCards = createShuffleArrayCards(gamersList);
+
+        const gamersPositions = createGamersPositions(canvas, ctx, gamersList);
+
+        setGamersPositions(gamersPositions);
+
+        const createUserCardsDuringCardsDistribution = createUserCards(
+          canvas,
+          ctx,
+          gamersList,
+          shuffleArrayCards
+        );
+
+        const generator = generateCardsDistribution(0, gamersPositions.length);
+        cardsDistribution(
+          canvas,
+          ctx,
+          generator,
+          gamersPositions,
+          shuffleArrayCards,
+          createUserCardsDuringCardsDistribution,
+          setShuffleArrayCards,
+          setIsButtonExitDisplayed,
+          gamersPositions[0].cards[0],
+          gamersPositions[0].cards[1]
+        );
+      } else if (gameVariant === "withFriends") {
+        console.log("заглушка");
+      } else {
+        navigate(ROUTES.home.path);
+      }
+    }
+  }, [gameVariant, canvas, ctx]);
+
+  return (
+    <>
+      {isButtonExitDisplayed && (
+        <Button
+          variant="contained"
+          sx={{ position: "absolute", top: "10px", left: "10px", zIndex: "1" }}
+          onClick={() => navigate(ROUTES.gamePreparing.path)}
+        >
+          <LogoutIcon sx={{ transform: "rotate(180deg)" }} />
+        </Button>
+      )}
+      {cardColor && (
+        <Chip
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            zIndex: "1",
+            width: "36px",
+            height: "36px",
+            borderRadius: "20px",
+            transform: "translate(-50%, -50%)",
+            background: cardColor,
+          }}
+        />
+      )}
+      <Modal
+        open={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          dispatch(gameSlice.actions.setGameVariant(null));
+        }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            minWidth: 400,
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Typography id="modal-modal-title" variant="h6" component="h6">
+            Победитель: {win}
+          </Typography>
+        </Box>
+      </Modal>
+      <Modal
+        open={isModalCardColorOpen}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            minWidth: 400,
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <ButtonGroup variant="contained" aria-label="outlined primary button group">
+            <Button
+              onClick={() => {
+                setIsModalCardColorOpen(false);
+                refCardColor.current = Color.yellow;
+                setCardColor(Color.yellow);
+              }}
+              sx={{ width: "80px", height: "40px" }}
+              color="warning"
+            />
+            <Button
+              onClick={() => {
+                setIsModalCardColorOpen(false);
+                refCardColor.current = Color.red;
+                setCardColor(Color.red);
+              }}
+              sx={{ width: "80px", height: "40px" }}
+              color="error"
+            />
+            <Button
+              onClick={() => {
+                setIsModalCardColorOpen(false);
+                refCardColor.current = Color.blue;
+                setCardColor(Color.blue);
+              }}
+              sx={{ width: "80px", height: "40px" }}
+              color="primary"
+            />
+            <Button
+              onClick={() => {
+                setIsModalCardColorOpen(false);
+                refCardColor.current = Color.green;
+                setCardColor(Color.green);
+              }}
+              sx={{ width: "80px", height: "40px" }}
+              color="success"
+            />
+          </ButtonGroup>
+        </Box>
+      </Modal>
+      <canvas ref={ref} className={styles.canvas} />
+    </>
+  );
 }
 
 export default memo(Game);

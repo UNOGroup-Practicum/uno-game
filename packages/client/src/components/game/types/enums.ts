@@ -30,13 +30,14 @@ export enum CardType {
   nine = "9",
   skipTurn = "skipTurn",
   reverseStroke = "reverseStroke",
-  takeTwo = "takeTwo",
+  takeTwo = "takeTwoCards",
   orderColor = "orderColor",
-  takeFour = "takeFour",
+  takeFour = "takeFourCards",
 }
 
 export enum CardStatus {
   inDeck = "in deck",
   inHands = "in hands",
+  inHeap = "in heap",
   inOutside = "in outside",
 }
