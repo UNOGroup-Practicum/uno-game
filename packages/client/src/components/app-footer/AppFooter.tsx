@@ -1,5 +1,7 @@
 import { Box, Container, Link, Typography } from "@mui/material";
 
+import { withErrorBoundary } from "hoc/withErrorBoundary";
+
 import { ROUTES } from "../../constants";
 
 export const AppFooter = () => {
@@ -26,3 +28,5 @@ export const AppFooter = () => {
     </Box>
   );
 };
+
+export const AppFooterWithErrorBoundary = withErrorBoundary(AppFooter);
