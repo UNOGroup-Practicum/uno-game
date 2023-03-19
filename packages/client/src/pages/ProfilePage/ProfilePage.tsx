@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
-import { UpdateUserRequestData } from "services/api/types";
+import { UpdateUserRequestData, UserDTO } from "services/api/types";
 import { useDispatch } from "services/hooks";
 import { authSelect } from "services/slices/auth-slice";
 import { userSelect, userSlice, userThunks } from "services/slices/user-slice";
@@ -15,10 +15,20 @@ import { ROUTES } from "../../constants";
 
 import styles from "./ProfilePage.module.scss";
 
+type Merge<A, B> = {
+  [K in keyof A | keyof B]: K extends keyof A & keyof B
+    ? A[K] | B[K]
+    : K extends keyof B
+    ? B[K]
+    : K extends keyof A
+    ? A[K]
+    : never;
+};
+
 export const ProfilePage: React.FC = () => {
   const dispatch = useDispatch();
 
-  const { error, isLoading } = useSelector(userSelect);
+  const { error, isLoading, isSuccess } = useSelector(userSelect);
 
   const [isInputChanged, setIsInputChanged] = useState(false);
 
@@ -50,12 +60,20 @@ export const ProfilePage: React.FC = () => {
   }, [user]);
 
   useEffect(() => {
-    if (error) {
+    if (error.avatar || error.profile) {
       setTimeout(() => {
         dispatch(userSlice.actions.resetError());
-      }, 2000);
+      }, 3000);
     }
   }, [error]);
+
+  useEffect(() => {
+    if (isSuccess.profile) {
+      setTimeout(() => {
+        dispatch(userSlice.actions.resetIsSuccess());
+      }, 3000);
+    }
+  }, [isSuccess]);
 
   const onChangeAvatar = async (event: React.FormEvent<HTMLInputElement>) => {
     const eventTargetFiles = event.currentTarget.files;
@@ -70,9 +88,12 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
-  const onSubmit: SubmitHandler<UpdateUserRequestData> = (data) => {
-    // здесь будет отправка данных
-    console.log(JSON.stringify(data, null, 2));
+  //const onChangeProfile: SubmitHandler<Omit<UserDTO, 'id' | 'avatar'>> = (formData) => {
+  //const onChangeProfile: SubmitHandler<FormData> = (formData) => {
+  //const onChangeProfile: SubmitHandler<Omit<UserDTO, 'id' | 'avatar'> & FormData> = (formData) => {
+  //const onChangeProfile: SubmitHandler<Merge<FormData, Omit<UserDTO, 'id' | 'avatar'>>> = (formData) => {
+  const onChangeProfile: SubmitHandler<any> = (formData) => {
+    dispatch(userThunks.changeUserProfile(formData));
   };
   return (
     <main className={styles.profile}>
@@ -89,15 +110,15 @@ export const ProfilePage: React.FC = () => {
               accept=".jpg, .jpeg, .png"
               name="avatar"
               onInput={onChangeAvatar}
-              disabled={isLoading || !!error}
+              disabled={isLoading.avatar || !!error.avatar}
               title=""
             />
-            {!isLoading && <EditIcon className={styles.profile__photo_edit_img} />}
+            {!isLoading.avatar && <EditIcon className={styles.profile__photo_edit_img} />}
           </div>
-          {isLoading && <div className={styles.profile__photo_loading}>загрузка...</div>}
-          {error && (
+          {isLoading.avatar && <div className={styles.profile__photo_loading}>загрузка...</div>}
+          {error.avatar && (
             <Box mt={2} textAlign={"center"} color={"error.light"}>
-              {error}
+              {error.avatar}
             </Box>
           )}
         </section>
@@ -105,7 +126,7 @@ export const ProfilePage: React.FC = () => {
         <form
           name="profile-form"
           className={styles.profile__form}
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onChangeProfile)}
           noValidate
         >
           <Stack spacing={3}>
@@ -220,6 +241,22 @@ export const ProfilePage: React.FC = () => {
               )}
             />
           </Stack>
+
+          {isLoading.profile && (
+            <Box mt={2} textAlign={"center"}>
+              загрузка...
+            </Box>
+          )}
+          {isSuccess.profile && (
+            <Box mt={2} textAlign={"center"}>
+              Данные успешно обновлены!
+            </Box>
+          )}
+          {error.profile && (
+            <Box mt={2} textAlign={"center"} color={"error.light"}>
+              {error.profile}
+            </Box>
+          )}
 
           <Button
             fullWidth={true}

@@ -7,4 +7,8 @@ export const userAPI = {
     const result = await request.put<UserDTO, FormData>("user/profile/avatar", data);
     return transformUser(result);
   },
+  changeUserProfile: async (data: FormData): Promise<User> => {
+    const result = await request.put<UserDTO, FormData>("user/profile", data);
+    return transformUser(result);
+  },
 };
