@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
-import { UpdateUserRequestData, UserDTO } from "services/api/types";
+import { UpdateUserRequestData } from "services/api/types";
 import { useDispatch } from "services/hooks";
 import { authSelect } from "services/slices/auth-slice";
 import { userSelect, userSlice, userThunks } from "services/slices/user-slice";
@@ -14,16 +14,6 @@ import { InputNames, validationTemplate } from "utils/validation/validation";
 import { ROUTES } from "../../constants";
 
 import styles from "./ProfilePage.module.scss";
-
-type Merge<A, B> = {
-  [K in keyof A | keyof B]: K extends keyof A & keyof B
-    ? A[K] | B[K]
-    : K extends keyof B
-    ? B[K]
-    : K extends keyof A
-    ? A[K]
-    : never;
-};
 
 export const ProfilePage: React.FC = () => {
   const dispatch = useDispatch();
@@ -88,11 +78,7 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
-  //const onChangeProfile: SubmitHandler<Omit<UserDTO, 'id' | 'avatar'>> = (formData) => {
-  //const onChangeProfile: SubmitHandler<FormData> = (formData) => {
-  //const onChangeProfile: SubmitHandler<Omit<UserDTO, 'id' | 'avatar'> & FormData> = (formData) => {
-  //const onChangeProfile: SubmitHandler<Merge<FormData, Omit<UserDTO, 'id' | 'avatar'>>> = (formData) => {
-  const onChangeProfile: SubmitHandler<any> = (formData) => {
+  const onChangeProfile: SubmitHandler<UpdateUserRequestData> = (formData) => {
     dispatch(userThunks.changeUserProfile(formData));
   };
   return (
