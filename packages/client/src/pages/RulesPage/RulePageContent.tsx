@@ -1,12 +1,20 @@
 import { Box, Grid, Typography } from "@mui/material";
 import clsx from "clsx";
 
-import unoActionCardDraw from "../../assets/images-rules/uno-action-draw2.png";
-import unoActionCardReverse from "../../assets/images-rules/uno-action-reverse.png";
-import unoActionCardSkip from "../../assets/images-rules/uno-action-skip.png";
-import unoCards from "../../assets/images-rules/uno-cards.png";
-import unoWildCardDraw from "../../assets/images-rules/uno-wild-draw4.png";
-import unoWildCardWild from "../../assets/images-rules/uno-wild-wild.png";
+import { Picture } from "components/picture/Picture";
+
+import unoActionCardDrawWebp from "assets/images-rules/uno-action-draw2.png?format=webp&quality=75&source&imagetools";
+import unoActionCardDraw from "assets/images-rules/uno-action-draw2.png?quality=75&imagetools";
+import unoActionCardReverseWebp from "assets/images-rules/uno-action-reverse.png?format=webp&quality=75&source&imagetools";
+import unoActionCardReverse from "assets/images-rules/uno-action-reverse.png?quality=75&imagetools";
+import unoActionCardSkip from "assets/images-rules/uno-action-skip.png?quality=75&imagetools";
+import unoActionCardSkipWebp from "assets/images-rules/uno-action-skip.png?quality=75&imagetools?format=webp&quality=75&source&imagetools";
+import unoCards from "assets/images-rules/uno-cards.png?quality=75&imagetools";
+import unoCardsWebp from "assets/images-rules/uno-cards.png?quality=75&imagetools?format=webp&quality=75&source&imagetools";
+import unoWildCardDraw from "assets/images-rules/uno-wild-draw4.png?quality=75&imagetools";
+import unoWildCardDrawWebp from "assets/images-rules/uno-wild-draw4.png?quality=75&imagetools?format=webp&quality=75&source&imagetools";
+import unoWildCardWild from "assets/images-rules/uno-wild-wild.png?quality=75&imagetools";
+import unoWildCardWildWebp from "assets/images-rules/uno-wild-wild.png?quality=75&imagetools?format=webp&quality=75&source&imagetools";
 
 import styles from "./RulesPage.module.scss";
 
@@ -55,7 +63,9 @@ export const renderContent = () => (
         {/* Цифровые карты UNO */}
         <Grid item xs={5}>
           <div className={styles.image}>
-            <img src={unoCards} />
+            <Picture webp={unoCardsWebp}>
+              <img src={unoCards} alt="Цифровые карты" />
+            </Picture>
           </div>
         </Grid>
         <Grid item xs={7} className={clsx(styles.text__block, styles.text__block_small)}>
@@ -67,7 +77,9 @@ export const renderContent = () => (
         {/* Пропусти ход */}
         <Grid item xs={5}>
           <div className={styles.image}>
-            <img src={unoActionCardSkip} />
+            <Picture webp={unoActionCardSkipWebp}>
+              <img src={unoActionCardSkip} alt="Пропусти ход" />
+            </Picture>
           </div>
         </Grid>
         <Grid item xs={7} className={clsx(styles.text__block, styles.text__block_small)}>
@@ -81,7 +93,9 @@ export const renderContent = () => (
         {/* Возьми две */}
         <Grid item xs={5}>
           <div className={styles.image}>
-            <img src={unoActionCardDraw} />
+            <Picture webp={unoActionCardDrawWebp}>
+              <img src={unoActionCardDraw} alt="Возьми две" />
+            </Picture>
           </div>
         </Grid>
         <Grid item xs={7} className={clsx(styles.text__block, styles.text__block_small)}>
@@ -97,7 +111,9 @@ export const renderContent = () => (
         {/* Наоборот */}
         <Grid item xs={5}>
           <div className={styles.image}>
-            <img src={unoActionCardReverse} />
+            <Picture webp={unoActionCardReverseWebp}>
+              <img src={unoActionCardReverse} alt="Наоборот" />
+            </Picture>
           </div>
         </Grid>
         <Grid item xs={7} className={clsx(styles.text__block, styles.text__block_small)}>
@@ -112,7 +128,7 @@ export const renderContent = () => (
         </Grid>
 
         {/* Закажи цвет */}
-        <Grid item xs={8} className={clsx(styles.text__block, styles.text__block_big)}>
+        <Grid item xs={9} className={clsx(styles.text__block)}>
           <p>
             <strong>«Закажи цвет»</strong> – позволяет поменять игроку текущий цвет (на любой, в том
             числе и на текущий цвет). Следующий игрок должен положить любую карту заданного цвета.
@@ -120,13 +136,15 @@ export const renderContent = () => (
             условий, в отличие от следующей карты «Закажи цвет и возьми четыре»...
           </p>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3} className={clsx(styles.image__block)}>
           <div className={styles.image}>
-            <img src={unoWildCardWild} />
+            <Picture webp={unoWildCardWildWebp}>
+              <img src={unoWildCardWild} alt="Закажи цвет" />
+            </Picture>
           </div>
         </Grid>
         {/* Закажи цвет и возьми четыре */}
-        <Grid item xs={8} className={clsx(styles.text__block, styles.text__block_big)}>
+        <Grid item xs={9} className={clsx(styles.text__block)}>
           <p>
             <strong>«Закажи цвет и возьми четыре»</strong> – может быть выложена игроком только в
             свой ход и только в том случае, если у игрока (игрок-1) отсутствует текущий цвет (причём
@@ -139,9 +157,15 @@ export const renderContent = () => (
             две»).
           </p>
         </Grid>
-        <Grid item xs={4}>
-          <div className={styles.image}>
-            <img src={unoWildCardDraw} />
+        <Grid item xs={3} className={clsx(styles.image__block)}>
+          <div className={clsx(styles.image)}>
+            <Picture webp={unoWildCardDrawWebp}>
+              <img
+                src={unoWildCardDraw}
+                alt="Закажи цвет и возьми четыре"
+                className={clsx(styles.image__big)}
+              />
+            </Picture>
           </div>
         </Grid>
       </Grid>
