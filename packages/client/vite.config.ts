@@ -18,6 +18,7 @@ export default defineConfig({
       styles: path.resolve(__dirname, "src", "styles"),
       theme: path.resolve(__dirname, "src", "theme"),
       utils: path.resolve(__dirname, "src", "utils"),
+      hoc: path.resolve(__dirname, "src", "hoc"),
     },
   },
   server: {
@@ -27,4 +28,17 @@ export default defineConfig({
     __SERVER_PORT__: process.env.SERVER_PORT,
   },
   plugins: [react(), imagetools()],
+  build: {
+    rollupOptions: {
+      input: {
+        app: "./index.html",
+        serviceWorker: "./src/serviceWorker.ts",
+      },
+      output: {
+        entryFileNames: (assetInfo) => {
+          return assetInfo.name === "serviceWorker" ? "sw.js" : "assets/js/[name]-[hash].js";
+        },
+      },
+    },
+  },
 });

@@ -19,6 +19,8 @@ import { authSelect, authThunks } from "services/slices/auth-slice";
 import { Theme } from "theme/ThemeContext";
 import { useTheme } from "theme/useTheme";
 
+import { withErrorBoundary } from "hoc/withErrorBoundary";
+
 import { Picture } from "components/picture/Picture";
 
 import logoWebp from "assets/images/logo.png?format=webp&quality=75&source&imagetools";
@@ -178,3 +180,5 @@ export const AppHeader = () => {
     </header>
   );
 };
+
+export const AppHeaderWithErrorBoundary = withErrorBoundary(AppHeader);

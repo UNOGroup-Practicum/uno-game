@@ -63,6 +63,9 @@ export const authSlice = createSlice({
     resetError(state) {
       state.error = null;
     },
+    setUser(state, action) {
+      state.user = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(authThunks.me.pending, (state) => {
