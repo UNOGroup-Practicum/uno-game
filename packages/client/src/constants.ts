@@ -15,6 +15,9 @@ export const ROUTES = {
   leaderboard: {
     path: "/leaderboard",
   },
+  rules: {
+    path: "/rules",
+  },
   forum: { path: "/forum" },
   gamePreparing: {
     path: "/game-preparing",

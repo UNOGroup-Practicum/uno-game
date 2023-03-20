@@ -15,6 +15,7 @@ import { LiderboardPage } from "pages/LiderboardPage/LiderboardPage";
 import { LoginPage } from "pages/LoginPage/LoginPage";
 import { ProfilePage } from "pages/ProfilePage/ProfilePage";
 import { RegisterPage } from "pages/RegisterPage/RegisterPage";
+import { RulesPage } from "pages/RulesPage/RulesPage";
 
 import { AppFooterWithErrorBoundary } from "components/app-footer/AppFooter";
 import { AppHeaderWithErrorBoundary } from "components/app-header/AppHeader";
@@ -51,6 +52,7 @@ function App() {
       <ErrorBoundary>
         <Routes>
           <Route path={ROUTES.home.path} element={<HomePage />} />
+          <Route path={ROUTES.rules.path} element={<RulesPage />} />
 
           <Route element={<AuthPagesRoute />}>
             <Route path={ROUTES.signIn.path} element={<LoginPage />} />
