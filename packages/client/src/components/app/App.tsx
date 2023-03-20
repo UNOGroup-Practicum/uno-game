@@ -16,9 +16,10 @@ import { LoginPage } from "pages/LoginPage/LoginPage";
 import { ProfilePage } from "pages/ProfilePage/ProfilePage";
 import { RegisterPage } from "pages/RegisterPage/RegisterPage";
 
-import { AppFooter } from "components/app-footer/AppFooter";
-import { AppHeader } from "components/app-header/AppHeader";
+import { AppFooterWithErrorBoundary } from "components/app-footer/AppFooter";
+import { AppHeaderWithErrorBoundary } from "components/app-header/AppHeader";
 import { AuthPagesRoute } from "components/auth-pages-route/AuthPagesRoute";
+import { ErrorBoundary } from "components/error-boundary/ErrorBoundary";
 import { ProtectedRoute } from "components/protected-route/ProtectedRoute";
 
 import { ROUTES } from "../../constants";
@@ -45,29 +46,31 @@ function App() {
 
   return (
     <>
-      {location.pathname !== ROUTES.game.path && <AppHeader />}
+      {location.pathname !== ROUTES.game.path && <AppHeaderWithErrorBoundary />}
 
-      <Routes>
-        <Route path={ROUTES.home.path} element={<HomePage />} />
+      <ErrorBoundary>
+        <Routes>
+          <Route path={ROUTES.home.path} element={<HomePage />} />
 
-        <Route element={<AuthPagesRoute />}>
-          <Route path={ROUTES.signIn.path} element={<LoginPage />} />
-          <Route path={ROUTES.signUp.path} element={<RegisterPage />} />
-        </Route>
-
-        <Route element={<ProtectedRoute />}>
-          <Route path={ROUTES.profile.path} element={<ProfilePage />} />
-          <Route path={ROUTES.leaderboard.path} element={<LiderboardPage />} />
-          <Route path={ROUTES.forum.path}>
-            <Route index element={<ForumThemesListPage />} />
-            <Route path=":themeId" element={<ForumMessagesListPage />} />
+          <Route element={<AuthPagesRoute />}>
+            <Route path={ROUTES.signIn.path} element={<LoginPage />} />
+            <Route path={ROUTES.signUp.path} element={<RegisterPage />} />
           </Route>
-          <Route path={ROUTES.gamePreparing.path} element={<GamePreparingPage />} />
-          <Route path={ROUTES.game.path} element={<GamePage />} />
-        </Route>
-      </Routes>
 
-      {location.pathname !== ROUTES.game.path && <AppFooter />}
+          <Route element={<ProtectedRoute />}>
+            <Route path={ROUTES.profile.path} element={<ProfilePage />} />
+            <Route path={ROUTES.leaderboard.path} element={<LiderboardPage />} />
+            <Route path={ROUTES.forum.path}>
+              <Route index element={<ForumThemesListPage />} />
+              <Route path=":themeId" element={<ForumMessagesListPage />} />
+            </Route>
+            <Route path={ROUTES.gamePreparing.path} element={<GamePreparingPage />} />
+            <Route path={ROUTES.game.path} element={<GamePage />} />
+          </Route>
+        </Routes>
+      </ErrorBoundary>
+
+      {location.pathname !== ROUTES.game.path && <AppFooterWithErrorBoundary />}
     </>
   );
 }
