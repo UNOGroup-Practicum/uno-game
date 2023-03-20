@@ -20,13 +20,13 @@ import styles from "./RulesPage.module.scss";
 
 export const renderContent = () => (
   <>
-    <Typography variant="h2" component="h1" align="center" marginBottom={3}>
+    <Typography variant="h4" component="h1" align="center" marginBottom={3}>
       Правила игры UNO
     </Typography>
     <Box sx={{ flexGrow: 1 }}>
       <Grid container>
         <Grid item xs={12} className={styles.text__block}>
-          <Typography variant="h4" component="h1" align="center" marginBottom={3}>
+          <Typography variant="h5" component="h1" align="center" marginBottom={3}>
             Раздача карт
           </Typography>
           <br />
@@ -36,7 +36,7 @@ export const renderContent = () => (
             рядом и становится первой картой колоды «Сброс».
           </p>
           <br />
-          <Typography variant="h4" component="h1" align="center" marginBottom={3}>
+          <Typography variant="h5" component="h1" align="center" marginBottom={3}>
             Игра
           </Typography>
           <br />
@@ -55,12 +55,11 @@ export const renderContent = () => (
         </Grid>
       </Grid>
     </Box>
-    <Typography variant="h3" component="h1" align="center" marginBottom={3}>
+    <Typography variant="h5" component="h1" align="center" marginBottom={3}>
       Разновидности карт
     </Typography>
     <Box sx={{ flexGrow: 1 }}>
       <Grid container>
-        {/* Цифровые карты UNO */}
         <Grid item xs={5}>
           <div className={styles.image}>
             <Picture webp={unoCardsWebp}>
@@ -74,7 +73,6 @@ export const renderContent = () => (
             двойном количестве.
           </p>
         </Grid>
-        {/* Пропусти ход */}
         <Grid item xs={5}>
           <div className={styles.image}>
             <Picture webp={unoActionCardSkipWebp}>
@@ -89,8 +87,6 @@ export const renderContent = () => (
             же картинка), то есть, выполнив Вмешательство.
           </p>
         </Grid>
-
-        {/* Возьми две */}
         <Grid item xs={5}>
           <div className={styles.image}>
             <Picture webp={unoActionCardDrawWebp}>
@@ -107,8 +103,6 @@ export const renderContent = () => (
             «Возьми две», берёт из колоды «Прикуп» всего две карты и пропускает свой ход.
           </p>
         </Grid>
-
-        {/* Наоборот */}
         <Grid item xs={5}>
           <div className={styles.image}>
             <Picture webp={unoActionCardReverseWebp}>
@@ -126,8 +120,6 @@ export const renderContent = () => (
             противоположное и т.д.
           </p>
         </Grid>
-
-        {/* Закажи цвет */}
         <Grid item xs={9} className={clsx(styles.text__block)}>
           <p>
             <strong>«Закажи цвет»</strong> – позволяет поменять игроку текущий цвет (на любой, в том
@@ -143,7 +135,6 @@ export const renderContent = () => (
             </Picture>
           </div>
         </Grid>
-        {/* Закажи цвет и возьми четыре */}
         <Grid item xs={9} className={clsx(styles.text__block)}>
           <p>
             <strong>«Закажи цвет и возьми четыре»</strong> – может быть выложена игроком только в
