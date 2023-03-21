@@ -18,6 +18,7 @@ export default defineConfig({
       styles: path.resolve(__dirname, "src", "styles"),
       theme: path.resolve(__dirname, "src", "theme"),
       utils: path.resolve(__dirname, "src", "utils"),
+      hoc: path.resolve(__dirname, "src", "hoc"),
     },
   },
   server: {

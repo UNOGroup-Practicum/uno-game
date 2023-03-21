@@ -19,6 +19,8 @@ import { authSelect, authThunks } from "services/slices/auth-slice";
 import { Theme } from "theme/ThemeContext";
 import { useTheme } from "theme/useTheme";
 
+import { withErrorBoundary } from "hoc/withErrorBoundary";
+
 import { Picture } from "components/picture/Picture";
 
 import logoWebp from "assets/images/logo.png?format=webp&quality=75&source&imagetools";
@@ -61,8 +63,7 @@ export const AppHeader = () => {
             </li>
 
             <li className={styles.menu__item}>
-              {/* TODO: создать страницу с правилами и исправить ссылку */}
-              <NavLink className={styles.menu__link} to={ROUTES.home.path}>
+              <NavLink className={styles.menu__link} to={ROUTES.rules.path}>
                 Правила
               </NavLink>
             </li>
@@ -179,3 +180,5 @@ export const AppHeader = () => {
     </header>
   );
 };
+
+export const AppHeaderWithErrorBoundary = withErrorBoundary(AppHeader);
