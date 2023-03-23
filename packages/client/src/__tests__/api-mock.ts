@@ -5,7 +5,7 @@ import { LoginRequestData } from "services/api/types";
 
 import { mainUser } from "./fixtures";
 
-const requestUrl = (endPoint: string) => `${process.env.API_ENDPOINT}/${endPoint}`;
+export const requestUrl = (endPoint: string) => `${process.env.API_ENDPOINT}/${endPoint}`;
 
 const handlers = [
   rest.get(requestUrl("auth/user"), (_req, res, ctx) =>

@@ -82,7 +82,7 @@ export const ProfilePage: React.FC = () => {
     dispatch(userThunks.changeUserProfile(formData));
   };
   return (
-    <main className={styles.profile}>
+    <main className={styles.profile} data-testid="page-profile">
       <Container maxWidth="md">
         <section className={styles.profile__photo}>
           <Avatar

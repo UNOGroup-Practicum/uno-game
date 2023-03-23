@@ -16,7 +16,7 @@ export const RulesPage = () => {
   }, []);
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} data-testid="page-rules">
       <Container maxWidth="md">
         <section className={styles.parallax}>
           <div
