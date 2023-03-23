@@ -15,5 +15,6 @@ export default {
   },
   moduleNameMapper: {
     "^__tests__(.*)$": "<rootDir>/src/__tests__$1",
+    "^services(.*)$": "<rootDir>/src/services$1",
   },
 };
