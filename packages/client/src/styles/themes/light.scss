@@ -1,0 +1,8 @@
+.app.light {
+  background: linear-gradient(
+    to bottom,
+    var(--primary-light-color) 0%,
+    var(--primary-light-color) 70vh,
+    var(--primary-dark-color) 100%
+  );
+}

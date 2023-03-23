@@ -86,7 +86,7 @@ export const LeaderboardProfile = () => {
                   sx={{
                     minWidth: column.minWidth,
                     fontSize: "1.2rem",
-                    backgroundColor: "var(--primary-main-color)",
+                    backgroundColor: "var(--primary-main-dark)",
                     color: "var(--text-color)",
                   }}
                 >
@@ -133,7 +133,7 @@ export const LeaderboardProfile = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
         sx={{
           fontSize: "1.1rem",
-          backgroundColor: "var(--primary-main-color)",
+          backgroundColor: "var(--primary-main-dark)",
           color: "var(--text-color)",
         }}
       />
