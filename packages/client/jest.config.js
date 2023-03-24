@@ -24,4 +24,14 @@ export default {
     "^hoc(.*)$": "<rootDir>/src/hoc$1",
     "^components(.*)$": "<rootDir>/src/components$1",
   },
+  collectCoverageFrom: ["src/**/*.{ts,tsx}"],
+  coveragePathIgnorePatterns: [
+    "node_modules",
+    "__tests__",
+    ".module.ts",
+    ".d.ts",
+    "<rootDir>/src/main.ts",
+    "<rootDir>/src/utils/registerServiceWorker.ts",
+  ],
+  coverageDirectory: "<rootDir>/node_modules/.coverage/",
 };

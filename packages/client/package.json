@@ -12,8 +12,10 @@
     "format:prettier": "prettier --write .",
     "format:imports": "npm run lint:js -- --fix",
     "format": "npm-run-all -l -p \"format:**\"",
-    "test:watch": "npm run test -- --watch",
-    "test": "jest ./"
+    "test:watch": "npm run test:only -- --watch",
+    "test:only": "jest ./",
+    "test:coverage": "npm run test:only -- --coverage",
+    "test": "npm run test:coverage"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
