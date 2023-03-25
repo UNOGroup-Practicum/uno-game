@@ -1,0 +1,20 @@
+.buttonCrossClose {
+  cursor: pointer;
+
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+
+  background-color: transparent;
+  border: none;
+
+  &__text {
+    display: flex;
+    width: fit-content;
+    height: fit-content;
+
+    & svg {
+      stroke: var(--text-color);
+    }
+  }
+}
