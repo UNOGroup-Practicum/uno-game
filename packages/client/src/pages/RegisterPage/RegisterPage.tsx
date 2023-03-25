@@ -65,7 +65,7 @@ export const RegisterPage = () => {
   const passwordRef = useRef<HTMLInputElement>();
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} data-testid="page-register">
       <Container maxWidth="md">
         <Typography variant="h4" component="h1" align="center" marginBottom={3}>
           Регистрация

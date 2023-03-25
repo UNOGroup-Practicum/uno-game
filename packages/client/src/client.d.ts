@@ -1,8 +1,10 @@
 import type { PictureSource } from "./components/picture/Picture";
 
-declare const __SERVER_PORT__: number;
-
 declare global {
+  export declare const __SERVER_PORT__: number;
+
+  export declare const __API_ENDPOINT__: string;
+
   export declare module "*&source&imagetools" {
     const src: PictureSource[];
     export default src;

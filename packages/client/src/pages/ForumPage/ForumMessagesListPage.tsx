@@ -38,7 +38,7 @@ export const ForumMessagesListPage: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" data-testid="page-forum-messages">
       <main className={styles.ForumPage}>
         <div className={styles.ForumPage_wrapper}>
           <div className={stylesMessageItem.MessageItem__user}>

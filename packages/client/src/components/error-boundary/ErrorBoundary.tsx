@@ -51,7 +51,12 @@ export class ErrorBoundary extends Component<
       }
 
       return (
-        <Typography variant="caption" align="center" padding={1}>
+        <Typography
+          variant="caption"
+          align="center"
+          padding={1}
+          data-testid="error-boundary-default"
+        >
           Не удалось загрузить...
         </Typography>
       );

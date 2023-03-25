@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { customAlphabet } from "nanoid";
+import { nanoid } from "@reduxjs/toolkit";
 
 import { FormEvent, memo, useCallback, useLayoutEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -21,8 +21,6 @@ import { gameSlice } from "services/slices/gameSlice";
 import gamer from "assets/images/gamer.png";
 
 import { ROUTES } from "../../constants";
-
-const nanoid = customAlphabet("123456789", 4);
 
 function GamePreparing() {
   const [isWithFriendsCardClicked, setIsWithFriendsCardClicked] = useState<boolean>(false);
@@ -39,7 +37,7 @@ function GamePreparing() {
     } else if (searchParams.get("prestart") === "2") {
       setIsRoomCardClicked(true);
       setIsWithFriendsCardClicked(false);
-      setIDRoom(nanoid());
+      setIDRoom(nanoid(4));
     } else {
       setIsWithFriendsCardClicked(false);
       setIsRoomCardClicked(false);
