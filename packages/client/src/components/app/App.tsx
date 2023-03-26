@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "services/hooks";
 import { authSelect, authThunks } from "services/slices/auth-slice";
 import { Theme } from "theme/ThemeContext";
 import { useTheme } from "theme/useTheme";
+import { toggleFullScreen } from "utils/toggleFullScreen";
 
 import { ForumMessagesListPage } from "pages/ForumPage/ForumMessagesListPage";
 import { ForumThemesListPage } from "pages/ForumPage/ForumThemesListPage";
@@ -24,22 +25,6 @@ import { ErrorBoundary } from "components/error-boundary/ErrorBoundary";
 import { ProtectedRoute } from "components/protected-route/ProtectedRoute";
 
 import { ROUTES } from "../../constants";
-
-interface ExtendedDocument extends Document {
-  webkitFullscreenElement?: Element;
-  mozFullScreenElement?: Element;
-  msFullscreenElement?: Element;
-
-  webkitExitFullscreen?: () => void;
-  mozCancelFullScreen?: () => void;
-  msExitFullscreen?: () => void;
-}
-
-interface ExtendedHTMLElement extends HTMLElement {
-  webkitRequestFullscreen?: () => void;
-  mozRequestFullScreen?: () => void;
-  msRequestFullscreen?: () => void;
-}
 
 function App() {
   const dispatch = useDispatch();
@@ -61,9 +46,6 @@ function App() {
     document.body.classList.remove(oldTheme);
   }, [theme]);
 
-  /**
-   * реализация Fullscreen API
-   */
   useEffect(() => {
     const onPressKey = (event: KeyboardEvent) => {
       if (event.altKey && event.key === "Enter") {
@@ -75,49 +57,6 @@ function App() {
       document.removeEventListener("keyup", onPressKey);
     };
   }, []);
-
-  function toggleFullScreen() {
-    const htmlDocument: ExtendedDocument = document;
-    const elem: ExtendedHTMLElement = document.documentElement;
-
-    const isFullscreenOff = Boolean(
-      (htmlDocument.fullscreenElement !== undefined && htmlDocument.fullscreenElement === null) ||
-        (htmlDocument.webkitFullscreenElement !== undefined &&
-          !htmlDocument.webkitFullscreenElement) ||
-        (htmlDocument.mozFullScreenElement !== undefined && !htmlDocument.mozFullScreenElement) ||
-        (htmlDocument.msFullscreenElement !== undefined &&
-          htmlDocument.msFullscreenElement === null)
-    );
-
-    const activateFullscreen = () => {
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen().then();
-      } else if (elem.webkitRequestFullscreen) {
-        elem.webkitRequestFullscreen();
-      } else if (elem.mozRequestFullScreen) {
-        elem.mozRequestFullScreen();
-      } else if (elem.msRequestFullscreen) {
-        elem.msRequestFullscreen();
-      }
-    };
-    const deactivateFullscreen = () => {
-      if (htmlDocument.exitFullscreen) {
-        htmlDocument.exitFullscreen().then();
-      } else if (htmlDocument.webkitExitFullscreen) {
-        htmlDocument.webkitExitFullscreen();
-      } else if (htmlDocument.mozCancelFullScreen) {
-        htmlDocument.mozCancelFullScreen();
-      } else if (htmlDocument.msExitFullscreen) {
-        htmlDocument.msExitFullscreen();
-      }
-    };
-
-    if (isFullscreenOff) {
-      activateFullscreen();
-    } else {
-      deactivateFullscreen();
-    }
-  }
 
   return (
     <>
