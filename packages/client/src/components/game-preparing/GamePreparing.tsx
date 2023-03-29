@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { nanoid } from "@reduxjs/toolkit";
+import { nanoid } from "nanoid";
 
 import { FormEvent, memo, useCallback, useLayoutEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";

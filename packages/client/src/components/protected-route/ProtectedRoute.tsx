@@ -9,9 +9,13 @@ export const ProtectedRoute = () => {
   const location = useLocation();
   const { user } = useSelector(authSelect);
 
-  return user ? (
-    <Outlet />
-  ) : (
-    <Navigate to={ROUTES.signIn.path} state={{ from: location }} replace />
-  );
+  if (!import.meta.env.SSR) {
+    return user ? (
+      <Outlet />
+    ) : (
+      <Navigate to={ROUTES.signIn.path} state={{ from: location }} replace />
+    );
+  } else {
+    return null;
+  }
 };

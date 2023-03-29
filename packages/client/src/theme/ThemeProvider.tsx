@@ -1,16 +1,20 @@
 import { createTheme, ThemeProvider as ThemeProviderMui } from "@mui/material/styles";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { muiComponents } from "./muiComponents";
 import { muiPallete, setGlobalStyles } from "./muiPallete";
 import { muiTypography } from "./muiTypography";
 import { LOCAL_STORAGE_THEME_KEY, Theme, ThemeContext } from "./ThemeContext";
 
-const defaultTheme = (localStorage.getItem(LOCAL_STORAGE_THEME_KEY) as Theme) || Theme.DARK;
-
 const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>(defaultTheme);
+  const [theme, setTheme] = useState<Theme>(Theme.LIGHT);
+
+  useEffect(() => {
+    if (localStorage.getItem(LOCAL_STORAGE_THEME_KEY) as Theme) {
+      setTheme(localStorage.getItem(LOCAL_STORAGE_THEME_KEY) as Theme);
+    }
+  }, []);
 
   const themeMui = useMemo(
     () =>

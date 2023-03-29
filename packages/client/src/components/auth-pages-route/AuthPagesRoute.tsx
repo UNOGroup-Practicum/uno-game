@@ -9,9 +9,13 @@ export const AuthPagesRoute = () => {
   const location = useLocation();
   const { user } = useSelector(authSelect);
 
-  return user ? (
-    <Navigate to={ROUTES.profile.path} state={{ from: location }} replace />
-  ) : (
-    <Outlet />
-  );
+  if (!import.meta.env.SSR) {
+    return user ? (
+      <Navigate to={ROUTES.profile.path} state={{ from: location }} replace />
+    ) : (
+      <Outlet />
+    );
+  } else {
+    return null;
+  }
 };
