@@ -1,3 +1,4 @@
+import cookieParser from "cookie-parser";
 import express from "express";
 import fs from "node:fs";
 import path from "node:path";
@@ -33,7 +34,7 @@ export async function startServer() {
     );
   }
 
-  app.use("*", async (req, res) => {
+  app.use("*", cookieParser(), async (req, res) => {
     try {
       const url = req.originalUrl;
 
@@ -44,14 +45,16 @@ export async function startServer() {
         render = (await vite.ssrLoadModule("/src/entry-server.tsx")).render;
       } else {
         template = indexProd;
-        render = (await import("./dist/server/client.cjs")).render;
+        render = (await import("./dist/server/entry-server.cjs")).render;
       }
 
-      const { html, emotionCss } = render(url);
-      const htmlWithApp = template.replace(`<!--app-html-->`, html);
-      const htmlWithEmotionCss = htmlWithApp.replace(`<!--emotionCss-->`, emotionCss);
+      const { html, emotionCss, initialState } = render(url);
+      const htmlWithReplacements = template
+        .replace(`<!--app-html-->`, html)
+        .replace(`<!--emotionCss-->`, emotionCss)
+        .replace(`<!--store-data-->`, JSON.stringify(initialState).replace(/</g, "\\u003c"));
 
-      res.status(200).set({ "Content-Type": "text/html" }).end(htmlWithEmotionCss);
+      res.status(200).set({ "Content-Type": "text/html" }).end(htmlWithReplacements);
     } catch (e) {
       !isProd && vite.ssrFixStacktrace(e);
       console.log(e.stack);

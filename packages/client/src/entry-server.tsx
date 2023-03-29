@@ -17,6 +17,8 @@ export function render(url: string | Partial<Location>) {
   const cache = createEmotionCache();
   const { extractCriticalToChunks, constructStyleTagsFromChunks } = createEmotionServer(cache);
 
+  const initialState = store.getState();
+
   const html = ReactDOMServer.renderToString(
     <StaticRouter location={url}>
       <Provider store={store}>
@@ -32,5 +34,5 @@ export function render(url: string | Partial<Location>) {
   const emotionChunks = extractCriticalToChunks(html);
   const emotionCss = constructStyleTagsFromChunks(emotionChunks);
 
-  return { html, emotionCss };
+  return { html, emotionCss, initialState };
 }

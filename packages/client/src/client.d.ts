@@ -5,6 +5,10 @@ declare global {
 
   export declare const __API_ENDPOINT__: string;
 
+  interface Window {
+    initialState?: object;
+  }
+
   export declare module "*&source&imagetools" {
     const src: PictureSource[];
     export default src;
