@@ -1,4 +1,3 @@
-import cookieParser from "cookie-parser";
 import express from "express";
 import fs from "node:fs";
 import path from "node:path";
@@ -34,7 +33,7 @@ export async function startServer() {
     );
   }
 
-  app.use("*", cookieParser(), async (req, res) => {
+  app.use("*", async (req, res) => {
     try {
       const url = req.originalUrl;
 
