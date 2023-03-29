@@ -34,4 +34,5 @@ export default {
     "<rootDir>/src/utils/registerServiceWorker.ts",
   ],
   coverageDirectory: "<rootDir>/node_modules/.coverage/",
+  modulePathIgnorePatterns: ["./src/components/app"],
 };
