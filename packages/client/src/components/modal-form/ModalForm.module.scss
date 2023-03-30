@@ -1,0 +1,19 @@
+.modalForm {
+  &__container {
+    width: 100%;
+    max-width: 510px;
+    margin: 0 auto;
+
+    & > div {
+      margin: 0;
+    }
+  }
+
+  &__paper {
+    width: 100%;
+  }
+
+  &__dialogContent {
+    background-color: var(--bg-color);
+  }
+}

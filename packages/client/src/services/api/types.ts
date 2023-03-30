@@ -12,7 +12,7 @@ export type LoginRequestData = {
   password: string;
 };
 
-export type UpdateUserPassword = {
+export type PasswordChangeRequest = {
   oldPassword: string;
   newPassword: string;
 };

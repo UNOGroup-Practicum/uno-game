@@ -2,7 +2,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Avatar, Box, Button, Container, Link, Stack, TextField, Typography } from "@mui/material";
 import clsx from "clsx";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
@@ -12,7 +12,9 @@ import { authSelect } from "services/slices/auth-slice";
 import { userSelect, userSlice, userThunks } from "services/slices/user-slice";
 import { InputNames, validationTemplate } from "utils/validation/validation";
 
-import { ChangePassword } from "../../components/changePassword/ChangePassword";
+import { ModalForm } from "components/modal-form/ModalForm";
+import { PasswordChangeForm } from "components/modal-form/password-change-form/PasswordChangeForm";
+
 import { ROUTES } from "../../constants";
 
 import styles from "./ProfilePage.module.scss";
@@ -37,12 +39,6 @@ export const ProfilePage: React.FC = () => {
     email: user?.email || "",
   };
 
-  const updatedUserPassword = {
-    oldPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  };
-
   const {
     control,
     handleSubmit,
@@ -51,12 +47,9 @@ export const ProfilePage: React.FC = () => {
   } = useForm({
     defaultValues: {
       ...transformedUser,
-      ...updatedUserPassword,
     },
     mode: "onChange",
   });
-
-  const passwordNewRef = useRef<HTMLInputElement>();
 
   useEffect(() => {
     reset(transformedUser);
@@ -295,15 +288,21 @@ export const ProfilePage: React.FC = () => {
             fontWeight="bold"
             onClick={onOpenFormChangePassword}
           >
-            "Сменить пароль"
+            Сменить пароль
           </Typography>
         </Link>
 
-        <ChangePassword
+        <ModalForm
           onClick={onOpenFormChangePassword}
           isOpen={isChangePassword}
           setIsOpen={setIsChangePassword}
-        />
+        >
+          <PasswordChangeForm
+            className={styles.profile__form}
+            isOpen={isChangePassword}
+            setIsOpen={setIsChangePassword}
+          />
+        </ModalForm>
       </Container>
     </main>
   );
