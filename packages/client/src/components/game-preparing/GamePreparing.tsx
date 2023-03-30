@@ -10,8 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { customAlphabet } from "nanoid";
-const nanoid = customAlphabet("1234567890", 4);
+import { nanoid } from "@reduxjs/toolkit";
 
 import { FormEvent, memo, useCallback, useLayoutEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
