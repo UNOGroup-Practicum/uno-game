@@ -37,6 +37,7 @@
     "react-hook-form": "^7.43.4",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.8.1",
+    "rimraf": "^4.4.1",
     "zod": "^3.21.4"
   },
   "devDependencies": {

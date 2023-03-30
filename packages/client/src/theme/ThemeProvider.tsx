@@ -8,7 +8,7 @@ import { muiTypography } from "./muiTypography";
 import { LOCAL_STORAGE_THEME_KEY, Theme, ThemeContext } from "./ThemeContext";
 
 const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>(Theme.LIGHT);
+  const [theme, setTheme] = useState<Theme>(Theme.DARK);
 
   useEffect(() => {
     if (localStorage.getItem(LOCAL_STORAGE_THEME_KEY) as Theme) {
