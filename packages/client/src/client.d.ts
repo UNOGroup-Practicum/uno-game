@@ -6,7 +6,7 @@ declare global {
   export declare const __API_ENDPOINT__: string;
 
   interface Window {
-    initialState?: object;
+    __PRELOADED_STATE__?: object;
   }
 
   export declare module "*&source&imagetools" {

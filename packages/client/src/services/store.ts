@@ -2,14 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import { rootReducer } from "./reducers";
 
-let initialState;
+let preloadedState;
 if (!import.meta.env.SSR) {
-  initialState = window.initialState;
-  delete window.initialState;
+  preloadedState = window.__PRELOADED_STATE__;
+  delete window.__PRELOADED_STATE__;
 }
 
 export const store = configureStore({
-  preloadedState: initialState,
+  preloadedState,
   reducer: rootReducer,
   devTools: process.env.NODE_ENV !== "production",
 });
