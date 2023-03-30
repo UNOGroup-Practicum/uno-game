@@ -26,3 +26,5 @@ export const ROUTES = {
     path: "/game",
   },
 };
+
+export const SCHEMA_ERROR_MESSAGE = "Schema response is not valid";

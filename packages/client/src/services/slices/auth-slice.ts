@@ -43,7 +43,7 @@ export const authThunks = {
     "AUTH/login",
     async (data, { dispatch }) => {
       await authAPI.login(data);
-      dispatch(thunkMe());
+      dispatch(thunkMe(true));
     }
   ),
 
@@ -51,7 +51,7 @@ export const authThunks = {
     "AUTH/register",
     async (data, { dispatch }) => {
       await authAPI.register(data);
-      dispatch(thunkMe());
+      dispatch(thunkMe(true));
     }
   ),
 };

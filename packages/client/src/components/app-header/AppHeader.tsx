@@ -89,7 +89,11 @@ export const AppHeader = () => {
                 </NavLink>
               ) : (
                 <>
-                  <button className={styles.menu__link} onClick={handleClick}>
+                  <button
+                    className={styles.menu__link}
+                    onClick={handleClick}
+                    data-testid="button-name"
+                  >
                     {user.firstName}
                   </button>
                   <Menu

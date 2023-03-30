@@ -50,7 +50,7 @@ const AdvantagesItem: React.FC<React.PropsWithChildren> = ({ children }) => {
 export const HomePage = () => {
   return (
     <>
-      <section className={styles.promo}>
+      <section className={styles.promo} data-testid="page-home">
         <div className={styles.promo__bg}>
           <Picture webp={promoBgWebp}>
             <img src={promoBg} alt="Карты на столе" />

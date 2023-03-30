@@ -82,11 +82,11 @@ export const ProfilePage: React.FC = () => {
     dispatch(userThunks.changeUserProfile(formData));
   };
   return (
-    <main className={styles.profile}>
+    <main className={styles.profile} data-testid="page-profile">
       <Container maxWidth="md">
         <section className={styles.profile__photo}>
           <Avatar
-            src={`${import.meta.env.VITE_API_ENDPOINT}/resources${user?.avatar}`}
+            src={`${__API_ENDPOINT__}/resources${user?.avatar}`}
             sx={{ width: 100, height: 100 }}
           />
           <div className={styles.profile__photo_edit}>

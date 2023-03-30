@@ -19,6 +19,8 @@ jobs:
         run: yarn
       - name: Initialize
         run: yarn lerna bootstrap
+      - name: Create .env file
+        run: node init.mjs
       - name: Lint
         run: yarn lint
       - name: Test

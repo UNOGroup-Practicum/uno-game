@@ -45,7 +45,7 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} data-testid="page-login">
       <Container maxWidth="md">
         <Typography variant="h4" component="h1" align="center" marginBottom={3}>
           Вход

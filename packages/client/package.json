@@ -12,7 +12,10 @@
     "format:prettier": "prettier --write .",
     "format:imports": "npm run lint:js -- --fix",
     "format": "npm-run-all -l -p \"format:**\"",
-    "test": "jest ./"
+    "test:watch": "npm run test:only -- --watch",
+    "test:only": "jest ./",
+    "test:coverage": "npm run test:only -- --coverage",
+    "test": "npm run test:coverage"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
@@ -30,24 +33,30 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.4",
     "react-redux": "^8.0.5",
-    "react-router-dom": "^6.8.1"
+    "react-router-dom": "^6.8.1",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^28.1.8",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
+    "@types/redux-mock-store": "^1.0.3",
     "@typescript-eslint/eslint-plugin": "^5.35.1",
     "@typescript-eslint/parser": "^5.35.1",
     "@vitejs/plugin-react": "^2.0.1",
     "eslint": "^8.23.0",
     "eslint-plugin-simple-import-sort": "^10.0.0",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^28",
     "jest-css-modules-transform": "^4.4.2",
     "jest-environment-jsdom": "^29.0.1",
     "lefthook": "^1.1.1",
+    "msw": "^1.2.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
+    "redux-mock-store": "^1.5.4",
     "sass": "^1.58.3",
     "stylelint": "^15.2.0",
     "stylelint-config-clean-order": "^5.0.0",

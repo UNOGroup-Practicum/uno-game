@@ -26,7 +26,7 @@ export const ForumThemesListPage: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" data-testid="page-forum-main">
       <main className={styles.ForumPage}>
         <h2 className={styles.ForumPage__header}>Форум</h2>
 
