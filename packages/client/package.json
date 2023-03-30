@@ -17,7 +17,7 @@
     "test:watch": "npm run test:only -- --watch",
     "test:only": "jest ./",
     "test:coverage": "npm run test:only -- --coverage",
-    "test": "npm run test:coverage"
+    "test": "npm run test:only"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
