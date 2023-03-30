@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "services/hooks";
 import { authSelect, authThunks } from "services/slices/auth-slice";
 import { Theme } from "theme/ThemeContext";
 import { useTheme } from "theme/useTheme";
+import { toggleFullScreen } from "utils/toggleFullScreen";
 
 import { ForumMessagesListPage } from "pages/ForumPage/ForumMessagesListPage";
 import { ForumThemesListPage } from "pages/ForumPage/ForumThemesListPage";
@@ -44,6 +45,18 @@ function App() {
     document.body.classList.add("app", newTheme);
     document.body.classList.remove(oldTheme);
   }, [theme]);
+
+  useEffect(() => {
+    const onPressKey = (event: KeyboardEvent) => {
+      if (event.altKey && event.key === "Enter") {
+        toggleFullScreen();
+      }
+    };
+    document.addEventListener("keyup", onPressKey);
+    return () => {
+      document.removeEventListener("keyup", onPressKey);
+    };
+  }, []);
 
   return (
     <>
