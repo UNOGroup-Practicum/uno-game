@@ -30,7 +30,7 @@ export default {
     "__tests__",
     ".module.ts",
     ".d.ts",
-    "<rootDir>/src/main.ts",
+    "<rootDir>/src/entry-client.tsx",
     "<rootDir>/src/utils/registerServiceWorker.ts",
   ],
   coverageDirectory: "<rootDir>/node_modules/.coverage/",

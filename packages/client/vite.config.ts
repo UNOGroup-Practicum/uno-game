@@ -37,9 +37,16 @@ export default defineConfig({
       },
       output: {
         entryFileNames: (assetInfo) => {
-          return assetInfo.name === "serviceWorker" ? "sw.js" : "assets/js/[name]-[hash].js";
+          return assetInfo.name === "serviceWorker"
+            ? "sw.js"
+            : assetInfo.name === "entry-server"
+            ? "entry-server.cjs"
+            : "assets/js/[name]-[hash].js";
         },
       },
     },
+  },
+  legacy: {
+    buildSsrCjsExternalHeuristics: true,
   },
 });

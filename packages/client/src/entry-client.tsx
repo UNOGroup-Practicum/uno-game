@@ -13,13 +13,21 @@ import "./styles/index.scss";
 
 serviceWorker.register();
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+const cache = createEmotionCache();
+import { CacheProvider } from "@emotion/react";
+
+import createEmotionCache from "./createEmotionCache";
+
+ReactDOM.hydrateRoot(
+  document.getElementById("root") as HTMLElement,
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <ThemeProvider>
-          <App />
-        </ThemeProvider>
+        <CacheProvider value={cache}>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </CacheProvider>
       </BrowserRouter>
     </Provider>
   </React.StrictMode>
