@@ -79,7 +79,7 @@ function Game() {
     ]);
 
     return () => {
-      if (import.meta.env.PROD) {
+      if (process.env.NODE_ENV === "production") {
         refDeleteAnimation.current = true;
       } else {
         if (refAmountRenders.current === 1) {
