@@ -15,7 +15,7 @@ const cardsDistribution: TCardsDistribution = (
   shuffleArrayCards,
   createUserCardsDuringCardsDistribution,
   setShuffleArrayCards,
-  setIsButtonExitDisplayed,
+  refDeleteAnimation,
   xEndPoint,
   yEndPoint
 ) => {
@@ -34,11 +34,14 @@ const cardsDistribution: TCardsDistribution = (
     yMinus60: canvas.height / 2 - 60,
   };
 
-  const rate = (point.yMinus60 - 160) / 30;
+  let rate = (point.yMinus60 - 160) / 30;
   let xSteper = 0;
   let ySteper = 0;
 
   function fn() {
+    if (refDeleteAnimation.current) {
+      rate = 100;
+    }
     ctx.clearRect(0, 155, canvas.width, canvas.height - 330);
     xSteper += ((point.xMinus40 - xEndPoint) / (point.y - 90 - yEndPoint)) * rate;
     ySteper += 1 * rate;
@@ -63,7 +66,7 @@ const cardsDistribution: TCardsDistribution = (
             shuffleArrayCards,
             createUserCardsDuringCardsDistribution,
             setShuffleArrayCards,
-            setIsButtonExitDisplayed,
+            refDeleteAnimation,
             gamersPositions[idx].cards[0],
             gamersPositions[idx].cards[1]
           );
@@ -96,7 +99,6 @@ const cardsDistribution: TCardsDistribution = (
             }
           }
           setShuffleArrayCards(shuffleArrayCards);
-          setIsButtonExitDisplayed(true);
           delete cardsDistribution.cardsCounter1;
           delete cardsDistribution.cardsCounter2;
         }
@@ -143,7 +145,7 @@ const cardsDistribution: TCardsDistribution = (
           shuffleArrayCards,
           createUserCardsDuringCardsDistribution,
           setShuffleArrayCards,
-          setIsButtonExitDisplayed,
+          refDeleteAnimation,
           gamersPositions[idx].cards[0],
           gamersPositions[idx].cards[1]
         );
