@@ -60,7 +60,7 @@ function Game() {
   const [isModalCardColorOpen, setIsModalCardColorOpen] = useState<true | false>(false);
   const [win, setWin] = useState<string | null>(null);
   const [cardColor, setCardColor] = useState<Color | null>(null);
-  const [isVolumeUp, setIsVolumeUp] = useState<true | false>(true);
+  const [isVolumeUp, setIsVolumeUp] = useState<true | false>(false);
 
   useLayoutEffect(() => {
     const canvas = ref.current as HTMLCanvasElement;
