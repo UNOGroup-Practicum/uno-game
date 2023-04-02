@@ -9,6 +9,7 @@ export const LiderboardPage = () => {
   const handleFilter = (e: React.MouseEvent<HTMLElement>): void => {
     console.log(e);
   };
+
   return (
     <div className={styles.root} data-testid="page-leaderboard">
       <Container maxWidth="md">
