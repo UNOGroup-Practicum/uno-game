@@ -6,10 +6,6 @@ import { LeaderboardProfile } from "components/leaderboard-profile/LeaderbordPro
 import styles from "./LiderboardPage.module.scss";
 
 export const LiderboardPage = () => {
-  const handleFilter = (e: React.MouseEvent<HTMLElement>): void => {
-    console.log(e);
-  };
-
   return (
     <div className={styles.root} data-testid="page-leaderboard">
       <Container maxWidth="md">
@@ -17,13 +13,13 @@ export const LiderboardPage = () => {
           Список лидеров
         </Typography>
         <Stack spacing={3} direction="row" sx={{ margin: "20px 0", display: "inline-block" }}>
-          <Button variant="contained" className={styles.leaderboard__btn} onClick={handleFilter}>
+          <Button variant="contained" className={styles.leaderboard__btn}>
             Неделя
           </Button>
-          <Button variant="contained" className={styles.leaderboard__btn} onClick={handleFilter}>
+          <Button variant="contained" className={styles.leaderboard__btn}>
             Месяц
           </Button>
-          <Button variant="contained" className={styles.leaderboard__btn} onClick={handleFilter}>
+          <Button variant="contained" className={styles.leaderboard__btn}>
             За всё время
           </Button>
         </Stack>
