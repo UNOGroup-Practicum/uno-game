@@ -1,7 +1,5 @@
 import LogoutIcon from "@mui/icons-material/Logout";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import VolumeOffIcon from "@mui/icons-material/VolumeOff";
-import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import { Box, Button, ButtonGroup, Chip, Modal, Typography } from "@mui/material";
 
 import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -46,7 +44,6 @@ function Game() {
   const refCardColor = useRef<Color | null>(null);
   const refCountSkipTurn = useRef(0);
   const refDeleteAnimation = useRef<true | false>(false);
-  const refAudio = useRef<HTMLAudioElement | null>(null);
   const ref = useRef<HTMLCanvasElement>(null);
   const { gameVariant } = useSelector(gameSelect);
   const { user } = useSelector(authSelect);
@@ -62,7 +59,6 @@ function Game() {
   const [isModalCardColorOpen, setIsModalCardColorOpen] = useState<true | false>(false);
   const [win, setWin] = useState<string | null>(null);
   const [cardColor, setCardColor] = useState<Color | null>(null);
-  const [isVolumeUp, setIsVolumeUp] = useState<true | false>(false);
 
   useLayoutEffect(() => {
     const canvas = ref.current as HTMLCanvasElement;
@@ -92,14 +88,6 @@ function Game() {
       refAmountRenders.current++;
     };
   }, []);
-
-  useEffect(() => {
-    if (isVolumeUp) {
-      refAudio.current?.play();
-    } else {
-      refAudio.current?.pause();
-    }
-  }, [isVolumeUp]);
 
   useEffect(() => {
     if (shuffleArrayCards && ctx && canvas && gamersPositions && !isModalCardColorOpen) {
