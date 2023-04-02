@@ -1,19 +1,34 @@
+import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
-import { Avatar, Box, Button, Container, Link, Stack, TextField, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Dialog,
+  DialogContent,
+  IconButton,
+  Link,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import clsx from "clsx";
 
-import React, { useEffect, useState } from "react";
+import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
-import { UpdateUserRequestData } from "services/api/types";
+import { PasswordChangeRequest, UpdateUserRequestData } from "services/api/types";
 import { useDispatch } from "services/hooks";
 import { authSelect } from "services/slices/auth-slice";
 import { userSelect, userSlice, userThunks } from "services/slices/user-slice";
-import { InputNames, validationTemplate } from "utils/validation/validation";
-
-import { ModalForm } from "components/modal-form/ModalForm";
-import { PasswordChangeForm } from "components/modal-form/password-change-form/PasswordChangeForm";
+import {
+  ERROR_MESSAGE,
+  InputNames,
+  REQUIRED_MESSAGE,
+  validationTemplate,
+} from "utils/validation/validation";
 
 import { ROUTES } from "../../constants";
 
@@ -24,9 +39,13 @@ export const ProfilePage: React.FC = () => {
 
   const { error, isLoading, isSuccess } = useSelector(userSelect);
 
-  const [isInputChanged, setIsInputChanged] = useState(false);
+  const [state, setState] = useState({
+    isInputChanged: false,
+    isChangedPassword: false,
+    isPasswordSend: false,
+  });
 
-  const [isChangePassword, setIsChangePassword] = useState(false);
+  const passwordNewRef = useRef<HTMLInputElement>();
 
   const { user } = useSelector(authSelect);
 
@@ -39,6 +58,12 @@ export const ProfilePage: React.FC = () => {
     email: user?.email || "",
   };
 
+  const passwordChangeData = {
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  };
+
   const {
     control,
     handleSubmit,
@@ -47,6 +72,7 @@ export const ProfilePage: React.FC = () => {
   } = useForm({
     defaultValues: {
       ...transformedUser,
+      ...passwordChangeData,
     },
     mode: "onChange",
   });
@@ -89,7 +115,30 @@ export const ProfilePage: React.FC = () => {
   };
 
   const onOpenFormChangePassword = () => {
-    setIsChangePassword(!isChangePassword);
+    setState({ ...state, isChangedPassword: !state.isChangedPassword });
+  };
+
+  const onSubmitChangePassword: SubmitHandler<PasswordChangeRequest> = (formData) => {
+    const { oldPassword, newPassword } = formData;
+    setState({ ...state, isPasswordSend: !state.isPasswordSend });
+
+    setTimeout(() => {
+      if (state.isChangedPassword) {
+        setState({ ...state, isChangedPassword: !state.isChangedPassword });
+      }
+      reset(passwordChangeData);
+    }, 3000);
+
+    console.log(
+      JSON.stringify(
+        {
+          oldPassword: oldPassword,
+          newPassword: newPassword,
+        },
+        null,
+        2
+      )
+    );
   };
 
   return (
@@ -99,7 +148,7 @@ export const ProfilePage: React.FC = () => {
           className={clsx(
             styles.profile__photo,
             styles.profile_show,
-            isChangePassword && styles.profile_hide
+            state.isChangedPassword && styles.profile_hide
           )}
         >
           <Avatar
@@ -130,7 +179,7 @@ export const ProfilePage: React.FC = () => {
           className={clsx(
             styles.profile__form,
             styles.profile_show,
-            isChangePassword && styles.profile_hide
+            state.isChangedPassword && styles.profile_hide
           )}
           onSubmit={handleSubmit(onChangeProfile)}
           noValidate
@@ -148,7 +197,7 @@ export const ProfilePage: React.FC = () => {
                   variant="standard"
                   InputLabelProps={{ shrink: false }}
                   onChange={field.onChange}
-                  onInput={() => setIsInputChanged(true)}
+                  onInput={() => setState({ ...state, isInputChanged: true })}
                   value={field.value}
                   error={!!errors.email?.message}
                   helperText={errors.email?.message}
@@ -166,7 +215,7 @@ export const ProfilePage: React.FC = () => {
                   variant="standard"
                   InputLabelProps={{ shrink: false }}
                   onChange={field.onChange}
-                  onInput={() => setIsInputChanged(true)}
+                  onInput={() => setState({ ...state, isInputChanged: true })}
                   value={field.value}
                   error={!!errors.login?.message}
                   helperText={errors.login?.message}
@@ -184,7 +233,7 @@ export const ProfilePage: React.FC = () => {
                   variant="standard"
                   InputLabelProps={{ shrink: false }}
                   onChange={field.onChange}
-                  onInput={() => setIsInputChanged(true)}
+                  onInput={() => setState({ ...state, isInputChanged: true })}
                   value={field.value}
                   error={!!errors.display_name?.message}
                   helperText={errors.display_name?.message}
@@ -202,7 +251,7 @@ export const ProfilePage: React.FC = () => {
                   variant="standard"
                   InputLabelProps={{ shrink: false }}
                   onChange={field.onChange}
-                  onInput={() => setIsInputChanged(true)}
+                  onInput={() => setState({ ...state, isInputChanged: true })}
                   value={field.value}
                   error={!!errors.first_name?.message}
                   helperText={errors.first_name?.message}
@@ -220,7 +269,7 @@ export const ProfilePage: React.FC = () => {
                   id="second_name"
                   InputLabelProps={{ shrink: false }}
                   onChange={field.onChange}
-                  onInput={() => setIsInputChanged(true)}
+                  onInput={() => setState({ ...state, isInputChanged: true })}
                   value={field.value}
                   error={!!errors.second_name?.message}
                   helperText={errors.second_name?.message}
@@ -239,7 +288,7 @@ export const ProfilePage: React.FC = () => {
                   variant="standard"
                   InputLabelProps={{ shrink: false }}
                   onChange={field.onChange}
-                  onInput={() => setIsInputChanged(true)}
+                  onInput={() => setState({ ...state, isInputChanged: true })}
                   value={field.value}
                   error={!!errors.phone?.message}
                   helperText={errors.phone?.message}
@@ -274,7 +323,7 @@ export const ProfilePage: React.FC = () => {
               marginTop: "50px",
               marginBottom: "10px",
             }}
-            disabled={!(isValid && isInputChanged)}
+            disabled={!(isValid && state.isInputChanged)}
           >
             Сохранить
           </Button>
@@ -292,17 +341,134 @@ export const ProfilePage: React.FC = () => {
           </Typography>
         </Link>
 
-        <ModalForm
-          onClick={onOpenFormChangePassword}
-          isOpen={isChangePassword}
-          setIsOpen={setIsChangePassword}
+        <Dialog
+          open={state.isChangedPassword}
+          onClose={onOpenFormChangePassword}
+          classes={{
+            container: styles.modalForm__container,
+            paper: styles.modalForm__paper,
+          }}
         >
-          <PasswordChangeForm
-            className={styles.profile__form}
-            isOpen={isChangePassword}
-            setIsOpen={setIsChangePassword}
-          />
-        </ModalForm>
+          <IconButton
+            aria-label="close"
+            onClick={onOpenFormChangePassword}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent
+            classes={{
+              root: styles.modalForm__dialogContent,
+            }}
+          >
+            <form
+              className={styles.profile__form}
+              name="changePassword-form"
+              key="changePassword-form"
+              onSubmit={handleSubmit(onSubmitChangePassword)}
+              noValidate
+            >
+              <Stack spacing={3}>
+                <Controller
+                  control={control}
+                  key="oldPassword"
+                  name="oldPassword"
+                  rules={{ required: REQUIRED_MESSAGE }}
+                  render={({ field }) => (
+                    <TextField
+                      variant="standard"
+                      label="Старый пароль"
+                      type="password"
+                      id="oldPassword"
+                      InputLabelProps={{ shrink: false }}
+                      onChange={field.onChange}
+                      value={field.value || ""}
+                      error={!!errors.oldPassword?.message}
+                      helperText={errors.oldPassword?.message}
+                    />
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="newPassword"
+                  key="newPassword"
+                  rules={validationTemplate(InputNames.PASSWORD)}
+                  render={({ field }) => (
+                    <TextField
+                      variant="standard"
+                      label="Новый пароль"
+                      type="password"
+                      id="newPassword"
+                      InputLabelProps={{ shrink: false }}
+                      inputRef={passwordNewRef}
+                      onChange={field.onChange}
+                      value={field.value || ""}
+                      error={!!errors.newPassword?.message}
+                      helperText={errors.newPassword?.message}
+                    />
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="confirmPassword"
+                  key="confirmPassword"
+                  rules={{
+                    required: REQUIRED_MESSAGE,
+                    validate: (value: string) => {
+                      if (value !== passwordNewRef.current?.value) {
+                        return ERROR_MESSAGE.CONFIRM_PASSWORD;
+                      }
+
+                      return true;
+                    },
+                  }}
+                  render={({ field }) => (
+                    <TextField
+                      variant="standard"
+                      label="Подтвердите новый пароль"
+                      type="password"
+                      id="confirmPassword"
+                      InputLabelProps={{ shrink: false }}
+                      onChange={field.onChange}
+                      value={field.value || ""}
+                      error={!!errors.confirmPassword?.message}
+                      helperText={errors.confirmPassword?.message}
+                    />
+                  )}
+                />
+              </Stack>
+
+              {state.isPasswordSend && (
+                <Box
+                  textAlign={"center"}
+                  sx={{
+                    marginTop: 3,
+                  }}
+                >
+                  Пароль успешно изменен
+                </Box>
+              )}
+
+              <Button
+                fullWidth={true}
+                size="large"
+                type="submit"
+                variant="contained"
+                color="warning"
+                disabled={!isValid}
+                sx={{
+                  marginTop: "100px",
+                }}
+              >
+                Сохранить
+              </Button>
+            </form>
+          </DialogContent>
+        </Dialog>
       </Container>
     </main>
   );
