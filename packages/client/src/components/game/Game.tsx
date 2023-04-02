@@ -354,6 +354,16 @@ function Game() {
       </Button>
       <Button
         variant="contained"
+        sx={{ position: "absolute", top: "10px", left: "160px", zIndex: "1" }}
+        onClick={() => {
+          navigate(ROUTES.gamePreparing.path, { state: "restart" });
+          dispatch(gameSlice.actions.setGameVariant(null));
+        }}
+      >
+        <RestartAltIcon />
+      </Button>
+      <Button
+        variant="contained"
         sx={{ position: "absolute", top: "10px", left: "85px", zIndex: "1" }}
         onClick={() => setIsVolumeUp(!isVolumeUp)}
       >
