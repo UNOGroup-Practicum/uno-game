@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from "services/hooks";
 import { authSelect } from "services/slices/auth-slice";
 import { gameSelect, gameSlice } from "services/slices/gameSlice";
 
+import Player from "components/player/Player";
+
 import { ROUTES } from "../../constants";
 
 import { Color } from "./types/enums";
@@ -362,13 +364,7 @@ function Game() {
       >
         <RestartAltIcon />
       </Button>
-      <Button
-        variant="contained"
-        sx={{ position: "absolute", top: "10px", left: "85px", zIndex: "1" }}
-        onClick={() => setIsVolumeUp(!isVolumeUp)}
-      >
-        {isVolumeUp ? <VolumeUpIcon /> : <VolumeOffIcon />}
-      </Button>
+      <Player url={"https://uno-group.hb.bizmrg.com/Blank_Jones_-_Sunny_Life_74528962.mp3"} />
       {cardColor && (
         <Chip
           sx={{
@@ -493,11 +489,6 @@ function Game() {
         </Box>
       </Modal>
       <canvas ref={ref} className={styles.canvas} />
-      <audio
-        src="https://uno-group.hb.bizmrg.com/Blank_Jones_-_Sunny_Life_74528962.mp3"
-        ref={refAudio}
-        loop
-      />
     </>
   );
 }
