@@ -11,7 +11,7 @@ export const leaderboardAPI = {
     request.post("leaderboard", extendedData);
   },
 
-  getTeamLeaderboard: async (data: GetTeamLeboardData): Promise<UserToLeboardData> => {
-    return await request.post("leaderboard/unoGroup", data);
+  getTeamLeaderboard: (data: GetTeamLeboardData): Promise<UserToLeboardData> => {
+    return request.post("leaderboard/unoGroup", data);
   },
 };
