@@ -2,48 +2,45 @@ import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import { Button } from "@mui/material";
 
-import React, { useEffect, useRef, useState } from "react";
-
-const useAudio = (url: string) => {
-  const [audio] = useState(new Audio(url));
-  const [newRender, setNewRender] = useState(false);
-  const isPlaying = useRef<boolean>(false);
-
-  const toggle = () => {
-    isPlaying.current = !isPlaying.current;
-    setNewRender(!newRender);
-  };
-
-  useEffect(() => {
-    isPlaying.current ? audio.play() : audio.pause();
-  }, [isPlaying.current]);
-
-  useEffect(() => {
-    audio.addEventListener("ended", () => audio.play());
-    const onChangeVisibility = () => {
-      if (isPlaying.current) {
-        if (document.hidden) {
-          audio.pause();
-        } else {
-          audio.play();
-        }
-      }
-    };
-    document.addEventListener("visibilitychange", onChangeVisibility);
-    return () => {
-      audio.removeEventListener("ended", () => audio.play());
-      document.removeEventListener("visibilitychange", onChangeVisibility);
-    };
-  }, []);
-
-  return [isPlaying.current, toggle];
-};
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 type PlayerType = {
   url: string;
 };
+
 const Player: React.FC<PlayerType> = ({ url }) => {
-  const [isPlaying, toggle] = useAudio(url);
+  const refAudio = useRef<HTMLAudioElement | null>(null);
+  const refIsAudioPlay = useRef<true | false>(false);
+  const [foo, setFoo] = useState(false);
+  const toggle = () => {
+    refIsAudioPlay.current = !refIsAudioPlay.current;
+    setFoo(!foo);
+  };
+
+  useEffect(() => {
+    refIsAudioPlay.current ? refAudio.current?.play() : refAudio.current?.pause();
+  }, [refIsAudioPlay.current]);
+
+  useLayoutEffect(() => {
+    refAudio.current = new Audio(url);
+    const handleEnded = () => refAudio.current?.play();
+    const handleVisibilitychange = () => {
+      if (document.hidden) {
+        refAudio.current?.pause();
+      } else {
+        refIsAudioPlay.current ? refAudio.current?.play() : refAudio.current?.pause();
+      }
+    };
+
+    refAudio.current?.addEventListener("ended", handleEnded);
+    document.addEventListener("visibilitychange", handleVisibilitychange);
+
+    return () => {
+      refAudio.current?.pause();
+      refAudio.current = null;
+      document.removeEventListener("visibilitychange", handleVisibilitychange);
+    };
+  }, []);
 
   return (
     <Button
@@ -51,14 +48,9 @@ const Player: React.FC<PlayerType> = ({ url }) => {
       sx={{ position: "absolute", top: "10px", left: "85px", zIndex: "1" }}
       onClick={toggle}
     >
-      {isPlaying ? <VolumeUpIcon /> : <VolumeOffIcon />}
+      {refIsAudioPlay.current ? <VolumeUpIcon /> : <VolumeOffIcon />}
     </Button>
   );
 };
 
 export default Player;
-
-// How to use:
-// import player from "../player/player";
-
-// <Player url={"https://uno-group.hb.bizmrg.com/Blank_Jones_-_Sunny_Life_74528962.mp3"}/>
