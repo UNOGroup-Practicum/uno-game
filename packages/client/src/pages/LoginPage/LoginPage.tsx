@@ -1,6 +1,6 @@
 import { Box, Button, Container, Link, Stack, TextField, Typography } from "@mui/material";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import { useDispatch, useSelector } from "services/hooks";
@@ -42,6 +42,12 @@ export const LoginPage = () => {
   const onSubmit: SubmitHandler<TFormInput> = async (data) => {
     authErrorLocal && setAuthErrorLocal(null);
     dispatch(authThunks.login(data));
+  };
+
+  const handleLoginWithYandex = async (event: React.MouseEvent) => {
+    event.preventDefault();
+
+    console.log(event);
   };
 
   return (
@@ -113,10 +119,30 @@ export const LoginPage = () => {
           >
             Войти
           </Button>
+          <Button
+            fullWidth={true}
+            size="large"
+            type="button"
+            variant="contained"
+            color="warning"
+            onClick={handleLoginWithYandex}
+            sx={{
+              marginTop: "20px",
+              marginBottom: "10px",
+            }}
+          >
+            Войти с Яндекс ID
+          </Button>
         </form>
         <Link href={ROUTES.signUp.path} underline="none">
-          <Typography align="center" fontSize="16px" color="text.disabled" fontWeight="bold">
-            Нет аккаунта?
+          <Typography
+            align="center"
+            fontSize="16px"
+            color="text.disabled"
+            fontWeight="bold"
+            mt="20px"
+          >
+            Регистрация
           </Typography>
         </Link>
       </Container>
