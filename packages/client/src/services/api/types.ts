@@ -12,6 +12,11 @@ export type LoginRequestData = {
   password: string;
 };
 
+export type PasswordChangeRequest = {
+  oldPassword: string;
+  newPassword: string;
+};
+
 export type RegisterRequestData = {
   first_name: string;
   second_name: string;
