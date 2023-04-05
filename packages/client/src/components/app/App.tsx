@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, useSearchParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "services/hooks";
 import { authSelect, authThunks } from "services/slices/auth-slice";
+import { oAuthThunks } from "services/slices/oauth-slice";
 import { Theme } from "theme/ThemeContext";
 import { useTheme } from "theme/useTheme";
 import { toggleFullScreen } from "utils/toggleFullScreen";
@@ -31,6 +32,15 @@ function App() {
   const { user } = useSelector(authSelect);
   const { theme } = useTheme();
   const location = useLocation();
+  const [params] = useSearchParams();
+
+  useEffect(() => {
+    const code = params.get("code");
+
+    if (code) {
+      dispatch(oAuthThunks.login(code));
+    }
+  }, [params]);
 
   useEffect(() => {
     if (!user) {

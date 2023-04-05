@@ -5,6 +5,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import { useDispatch, useSelector } from "services/hooks";
 import { authSelect, authSlice, authThunks } from "services/slices/auth-slice";
+import { oAuthSelect, oAuthSlice, oAuthThunks } from "services/slices/oauth-slice";
 import { InputNames, REQUIRED_MESSAGE, validationTemplate } from "utils/validation/validation";
 
 import { ROUTES } from "../../constants";
@@ -19,7 +20,8 @@ type TFormInput = {
 export const LoginPage = () => {
   const dispatch = useDispatch();
   const { error: authError, loading } = useSelector(authSelect);
-  const [authErrorLocal, setAuthErrorLocal] = useState(authError);
+  const { error: oAuthError, loading: oAuthLoading } = useSelector(oAuthSelect);
+  const [authErrorLocal, setAuthErrorLocal] = useState(authError || oAuthError);
   const {
     control,
     handleSubmit,
@@ -39,6 +41,13 @@ export const LoginPage = () => {
     }
   }, [dispatch, authError, setAuthErrorLocal]);
 
+  useEffect(() => {
+    if (oAuthError) {
+      setAuthErrorLocal(oAuthError);
+      dispatch(oAuthSlice.actions.resetError());
+    }
+  }, [dispatch, oAuthError, setAuthErrorLocal]);
+
   const onSubmit: SubmitHandler<TFormInput> = async (data) => {
     authErrorLocal && setAuthErrorLocal(null);
     dispatch(authThunks.login(data));
@@ -46,8 +55,7 @@ export const LoginPage = () => {
 
   const handleLoginWithYandex = async (event: React.MouseEvent) => {
     event.preventDefault();
-
-    console.log(event);
+    dispatch(oAuthThunks.getServiceId());
   };
 
   return (
@@ -95,7 +103,7 @@ export const LoginPage = () => {
               )}
             />
           </Stack>
-          {loading && (
+          {(loading || oAuthLoading) && (
             <Box mt={2} textAlign={"center"}>
               ...Loading
             </Box>
