@@ -15,7 +15,7 @@ const cardsDistribution: TCardsDistribution = (
   shuffleArrayCards,
   createUserCardsDuringCardsDistribution,
   setShuffleArrayCards,
-  setIsButtonExitDisplayed,
+  refDeleteAnimation,
   xEndPoint,
   yEndPoint
 ) => {
@@ -34,12 +34,15 @@ const cardsDistribution: TCardsDistribution = (
     yMinus60: canvas.height / 2 - 60,
   };
 
-  const rate = (point.yMinus60 - 160) / 30;
+  let rate = (point.yMinus60 - 160) / 30;
   let xSteper = 0;
   let ySteper = 0;
 
   function fn() {
-    ctx.clearRect(0, 155, canvas.width, canvas.height - 330);
+    if (refDeleteAnimation.current) {
+      rate = 100;
+    }
+    ctx.clearRect(0, 155, canvas.width, canvas.height - 325);
     xSteper += ((point.xMinus40 - xEndPoint) / (point.y - 90 - yEndPoint)) * rate;
     ySteper += 1 * rate;
     createBackSideCard(ctx, point.xMinus40, point.yMinus60);
@@ -50,7 +53,7 @@ const cardsDistribution: TCardsDistribution = (
       if (yEndPoint + ySteper < point.y - 100) {
         requestAnimationFrame(fn);
       } else {
-        ctx.clearRect(0, yEndPoint + 30, canvas.width, canvas.height - 330);
+        ctx.clearRect(0, yEndPoint + 30, canvas.width, canvas.height - 325);
         createBackSideCard(ctx, point.xMinus40, point.yMinus60);
         const idx = generator.next().value as number;
 
@@ -63,7 +66,7 @@ const cardsDistribution: TCardsDistribution = (
             shuffleArrayCards,
             createUserCardsDuringCardsDistribution,
             setShuffleArrayCards,
-            setIsButtonExitDisplayed,
+            refDeleteAnimation,
             gamersPositions[idx].cards[0],
             gamersPositions[idx].cards[1]
           );
@@ -76,7 +79,7 @@ const cardsDistribution: TCardsDistribution = (
             gamersPositions[gamersPositions.length - 1].cards[1],
             (cardsDistribution.cardsCounter2 as number).toString()
           );
-          ctx.clearRect(0, yEndPoint + 30, canvas.width, canvas.height - 330);
+          ctx.clearRect(0, yEndPoint + 30, canvas.width, canvas.height - 325);
           createBackSideCard(ctx, point.x - 100, point.yMinus60);
 
           for (let index = 0; index < shuffleArrayCards.length; index++) {
@@ -96,7 +99,6 @@ const cardsDistribution: TCardsDistribution = (
             }
           }
           setShuffleArrayCards(shuffleArrayCards);
-          setIsButtonExitDisplayed(true);
           delete cardsDistribution.cardsCounter1;
           delete cardsDistribution.cardsCounter2;
         }
@@ -143,7 +145,7 @@ const cardsDistribution: TCardsDistribution = (
           shuffleArrayCards,
           createUserCardsDuringCardsDistribution,
           setShuffleArrayCards,
-          setIsButtonExitDisplayed,
+          refDeleteAnimation,
           gamersPositions[idx].cards[0],
           gamersPositions[idx].cards[1]
         );

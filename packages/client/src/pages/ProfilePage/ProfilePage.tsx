@@ -1,5 +1,19 @@
+import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
-import { Avatar, Box, Button, Container, Link, Stack, TextField, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Dialog,
+  DialogContent,
+  IconButton,
+  Link,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import clsx from "clsx";
 
 import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -11,6 +25,8 @@ import { authSelect } from "services/slices/auth-slice";
 import { userSelect, userSlice, userThunks } from "services/slices/user-slice";
 import { InputNames, validationTemplate } from "utils/validation/validation";
 
+import { PasswordChangeForm } from "components/password-change-form/PasswordChangeForm";
+
 import { ROUTES } from "../../constants";
 
 import styles from "./ProfilePage.module.scss";
@@ -21,6 +37,7 @@ export const ProfilePage: React.FC = () => {
   const { error, isLoading, isSuccess } = useSelector(userSelect);
 
   const [isInputChanged, setIsInputChanged] = useState(false);
+  const [isChangedPassword, setIsChangedPassword] = useState(false);
 
   const { user } = useSelector(authSelect);
 
@@ -81,10 +98,21 @@ export const ProfilePage: React.FC = () => {
   const onChangeProfile: SubmitHandler<UpdateUserRequestData> = (formData) => {
     dispatch(userThunks.changeUserProfile(formData));
   };
+
+  const onOpenFormChangePassword = () => {
+    setIsChangedPassword(!isChangedPassword);
+  };
+
   return (
     <main className={styles.profile} data-testid="page-profile">
       <Container maxWidth="md">
-        <section className={styles.profile__photo}>
+        <section
+          className={clsx(
+            styles.profile__photo,
+            styles.profile_show,
+            isChangedPassword && styles.profile_hide
+          )}
+        >
           <Avatar
             src={`${__API_ENDPOINT__}/resources${user?.avatar}`}
             sx={{ width: 100, height: 100 }}
@@ -108,10 +136,13 @@ export const ProfilePage: React.FC = () => {
             </Box>
           )}
         </section>
-
         <form
           name="profile-form"
-          className={styles.profile__form}
+          className={clsx(
+            styles.profile__form,
+            styles.profile_show,
+            isChangedPassword && styles.profile_hide
+          )}
           onSubmit={handleSubmit(onChangeProfile)}
           noValidate
         >
@@ -201,7 +232,6 @@ export const ProfilePage: React.FC = () => {
                   InputLabelProps={{ shrink: false }}
                   onChange={field.onChange}
                   onInput={() => setIsInputChanged(true)}
-                  value={field.value}
                   error={!!errors.second_name?.message}
                   helperText={errors.second_name?.message}
                 />
@@ -260,11 +290,53 @@ export const ProfilePage: React.FC = () => {
           </Button>
         </form>
 
-        <Link href={ROUTES.profile.path} underline="none">
-          <Typography align="center" fontSize="16px" color="text.disabled" fontWeight="bold">
+        <Link
+          href={ROUTES.profile.path}
+          underline="none"
+          className={clsx(styles.profile_show, isChangedPassword && styles.profile_hide)}
+        >
+          <Typography
+            align="center"
+            fontSize="16px"
+            color="text.disabled"
+            fontWeight="bold"
+            onClick={onOpenFormChangePassword}
+          >
             Сменить пароль
           </Typography>
         </Link>
+
+        <Dialog
+          open={isChangedPassword}
+          onClose={onOpenFormChangePassword}
+          classes={{
+            container: styles.modalForm__container,
+            paper: styles.modalForm__paper,
+          }}
+        >
+          <IconButton
+            aria-label="close"
+            onClick={onOpenFormChangePassword}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent
+            classes={{
+              root: styles.modalForm__dialogContent,
+            }}
+          >
+            <PasswordChangeForm
+              formClassName={styles.profile__form}
+              isChangedPassword={isChangedPassword}
+              setIsChangedPassword={setIsChangedPassword}
+            />
+          </DialogContent>
+        </Dialog>
       </Container>
     </main>
   );

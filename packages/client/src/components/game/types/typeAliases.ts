@@ -33,7 +33,7 @@ export type TCardsDistribution = {
     shuffleArrayCards: TShuffleArrayCards,
     createUserCardsDuringCardsDistribution: () => void,
     setShuffleArrayCards: React.Dispatch<React.SetStateAction<TShuffleArrayCards | null>>,
-    setIsButtonExitDisplayed: React.Dispatch<React.SetStateAction<boolean>>,
+    refDeleteAnimation: React.MutableRefObject<boolean>,
     xEndPoint: number,
     yEndPoint: number
   ): void;

@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "node server",
-    "build": "yarn run build:server && yarn run build:client",
     "build:client": "rimraf dist/client && vite build --outDir dist/client",
     "build:server": "rimraf dist/server && vite build --outDir dist/server --ssr src/entry-server.tsx",
+    "build": "yarn run build:server && yarn run build:client",
     "start": "NODE_ENV=production node server",
     "lint:js": "eslint --color --ext \".js,.jsx,.ts,.tsx\" .",
     "lint:scss": "stylelint --cache --cache-location \"node_modules/.cache/stylelint/.stylelintcache\" --ignore-path .gitignore \"{**/*,*}.{css,scss}\"",
