@@ -8,39 +8,61 @@ type PlayerType = {
   url: string;
 };
 
-const Player: React.FC<PlayerType> = ({ url }) => {
-  const refAudio = useRef<HTMLAudioElement | null>(null);
-  const refIsAudioPlay = useRef<true | false>(false);
-  const [foo, setFoo] = useState(false);
-  const toggle = () => {
-    refIsAudioPlay.current = !refIsAudioPlay.current;
-    setFoo(!foo);
-  };
+const usePageVisibility = (initialState = true) => {
+  const [pageIsVisible, setPageIsVisible] = useState(initialState);
 
   useEffect(() => {
-    refIsAudioPlay.current ? refAudio.current?.play() : refAudio.current?.pause();
-  }, [refIsAudioPlay.current]);
-
-  useLayoutEffect(() => {
-    refAudio.current = new Audio(url);
-    const handleEnded = () => refAudio.current?.play();
     const handleVisibilitychange = () => {
       if (document.hidden) {
-        refAudio.current?.pause();
+        setPageIsVisible(false);
       } else {
-        refIsAudioPlay.current ? refAudio.current?.play() : refAudio.current?.pause();
+        setPageIsVisible(true);
       }
     };
 
-    refAudio.current?.addEventListener("ended", handleEnded);
     document.addEventListener("visibilitychange", handleVisibilitychange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilitychange);
+    };
+  }, []);
+
+  return pageIsVisible;
+};
+
+const Player: React.FC<PlayerType> = ({ url }) => {
+  const pageIsVisible = usePageVisibility();
+  const refAudio = useRef<HTMLAudioElement | null>(null);
+  const [isAudioOn, setIsAudioOn] = useState(false);
+
+  const toggle = () => {
+    setIsAudioOn(!isAudioOn);
+  };
+
+  useLayoutEffect(() => {
+    refAudio.current = new Audio(url);
 
     return () => {
       refAudio.current?.pause();
       refAudio.current = null;
-      document.removeEventListener("visibilitychange", handleVisibilitychange);
     };
   }, []);
+
+  useEffect(() => {
+    if (!pageIsVisible) {
+      refAudio.current?.pause();
+
+      return;
+    }
+
+    if (isAudioOn) {
+      refAudio.current?.play();
+
+      return;
+    }
+
+    refAudio.current?.pause();
+  }, [pageIsVisible, isAudioOn]);
 
   return (
     <Button
@@ -48,7 +70,7 @@ const Player: React.FC<PlayerType> = ({ url }) => {
       sx={{ position: "absolute", top: "10px", left: "85px", zIndex: "1" }}
       onClick={toggle}
     >
-      {refIsAudioPlay.current ? <VolumeUpIcon /> : <VolumeOffIcon />}
+      {isAudioOn ? <VolumeUpIcon /> : <VolumeOffIcon />}
     </Button>
   );
 };
