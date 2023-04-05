@@ -5,9 +5,9 @@ const UserDTO = z.object({
   login: z.string(),
   first_name: z.string(),
   second_name: z.string(),
-  display_name: z.string(),
-  avatar: z.string(),
-  phone: z.string(),
+  display_name: z.string().nullable(),
+  avatar: z.string().nullable(),
+  phone: z.string().nullable(),
   email: z.string(),
 });
 
