@@ -48,3 +48,22 @@ export type User = {
   email: string;
   fullName: string;
 };
+
+export type UserToLeboardData = {
+  name: string;
+  avatar?: string;
+  winsNumber: number;
+  gamesNumber: number;
+};
+
+export type UserToLeboardExtData = {
+  data: UserToLeboardData;
+  ratingFieldName: string;
+  teamName: string;
+};
+
+export type GetTeamLeboardData = {
+  ratingFieldName: string;
+  cursor: number;
+  limit: number;
+};
