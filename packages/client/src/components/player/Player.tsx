@@ -2,26 +2,23 @@ import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import { Button } from "@mui/material";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const useAudio = (url: string) => {
-  const [audio] = useState(new Audio(url));
-  const [newRender, setNewRender] = useState(false);
-  const isPlaying = useRef<boolean>(false);
+  const [audio, setAudio] = useState(new Audio(url));
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const toggle = () => {
-    isPlaying.current = !isPlaying.current;
-    setNewRender(!newRender);
+    !isPlaying ? audio.play() : audio.pause();
+    setIsPlaying(!isPlaying);
   };
-
-  useEffect(() => {
-    isPlaying.current ? audio.play() : audio.pause();
-  }, [isPlaying.current]);
 
   useEffect(() => {
     audio.addEventListener("ended", () => audio.play());
     const onChangeVisibility = () => {
-      if (isPlaying.current) {
+      console.log(isPlaying); // isPlaying всегда false!!! - почему?
+
+      if (isPlaying) {
         if (document.hidden) {
           audio.pause();
         } else {
@@ -33,10 +30,11 @@ const useAudio = (url: string) => {
     return () => {
       audio.removeEventListener("ended", () => audio.play());
       document.removeEventListener("visibilitychange", onChangeVisibility);
+      audio.pause();
     };
   }, []);
 
-  return [isPlaying.current, toggle];
+  return [isPlaying, toggle] as const;
 };
 
 type PlayerType = {
@@ -57,8 +55,3 @@ const Player: React.FC<PlayerType> = ({ url }) => {
 };
 
 export default Player;
-
-// How to use:
-// import player from "../player/player";
-
-// <Player url={"https://uno-group.hb.bizmrg.com/Blank_Jones_-_Sunny_Life_74528962.mp3"}/>
