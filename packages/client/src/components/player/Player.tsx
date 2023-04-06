@@ -4,30 +4,10 @@ import { Button } from "@mui/material";
 
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
+import { usePageVisibility } from "services/hooks";
+
 type PlayerType = {
   url: string;
-};
-
-const usePageVisibility = (initialState = true) => {
-  const [pageIsVisible, setPageIsVisible] = useState(initialState);
-
-  useEffect(() => {
-    const handleVisibilitychange = () => {
-      if (document.hidden) {
-        setPageIsVisible(false);
-      } else {
-        setPageIsVisible(true);
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilitychange);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilitychange);
-    };
-  }, []);
-
-  return pageIsVisible;
 };
 
 const Player: React.FC<PlayerType> = ({ url }) => {
