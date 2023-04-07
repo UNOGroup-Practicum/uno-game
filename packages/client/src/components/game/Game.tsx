@@ -88,6 +88,7 @@ function Game() {
         }
       }
       refAmountRenders.current++;
+      clearIntervals(refTimers);
     };
   }, []);
 
