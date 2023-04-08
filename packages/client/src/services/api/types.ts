@@ -7,6 +7,19 @@ export type APIError = {
   status?: number;
 };
 
+export type OAuthServiceRequestData = {
+  redirect_uri: string;
+};
+
+export type OAuthServiceResponse = {
+  service_id: string;
+};
+
+export type OAuthLoginRequestData = {
+  code: string;
+  redirect_uri: string;
+};
+
 export type LoginRequestData = {
   login: string;
   password: string;
