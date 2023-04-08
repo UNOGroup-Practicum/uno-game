@@ -19,6 +19,24 @@ describe("authAPI", () => {
     expect(result).toEqual(transformUser(mainUser));
   });
 
+  it("should authAPI.me return User if User has nullable fields", async () => {
+    const stubUser = {
+      ...mainUser,
+      avatar: null,
+      display_name: null,
+      phone: null,
+    };
+    server.use(
+      rest.get(requestUrl("auth/user"), (_req, res, ctx) =>
+        res.once(ctx.status(200), ctx.json(stubUser))
+      )
+    );
+
+    const result = await authAPI.me();
+
+    expect(result).toEqual(transformUser(stubUser));
+  });
+
   it("should throw an error when authAPI.me doesn't return a UserDTO", async () => {
     server.use(
       rest.get(requestUrl("auth/user"), (_req, res, ctx) => res.once(ctx.status(200), ctx.json({})))

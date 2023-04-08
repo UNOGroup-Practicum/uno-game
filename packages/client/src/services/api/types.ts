@@ -7,9 +7,27 @@ export type APIError = {
   status?: number;
 };
 
+export type OAuthServiceRequestData = {
+  redirect_uri: string;
+};
+
+export type OAuthServiceResponse = {
+  service_id: string;
+};
+
+export type OAuthLoginRequestData = {
+  code: string;
+  redirect_uri: string;
+};
+
 export type LoginRequestData = {
   login: string;
   password: string;
+};
+
+export type PasswordChangeRequest = {
+  oldPassword: string;
+  newPassword: string;
 };
 
 export type RegisterRequestData = {
@@ -42,4 +60,23 @@ export type User = {
   phone: string;
   email: string;
   fullName: string;
+};
+
+export type UserToLeboardData = {
+  name: string;
+  avatar?: string;
+  winsNumber: number;
+  gamesNumber: number;
+};
+
+export type UserToLeboardExtData = {
+  data: UserToLeboardData;
+  ratingFieldName: string;
+  teamName: string;
+};
+
+export type GetTeamLeboardData = {
+  ratingFieldName: string;
+  cursor: number;
+  limit: number;
 };
