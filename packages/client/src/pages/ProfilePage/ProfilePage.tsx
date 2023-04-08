@@ -229,6 +229,7 @@ export const ProfilePage: React.FC = () => {
                   variant="standard"
                   label="Фамилия"
                   id="second_name"
+                  value={field.value}
                   InputLabelProps={{ shrink: false }}
                   onChange={field.onChange}
                   onInput={() => setIsInputChanged(true)}

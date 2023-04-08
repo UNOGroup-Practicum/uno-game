@@ -43,7 +43,7 @@ describe("Components/App", () => {
       preloadedState: { auth: { ...authInitialState } },
     });
 
-    await user.click(screen.getByText("Нет аккаунта?"));
+    await user.click(screen.getByText("Регистрация"));
 
     expect(screen.getByTestId("page-register")).toBeDefined();
   });
