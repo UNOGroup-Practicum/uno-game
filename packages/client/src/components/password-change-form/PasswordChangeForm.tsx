@@ -1,9 +1,11 @@
 import { Box, Button, Stack, TextField } from "@mui/material";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 
-import { PasswordChangeRequest } from "services/api/types";
+import { useDispatch } from "services/hooks";
+import { userSelect, userSlice, userThunks } from "services/slices/user-slice";
 import {
   ERROR_MESSAGE,
   InputNames,
@@ -17,7 +19,15 @@ type TProps = {
   setIsChangedPassword: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+type TFormProps = {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+};
+
 export const PasswordChangeForm = (props: TProps) => {
+  const interval = 3000;
+
   const passwordChangeData = {
     oldPassword: "",
     newPassword: "",
@@ -36,31 +46,43 @@ export const PasswordChangeForm = (props: TProps) => {
     mode: "onChange",
   });
 
+  const dispatch = useDispatch();
+
   const [isPasswordSend, setIsPasswordSend] = useState(false);
+
+  const { error, isLoading, isSuccess } = useSelector(userSelect);
 
   const passwordNewRef = useRef<HTMLInputElement>();
 
-  const onSubmitChangePassword: SubmitHandler<PasswordChangeRequest> = (formData) => {
-    const { oldPassword, newPassword } = formData;
+  useEffect(() => {
+    if (error.password) {
+      setTimeout(() => {
+        dispatch(userSlice.actions.resetError());
+      }, interval);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (isSuccess.password) {
+      setTimeout(() => {
+        dispatch(userSlice.actions.resetIsSuccess());
+
+        if (props.isChangedPassword) {
+          props.setIsChangedPassword(!props.isChangedPassword);
+        }
+
+        reset(passwordChangeData);
+      }, interval);
+    }
+  }, [isSuccess]);
+
+  const onSubmitChangePassword: SubmitHandler<TFormProps> = (formData) => {
     setIsPasswordSend(!isPasswordSend);
 
-    setTimeout(() => {
-      if (props.isChangedPassword) {
-        props.setIsChangedPassword(!props.isChangedPassword);
-      }
-      reset(passwordChangeData);
-    }, 3000);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirmPassword, ...sendData } = formData;
 
-    console.log(
-      JSON.stringify(
-        {
-          oldPassword: oldPassword,
-          newPassword: newPassword,
-        },
-        null,
-        2
-      )
-    );
+    dispatch(userThunks.changeUserPassword(sendData));
   };
 
   return (
@@ -141,14 +163,19 @@ export const PasswordChangeForm = (props: TProps) => {
         />
       </Stack>
 
-      {isPasswordSend && (
-        <Box
-          textAlign={"center"}
-          sx={{
-            marginTop: 3,
-          }}
-        >
-          Пароль успешно изменен
+      {isLoading.password && (
+        <Box mt={2} textAlign={"center"}>
+          загрузка...
+        </Box>
+      )}
+      {isSuccess.password && (
+        <Box mt={2} textAlign={"center"}>
+          Пароль успешно обновлён!
+        </Box>
+      )}
+      {error.password && (
+        <Box mt={2} textAlign={"center"} color={"error.light"}>
+          {error.password}
         </Box>
       )}
 

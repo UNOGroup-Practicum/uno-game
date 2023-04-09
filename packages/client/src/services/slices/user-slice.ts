@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-import { UpdateUserRequestData } from "../api/types";
+import { PasswordChangeRequest, UpdateUserRequestData } from "../api/types";
 import { userAPI } from "../api/userApi";
 import { RootState } from "../store";
 
@@ -9,13 +9,16 @@ import { authSlice } from "./auth-slice";
 type IsLoadingType = {
   avatar: boolean;
   profile: boolean;
+  password: boolean;
 };
 type ErrorType = {
   avatar: string | null;
   profile: string | null;
+  password: string | null;
 };
 type IsSuccessType = {
   profile: boolean;
+  password: boolean;
 };
 type UserState = {
   isLoading: IsLoadingType;
@@ -27,13 +30,16 @@ export const initialState: UserState = {
   isLoading: {
     avatar: false,
     profile: false,
+    password: false,
   },
   error: {
     avatar: null,
     profile: null,
+    password: null,
   },
   isSuccess: {
     profile: false,
+    password: false,
   },
 };
 
@@ -53,6 +59,10 @@ export const userThunks = {
     const newUser = await userAPI.changeUserProfile(data);
     dispatch(authSlice.actions.setUser(newUser));
   }),
+  changeUserPassword: createAsyncThunk(
+    "USER/password",
+    async (data: PasswordChangeRequest) => await userAPI.changeUserPassword(data)
+  ),
 };
 
 export const userSlice = createSlice({
@@ -63,11 +73,13 @@ export const userSlice = createSlice({
       state.error = {
         avatar: null,
         profile: null,
+        password: null,
       };
     },
     resetIsSuccess(state) {
       state.isSuccess = {
         profile: false,
+        password: false,
       };
     },
   },
@@ -96,6 +108,19 @@ export const userSlice = createSlice({
     builder.addCase(userThunks.changeUserProfile.rejected, (state, action) => {
       state.isLoading.profile = false;
       state.error.profile = action.error.message ? action.error.message : null;
+    });
+    // смена пароля
+    builder.addCase(userThunks.changeUserPassword.pending, (state) => {
+      state.isLoading.password = true;
+      state.error.password = null;
+    });
+    builder.addCase(userThunks.changeUserPassword.fulfilled, (state) => {
+      state.isLoading.password = false;
+      state.isSuccess.password = true;
+    });
+    builder.addCase(userThunks.changeUserPassword.rejected, (state, action) => {
+      state.isLoading.password = false;
+      state.error.password = action.error.message ? action.error.message : null;
     });
   },
 });
