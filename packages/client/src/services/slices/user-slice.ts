@@ -59,9 +59,8 @@ export const userThunks = {
     const newUser = await userAPI.changeUserProfile(data);
     dispatch(authSlice.actions.setUser(newUser));
   }),
-  changeUserPassword: createAsyncThunk(
-    "USER/password",
-    async (data: PasswordChangeRequest) => await userAPI.changeUserPassword(data)
+  changeUserPassword: createAsyncThunk("USER/password", (data: PasswordChangeRequest) =>
+    userAPI.changeUserPassword(data)
   ),
 };
 

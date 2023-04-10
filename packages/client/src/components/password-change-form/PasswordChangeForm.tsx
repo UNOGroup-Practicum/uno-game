@@ -1,6 +1,6 @@
 import { Box, Button, Stack, TextField } from "@mui/material";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
@@ -52,6 +52,16 @@ export const PasswordChangeForm = (props: TProps) => {
 
   const passwordNewRef = useRef<HTMLInputElement>();
 
+  const clearForm = () => {
+    dispatch(userSlice.actions.resetIsSuccess());
+
+    if (props.isChangedPassword) {
+      props.setIsChangedPassword(!props.isChangedPassword);
+    }
+
+    reset(passwordChangeData);
+  };
+
   useEffect(() => {
     if (error.password) {
       setTimeout(() => {
@@ -61,17 +71,18 @@ export const PasswordChangeForm = (props: TProps) => {
   }, [error]);
 
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+
     if (isSuccess.password) {
-      setTimeout(() => {
-        dispatch(userSlice.actions.resetIsSuccess());
-
-        if (props.isChangedPassword) {
-          props.setIsChangedPassword(!props.isChangedPassword);
-        }
-
-        reset(passwordChangeData);
-      }, interval);
+      timer = setTimeout(clearForm, interval);
     }
+
+    return () => {
+      if (isSuccess.password) {
+        clearForm();
+        clearTimeout(timer);
+      }
+    };
   }, [isSuccess]);
 
   const onSubmitChangePassword: SubmitHandler<TFormProps> = (formData) => {
