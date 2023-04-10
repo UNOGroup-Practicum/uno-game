@@ -48,8 +48,6 @@ export const PasswordChangeForm = (props: TProps) => {
 
   const dispatch = useDispatch();
 
-  const [isPasswordSend, setIsPasswordSend] = useState(false);
-
   const { error, isLoading, isSuccess } = useSelector(userSelect);
 
   const passwordNewRef = useRef<HTMLInputElement>();
@@ -77,8 +75,6 @@ export const PasswordChangeForm = (props: TProps) => {
   }, [isSuccess]);
 
   const onSubmitChangePassword: SubmitHandler<TFormProps> = (formData) => {
-    setIsPasswordSend(!isPasswordSend);
-
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { confirmPassword, ...sendData } = formData;
 
