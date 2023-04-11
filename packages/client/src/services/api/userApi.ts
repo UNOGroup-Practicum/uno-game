@@ -3,7 +3,7 @@ import { parseSchema } from "utils/parseSchema";
 import { request } from "./apiRequest";
 import { apiSchema } from "./schema";
 import { transformUser } from "./transformers";
-import { UpdateUserRequestData, User, UserDTO } from "./types";
+import { PasswordChangeRequest, UpdateUserRequestData, User, UserDTO } from "./types";
 
 export const userAPI = {
   changeUserAvatar: async (data: FormData): Promise<User> => {
@@ -20,4 +20,6 @@ export const userAPI = {
 
     return transformUser(result);
   },
+  changeUserPassword: (data: PasswordChangeRequest): Promise<"OK"> =>
+    request.put<"OK", PasswordChangeRequest>("user/password", data),
 };
