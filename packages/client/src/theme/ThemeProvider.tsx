@@ -1,19 +1,37 @@
 import { createTheme, ThemeProvider as ThemeProviderMui } from "@mui/material/styles";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+
+import { themeAPI } from "services/api/themeApi";
+import { getThemeCookie } from "utils/themeCookie";
 
 import { muiComponents } from "./muiComponents";
 import { muiPallete, setGlobalStyles } from "./muiPallete";
 import { muiTypography } from "./muiTypography";
-import { LOCAL_STORAGE_THEME_KEY, Theme, ThemeContext } from "./ThemeContext";
+import { Theme, ThemeContext } from "./ThemeContext";
 
 const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>(Theme.DARK);
+  const refCountRender = useRef(0);
 
   useEffect(() => {
-    if (localStorage.getItem(LOCAL_STORAGE_THEME_KEY) as Theme) {
-      setTheme(localStorage.getItem(LOCAL_STORAGE_THEME_KEY) as Theme);
+    if (refCountRender.current === 0) {
+      const theme = getThemeCookie().theme as Theme;
+
+      if (theme) {
+        setTheme(theme);
+      } else {
+        themeAPI
+          .getTheme()
+          .then((res) => {
+            if (res.statusText === "OK") {
+              setTheme(theme);
+            }
+          })
+          .catch((err) => console.log(err));
+      }
     }
+    refCountRender.current++;
   }, []);
 
   const themeMui = useMemo(

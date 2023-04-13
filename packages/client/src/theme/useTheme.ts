@@ -1,6 +1,11 @@
+import Cookies from "js-cookie";
+
 import { useContext } from "react";
 
-import { LOCAL_STORAGE_THEME_KEY, Theme, ThemeContext } from "./ThemeContext";
+import { themeAPI } from "services/api/themeApi";
+import { getThemeCookie } from "utils/themeCookie";
+
+import { Theme, ThemeContext } from "./ThemeContext";
 
 type UseThemeResult = {
   toggleTheme: () => void;
@@ -14,8 +19,17 @@ export function useTheme(): UseThemeResult {
     const newTheme = theme === Theme.DARK ? Theme.LIGHT : Theme.DARK;
 
     if (setTheme) {
-      setTheme(newTheme);
-      localStorage.setItem(LOCAL_STORAGE_THEME_KEY, newTheme);
+      const { themeUID } = getThemeCookie();
+      Cookies.set(themeUID as string, newTheme);
+
+      themeAPI
+        .getTheme()
+        .then((res) => {
+          if (res.statusText === "OK") {
+            setTheme(getThemeCookie().theme as Theme);
+          }
+        })
+        .catch((err) => console.log(err));
     }
   };
 

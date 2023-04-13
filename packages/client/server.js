@@ -62,7 +62,7 @@ export async function startServer() {
   });
 
   app.listen(port, () => {
-    console.log(`Server is listening on http://localhost:${port}`);
+    console.log(`➜ 🎸 ClientServer is listening on http://localhost:${port}`);
   });
 }
 
