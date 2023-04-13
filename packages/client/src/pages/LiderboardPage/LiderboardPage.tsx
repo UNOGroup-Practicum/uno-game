@@ -1,11 +1,30 @@
 import { Container } from "@mui/material";
 import { Button, Stack, Typography } from "@mui/material";
 
+import { useEffect, useState } from "react";
+
+import { UserToLeboardData } from "services/api/types";
+
 import { LeaderboardProfile } from "components/leaderboard-profile/LeaderbordProfile";
+
+import { leaderboardAPI } from "../../services/api/leaderboardApi";
 
 import styles from "./LiderboardPage.module.scss";
 
 export const LiderboardPage = () => {
+  const [results, setResults] = useState<UserToLeboardData[]>([]);
+
+  useEffect(() => {
+    leaderboardAPI
+      .getTeamLeaderboardAll({
+        ratingFieldName: "winsNumber",
+        cursor: 0,
+        limit: 100,
+      })
+      .then((res) => setResults(() => res.map((el) => el.data)))
+      .catch((err) => console.log(err));
+  }, []);
+
   const handleFilter = (e: React.MouseEvent<HTMLElement>): void => {
     console.log(e);
   };
@@ -27,7 +46,7 @@ export const LiderboardPage = () => {
             За всё время
           </Button>
         </Stack>
-        <LeaderboardProfile />
+        <LeaderboardProfile gameResults={results} />
       </Container>
     </div>
   );

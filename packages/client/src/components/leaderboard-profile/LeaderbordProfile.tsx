@@ -10,11 +10,10 @@ import {
   TableRow,
 } from "@mui/material";
 
-import * as React from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
+import { LeaderboardUserData, UserToLeboardData } from "services/api/types";
 import { createData } from "utils/createDataForLeaderboard";
-
-import { profilesList } from "./database";
 
 type LabelDisplayedRowsArgs = {
   from: number;
@@ -39,37 +38,32 @@ const columns: readonly Column[] = [
   { id: "percent", label: "%", minWidth: 140, align: "center" },
 ];
 
-type Data = {
-  id: number;
-  position: number;
-  imgUrl: string;
-  name: string;
-  games: number;
-  wins: number;
-  percent: string;
-};
-
-const rows: Data[] = [];
-profilesList
-  .sort((a, b) => b.wins - a.wins)
-  .forEach((el, idx) => {
-    rows.push(createData(el.id, idx + 1, el.avatar, el.name, el.games, el.wins));
-  });
-
 const createLabelDisplayedRows = (displayedRowsArgs: LabelDisplayedRowsArgs): string => {
   const { from, to, count } = displayedRowsArgs;
   return `${from}–${to} из ${count !== -1 ? count : `более чем ${to}`}`;
 };
 
-export const LeaderboardProfile = () => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+export const LeaderboardProfile = ({ gameResults }: { gameResults: UserToLeboardData[] }) => {
+  const [rows, setRows] = useState<LeaderboardUserData[]>([]);
+
+  useEffect(() => {
+    const res: LeaderboardUserData[] = [];
+    gameResults
+      .sort((a: UserToLeboardData, b: UserToLeboardData) => b.winsNumber - a.winsNumber)
+      .forEach((el: UserToLeboardData, idx: number) => {
+        res.push(createData(el.id, idx + 1, el?.avatar, el.name, el.gamesNumber, el.winsNumber));
+      });
+    setRows(res);
+  }, [gameResults]);
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
@@ -111,7 +105,11 @@ export const LeaderboardProfile = () => {
                           color: "var(--text-color)",
                         }}
                       >
-                        {column.id === "imgUrl" ? <Avatar alt="" src={value.toString()} /> : value}
+                        {column.id === "imgUrl" ? (
+                          <Avatar alt="" src={`${__API_ENDPOINT__}/resources/${value}`} />
+                        ) : (
+                          value
+                        )}
                       </TableCell>
                     );
                   })}
