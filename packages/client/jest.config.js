@@ -9,6 +9,7 @@ export default {
   globals: {
     __SERVER_PORT__: process.env.SERVER_PORT,
     __API_ENDPOINT__: process.env.API_ENDPOINT,
+    __API_BASEURL__: process.env.API_BASEURL,
   },
   transform: {
     ".+\\.(css|styl|less|sass|scss)$": "jest-css-modules-transform",
