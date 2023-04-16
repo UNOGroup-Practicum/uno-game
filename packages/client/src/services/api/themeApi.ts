@@ -6,10 +6,6 @@ const instance = axios.create({
 });
 
 export const themeAPI = {
-  async getTheme() {
-    return instance.get("/theme");
-  },
-
   async putTheme(theme: string) {
     return instance.put("/theme", { data: { theme } });
   },

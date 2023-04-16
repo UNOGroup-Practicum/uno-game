@@ -1,6 +1,13 @@
+import axios from "axios";
+import cookieParser from "cookie-parser";
 import express from "express";
 import fs from "node:fs";
 import path from "node:path";
+
+const instance = axios.create({
+  baseURL: process.env.API_BASEURL,
+  withCredentials: true,
+});
 
 export async function startServer() {
   const port = Number(process.env.CLIENT_PORT) || 3000;
@@ -9,6 +16,7 @@ export async function startServer() {
   const root = process.cwd();
 
   const app = express();
+  app.use(cookieParser());
 
   /**
    * @type {import('vite').ViteDevServer}
@@ -47,13 +55,32 @@ export async function startServer() {
         render = (await import("./dist/server/entry-server.cjs")).render;
       }
 
-      const { html, emotionCss, initialState } = render(url);
+      const { themeUID: themeUIDClient } = await req.cookies;
+      const response = await instance
+        .post("/theme", { themeUID: req.cookies.themeUID })
+        .catch((err) => console.log(err));
+      const { theme } = response.data.data.theme;
+      const { themeUID: themeUIDServer } = response.data.data;
+
+      const { html, emotionCss, initialState } = render(url, theme);
       const htmlWithReplacements = template
         .replace(`<!--app-html-->`, html)
         .replace(`<!--emotionCss-->`, emotionCss)
         .replace(`<!--store-data-->`, JSON.stringify(initialState).replace(/</g, "\\u003c"));
 
-      res.status(200).set({ "Content-Type": "text/html" }).end(htmlWithReplacements);
+      if (themeUIDClient === themeUIDServer) {
+        res.status(200).set({ "Content-Type": "text/html" }).end(htmlWithReplacements);
+      } else {
+        res
+          .cookie("themeUID", themeUIDServer, {
+            maxAge: 3600000 * 24 * 365, // 1 час * 24 * 365
+            httpOnly: true,
+            sameSite: true,
+          })
+          .status(200)
+          .set({ "Content-Type": "text/html" })
+          .end(htmlWithReplacements);
+      }
     } catch (e) {
       !isProd && vite.ssrFixStacktrace(e);
       console.log(e.stack);
