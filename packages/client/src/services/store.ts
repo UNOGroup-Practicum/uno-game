@@ -3,7 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { rootReducer } from "./reducers";
 
 let preloadedState;
-if (!import.meta.env.SSR) {
+if (typeof window !== "undefined") {
   preloadedState = window.__PRELOADED_STATE__;
   delete window.__PRELOADED_STATE__;
 }
