@@ -63,17 +63,29 @@
 
 Все ваши PR будут автоматически деплоиться на vercel. URL вам предоставит деплоящий бот
 
+## Development окружение в докере
+Перед первым запуском выполните `node init.js`
+
+`docker-compose up -d uno-db pgadmin` - запустит базу данных с интерфейсом
+1. uno-db - база данных (uno-db)
+2. pgadmin - интерфейс базы данных (uno-db)
+
+Вход в pgadmin:
+* host: http://localhost:8080
+* email: admin@admin.com
+* password: secret
+
 ## Production окружение в докере
 Перед первым запуском выполните `node init.js`
 
-
-`docker compose up` - запустит три сервиса
-1. nginx, раздающий клиентскую статику (client)
-2. node, ваш сервер (server)
-3. postgres, вашу базу данных (postgres)
+`docker-compose up -d` - запустит все сервисы
+1. node - клиент (client)
+2. node - сервер (server)
+3. uno-db - база данных (uno-db)
+4. pgadmin - интерфейс базы данных (uno-db)
 
 Если вам понадобится только один сервис, просто уточните какой в команде
-`docker compose up {sevice_name}`, например `docker compose up server`
+`docker-compose up -d {sevice_name}`, например `docker-compose up -d server`
 
 ## Contributing
 

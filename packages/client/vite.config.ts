@@ -27,6 +27,7 @@ export default defineConfig({
   define: {
     __SERVER_PORT__: process.env.SERVER_PORT,
     __API_ENDPOINT__: JSON.stringify(process.env.API_ENDPOINT),
+    __API_BASEURL__: JSON.stringify(process.env.API_BASEURL),
   },
   plugins: [react(), imagetools()],
   build: {

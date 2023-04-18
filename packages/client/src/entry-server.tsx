@@ -6,17 +6,20 @@ import { Provider } from "react-redux";
 import { Location } from "react-router-dom";
 import { StaticRouter } from "react-router-dom/server";
 
+import { themeSlice } from "services/slices/themeSlice";
 import { store } from "services/store";
+import { Theme } from "theme/ThemeContext";
 import ThemeProvider from "theme/ThemeProvider";
 
 import App from "components/app/App";
 
 import createEmotionCache from "./createEmotionCache";
 
-export function render(url: string | Partial<Location>) {
+export function render(url: string | Partial<Location>, theme: Theme) {
   const cache = createEmotionCache();
   const { extractCriticalToChunks, constructStyleTagsFromChunks } = createEmotionServer(cache);
 
+  store.dispatch(themeSlice.actions.setTheme(theme));
   const initialState = store.getState();
 
   const html = ReactDOMServer.renderToString(
