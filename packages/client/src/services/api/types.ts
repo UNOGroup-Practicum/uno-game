@@ -63,6 +63,7 @@ export type User = {
 };
 
 export type UserToLeboardData = {
+  id: number;
   name: string;
   avatar?: string;
   winsNumber: number;
@@ -79,4 +80,18 @@ export type GetTeamLeboardData = {
   ratingFieldName: string;
   cursor: number;
   limit: number;
+};
+
+export type GetTeamLeboardResponse = {
+  data: UserToLeboardData;
+};
+
+export type LeaderboardUserData = {
+  id: number;
+  position: number;
+  imgUrl: string | undefined;
+  name: string;
+  games: number;
+  wins: number;
+  percent: string;
 };

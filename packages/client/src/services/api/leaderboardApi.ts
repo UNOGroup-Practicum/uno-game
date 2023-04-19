@@ -1,5 +1,10 @@
 import { request } from "./apiRequest";
-import { GetTeamLeboardData, UserToLeboardData, UserToLeboardExtData } from "./types";
+import {
+  GetTeamLeboardData,
+  GetTeamLeboardResponse,
+  UserToLeboardData,
+  UserToLeboardExtData,
+} from "./types";
 
 const teamName = "unoGroup";
 
@@ -13,7 +18,11 @@ export const leaderboardAPI = {
     request.post("leaderboard", extendedData);
   },
 
-  getTeamLeaderboard: (data: GetTeamLeboardData): Promise<UserToLeboardData> => {
+  getTeamLeaderboard: (data: GetTeamLeboardData): Promise<GetTeamLeboardResponse[]> => {
     return request.post(`leaderboard/${teamName}`, data);
+  },
+
+  getTeamLeaderboardAll: (data: GetTeamLeboardData): Promise<GetTeamLeboardResponse[]> => {
+    return request.post("leaderboard/all", data);
   },
 };
