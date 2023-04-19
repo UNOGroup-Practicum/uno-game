@@ -5,6 +5,8 @@ declare global {
 
   export declare const __API_ENDPOINT__: string;
 
+  export declare const __API_BASEURL__: string;
+
   interface Window {
     __PRELOADED_STATE__?: object;
   }
