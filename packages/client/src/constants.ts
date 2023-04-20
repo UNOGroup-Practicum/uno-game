@@ -30,3 +30,5 @@ export const ROUTES = {
 export const SCHEMA_ERROR_MESSAGE = "Schema response is not valid";
 
 export const IS_SSR = typeof window === "undefined";
+
+export const RATING_FIELD_NAME = "gamesAmount";

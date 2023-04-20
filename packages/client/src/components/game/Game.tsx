@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "services/hooks";
 import { authSelect } from "services/slices/auth-slice";
 import { gameSelect, gameSlice } from "services/slices/gameSlice";
+import { postLeaderboardData } from "services/slices/leaderboardSlice";
 
 import Player from "components/player/Player";
 
@@ -100,6 +101,7 @@ function Game() {
         if (gamerCards === 0) {
           setWin(gamersList[1].name);
           setIsModalOpen(true);
+          dispatch(postLeaderboardData(false));
         } else {
           const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[0].name);
           refTimers.current = { timer1, timer2 };
@@ -193,6 +195,7 @@ function Game() {
         if (gamerCards === 0) {
           setWin(gamersList[0].name);
           setIsModalOpen(true);
+          dispatch(postLeaderboardData(true));
         } else {
           const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[1].name);
           refTimers.current = { timer1, timer2 };
