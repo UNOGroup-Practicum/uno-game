@@ -1,6 +1,6 @@
 import { Button, Card, CardContent, Container, Grid, Paper, Typography } from "@mui/material";
 
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Theme } from "theme/ThemeContext";
 import { useTheme } from "theme/useTheme";
@@ -21,6 +21,9 @@ import promoBgWebp from "assets/images/promo_bg.jpg?format=webp&quality=75&sourc
 import promoBg from "assets/images/promo_bg.jpg?quality=75&imagetools";
 
 import { ROUTES } from "../../constants";
+import { request } from "../../services/api/apiRequest";
+import { forumAPI } from "../../services/api/forumApi";
+import { themeAPI } from "../../services/api/themeApi";
 
 import styles from "./HomePage.module.scss";
 
@@ -48,8 +51,13 @@ const AdvantagesItem: React.FC<React.PropsWithChildren> = ({ children }) => {
 };
 
 export const HomePage = () => {
+  const onBtnClick = async () => {
+    const response = await forumAPI.getForumThemes().catch((err) => console.log(err));
+    console.log(response);
+  };
   return (
     <>
+      <button onClick={onBtnClick}>Запрос</button>
       <section className={styles.promo} data-testid="page-home">
         <div className={styles.promo__bg}>
           <Picture webp={promoBgWebp}>
