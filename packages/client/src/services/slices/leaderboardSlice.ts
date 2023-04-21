@@ -52,25 +52,29 @@ export const getLeaderboardData = createAsyncThunk(
 
 export const postLeaderboardData = createAsyncThunk(
   "leaderboard/postLeaderboardData",
-  (win: boolean, { getState, dispatch }) => {
+  (status: "win" | "lose", { getState, dispatch }) => {
     const leaderboard = (getState() as RootState).leaderboard;
     const user = (getState() as RootState).auth.user;
-    const data: UserToLeboardData = {
-      name: `${user?.firstName} ${user?.secondName}`,
-      email: user?.email,
-      avatar: user?.avatar,
-      winsAmount: win ? leaderboard.winsAmount + 1 : leaderboard.winsAmount,
-      [RATING_FIELD_NAME]: leaderboard.gamesAmount + 1,
-    };
+    let data: UserToLeboardData;
 
-    leaderboardAPI
-      .addUserToLeaderboard(data)
-      .then((res) => {
-        if (res === "OK") {
-          dispatch(getLeaderboardData());
-        }
-      })
-      .catch((err) => console.log(err));
+    if (user) {
+      data = {
+        name: `${user.firstName} ${user.secondName}`,
+        email: user.email,
+        avatar: user.avatar,
+        winsAmount: status === "win" ? leaderboard.winsAmount + 1 : leaderboard.winsAmount,
+        [RATING_FIELD_NAME]: leaderboard.gamesAmount + 1,
+      };
+
+      leaderboardAPI
+        .addUserToLeaderboard(data)
+        .then((res) => {
+          if (res === "OK") {
+            dispatch(getLeaderboardData());
+          }
+        })
+        .catch((err) => console.log(err));
+    }
   }
 );
 

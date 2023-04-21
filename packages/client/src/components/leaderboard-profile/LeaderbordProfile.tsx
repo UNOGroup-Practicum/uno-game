@@ -54,7 +54,9 @@ export const LeaderboardProfile = () => {
   useEffect(() => {
     const res: LeaderboardUserData[] = [];
     data.forEach((el: UserToLeboardData, idx: number) => {
-      res.push(createData(idx + 1, el?.avatar, el.name, el[RATING_FIELD_NAME], el.winsAmount));
+      res.push(
+        createData(idx + 1, el?.avatar, el.name, el[RATING_FIELD_NAME], el.winsAmount, el.email)
+      );
     });
     setRows(res);
   }, [data]);
@@ -93,14 +95,14 @@ export const LeaderboardProfile = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, idx) => {
+            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={idx}>
-                  {columns.map((column, index) => {
+                <TableRow hover role="checkbox" tabIndex={-1} key={row.email}>
+                  {columns.map((column) => {
                     const value = row[column.id];
                     return (
                       <TableCell
-                        key={index}
+                        key={column.id}
                         align={column.align}
                         sx={{
                           fontSize: "1.7rem",

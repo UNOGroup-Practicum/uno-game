@@ -5,8 +5,9 @@ export const createData = (
   imgUrl: string | undefined,
   name: string,
   games: number,
-  wins: number
+  wins: number,
+  email: string
 ): LeaderboardUserData => {
   const percent = Math.round((wins * 100) / games) + "%";
-  return { position, imgUrl, name, games, wins, percent };
+  return { position, imgUrl, name, games, wins, percent, email };
 };

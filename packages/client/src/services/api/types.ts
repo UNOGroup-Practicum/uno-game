@@ -66,7 +66,7 @@ export type User = {
 
 export type UserToLeboardData = {
   name: string;
-  email: string | undefined;
+  email: string;
   avatar?: string;
   winsAmount: number;
   [RATING_FIELD_NAME]: number;
@@ -95,4 +95,5 @@ export type LeaderboardUserData = {
   games: number;
   wins: number;
   percent: string;
+  email: string;
 };
