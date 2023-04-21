@@ -3,7 +3,7 @@ import { Route, Routes, useLocation, useSearchParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "services/hooks";
 import { authSelect, authThunks } from "services/slices/auth-slice";
-import { oAuthThunks } from "services/slices/oauth-slice";
+import { getOAuthRedirectUri, oAuthThunks } from "services/slices/oauth-slice";
 import { Theme } from "theme/ThemeContext";
 import { useTheme } from "theme/useTheme";
 import { toggleFullScreen } from "utils/toggleFullScreen";
@@ -25,7 +25,7 @@ import { AuthPagesRoute } from "components/auth-pages-route/AuthPagesRoute";
 import { ErrorBoundary } from "components/error-boundary/ErrorBoundary";
 import { ProtectedRoute } from "components/protected-route/ProtectedRoute";
 
-import { ROUTES } from "../../constants";
+import { IS_SSR, ROUTES } from "../../constants";
 
 function App() {
   const dispatch = useDispatch();
@@ -33,20 +33,31 @@ function App() {
   const { theme } = useTheme();
   const location = useLocation();
   const [params] = useSearchParams();
+  const oAuthCode = params.get("code");
+  /**
+   * NOTE: с React.StrictMode из-за двойного рендера запросы отправляются 2 раза.
+   * В результате возникает racing запросов аутентификации и получения данных пользователя
+   * что ломает схему - получить authCookie, запросить с ней данные пользователя.
+   * По этой причине отправляем только 1 запрос.
+   */
+  let isSendOAuthRequest = false;
 
   useEffect(() => {
-    const code = params.get("code");
-
-    if (code) {
-      dispatch(oAuthThunks.login(code));
+    if (IS_SSR || isSendOAuthRequest || !oAuthCode) {
+      return;
     }
-  }, [params]);
+
+    isSendOAuthRequest = true;
+    window.history.pushState({}, "", getOAuthRedirectUri());
+
+    dispatch(oAuthThunks.login(oAuthCode));
+  }, [oAuthCode, dispatch, isSendOAuthRequest]);
 
   useEffect(() => {
-    if (!user) {
+    if (!user && !oAuthCode) {
       dispatch(authThunks.me());
     }
-  }, [dispatch]);
+  }, [oAuthCode, dispatch]);
 
   useEffect(() => {
     const [oldTheme, newTheme] =
