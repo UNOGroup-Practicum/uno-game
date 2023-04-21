@@ -1,3 +1,5 @@
+import { RATING_FIELD_NAME } from "../../constants";
+
 import { request } from "./apiRequest";
 import {
   GetTeamLeboardData,
@@ -12,10 +14,10 @@ export const leaderboardAPI = {
   addUserToLeaderboard: (data: UserToLeboardData) => {
     const extendedData: UserToLeboardExtData = {
       data,
-      ratingFieldName: "gamesNumber",
+      ratingFieldName: RATING_FIELD_NAME,
       teamName,
     };
-    request.post("leaderboard", extendedData);
+    return request.post("leaderboard", extendedData);
   },
 
   getTeamLeaderboard: (data: GetTeamLeboardData): Promise<GetTeamLeboardResponse[]> => {

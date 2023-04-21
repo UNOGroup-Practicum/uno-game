@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { RATING_FIELD_NAME } from "../../constants";
+
 import { apiSchema } from "./schema";
 
 export type APIError = {
@@ -63,11 +65,11 @@ export type User = {
 };
 
 export type UserToLeboardData = {
-  id: number;
   name: string;
+  email: string;
   avatar?: string;
-  winsNumber: number;
-  gamesNumber: number;
+  winsAmount: number;
+  [RATING_FIELD_NAME]: number;
 };
 
 export type UserToLeboardExtData = {
@@ -87,11 +89,11 @@ export type GetTeamLeboardResponse = {
 };
 
 export type LeaderboardUserData = {
-  id: number;
   position: number;
   imgUrl: string | undefined;
   name: string;
   games: number;
   wins: number;
   percent: string;
+  email: string;
 };

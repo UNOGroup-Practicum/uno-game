@@ -1,28 +1,20 @@
 import { Container } from "@mui/material";
 import { Button, Stack, Typography } from "@mui/material";
 
-import { useEffect, useState } from "react";
+import { useLayoutEffect } from "react";
 
-import { UserToLeboardData } from "services/api/types";
+import { useDispatch } from "services/hooks";
+import { getLeaderboardData } from "services/slices/leaderboardSlice";
 
 import { LeaderboardProfile } from "components/leaderboard-profile/LeaderbordProfile";
-
-import { leaderboardAPI } from "../../services/api/leaderboardApi";
 
 import styles from "./LiderboardPage.module.scss";
 
 export const LiderboardPage = () => {
-  const [results, setResults] = useState<UserToLeboardData[]>([]);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    leaderboardAPI
-      .getTeamLeaderboardAll({
-        ratingFieldName: "winsNumber",
-        cursor: 0,
-        limit: 100,
-      })
-      .then((res) => setResults(() => res.map((el) => el.data)))
-      .catch((err) => console.log(err));
+  useLayoutEffect(() => {
+    dispatch(getLeaderboardData());
   }, []);
 
   const handleFilter = (e: React.MouseEvent<HTMLElement>): void => {
@@ -46,7 +38,7 @@ export const LiderboardPage = () => {
             За всё время
           </Button>
         </Stack>
-        <LeaderboardProfile gameResults={results} />
+        <LeaderboardProfile />
       </Container>
     </div>
   );

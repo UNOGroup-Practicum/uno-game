@@ -13,7 +13,11 @@ import {
 import { ChangeEvent, useEffect, useState } from "react";
 
 import { LeaderboardUserData, UserToLeboardData } from "services/api/types";
+import { useSelector } from "services/hooks";
+import { leaderboardSelect } from "services/slices/leaderboardSlice";
 import { createData } from "utils/createDataForLeaderboard";
+
+import { RATING_FIELD_NAME } from "../../constants";
 
 type LabelDisplayedRowsArgs = {
   from: number;
@@ -43,18 +47,19 @@ const createLabelDisplayedRows = (displayedRowsArgs: LabelDisplayedRowsArgs): st
   return `${from}–${to} из ${count !== -1 ? count : `более чем ${to}`}`;
 };
 
-export const LeaderboardProfile = ({ gameResults }: { gameResults: UserToLeboardData[] }) => {
+export const LeaderboardProfile = () => {
   const [rows, setRows] = useState<LeaderboardUserData[]>([]);
+  const { data } = useSelector(leaderboardSelect);
 
   useEffect(() => {
     const res: LeaderboardUserData[] = [];
-    gameResults
-      .sort((a: UserToLeboardData, b: UserToLeboardData) => b.winsNumber - a.winsNumber)
-      .forEach((el: UserToLeboardData, idx: number) => {
-        res.push(createData(el.id, idx + 1, el?.avatar, el.name, el.gamesNumber, el.winsNumber));
-      });
+    data.forEach((el: UserToLeboardData, idx: number) => {
+      res.push(
+        createData(idx + 1, el?.avatar, el.name, el[RATING_FIELD_NAME], el.winsAmount, el.email)
+      );
+    });
     setRows(res);
-  }, [gameResults]);
+  }, [data]);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -92,7 +97,7 @@ export const LeaderboardProfile = ({ gameResults }: { gameResults: UserToLeboard
           <TableBody>
             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                <TableRow hover role="checkbox" tabIndex={-1} key={row.email}>
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (
