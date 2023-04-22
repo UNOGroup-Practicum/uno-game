@@ -2,22 +2,27 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Avatar, Button, Container, TextField } from "@mui/material";
 
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { NavLink, useParams } from "react-router-dom";
 
 import { ROUTES } from "../../constants";
-
-import { currentUserData, forumData } from "./data/data";
-import { MessageItem } from "./MessageItem/MessageItem";
+import { authSelect } from "../../services/slices/auth-slice";
+import { forumSelect } from "../../services/slices/forum-slice";
 
 import styles from "./ForumPage.module.scss";
 import stylesMessageItem from "./MessageItem/MessageItem.module.scss";
 
 export const ForumMessagesListPage: React.FC = () => {
   const [text, setText] = useState("");
-  const { themeId } = useParams();
   const [isDisabled, setIsDisabled] = useState(true);
 
-  const themeData = forumData.filter((item) => Number(item.themeId) === Number(themeId))[0];
+  const { themes } = useSelector(forumSelect);
+  const { themeId } = useParams<string>();
+  // @ts-ignore
+  const { user_id, title } = themes[+themeId];
+  console.log(user_id, title);
+
+  const { user } = useSelector(authSelect);
 
   useEffect(() => {
     text.length ? setIsDisabled(false) : setIsDisabled(true);
@@ -34,7 +39,7 @@ export const ForumMessagesListPage: React.FC = () => {
   };
 
   const delTheme = () => {
-    console.log(`Theme ${themeData.themeId} deleted`);
+    console.log(`Theme ${themeId} deleted`);
   };
 
   return (
@@ -42,12 +47,10 @@ export const ForumMessagesListPage: React.FC = () => {
       <main className={styles.ForumPage}>
         <div className={styles.ForumPage_wrapper}>
           <div className={stylesMessageItem.MessageItem__user}>
-            <Avatar alt="Avatar" src={themeData.themeCreatorUser.avatar} />
-            <p className={stylesMessageItem.MessageItem__user_username}>
-              {themeData.themeCreatorUser.display_name}
-            </p>
+            <Avatar alt="Avatar" src={`${__API_ENDPOINT__}/resources${user?.avatar}`} />
+            <p className={stylesMessageItem.MessageItem__user_username}>{user?.displayName}</p>
           </div>
-          {themeData.themeCreatorUser.id === currentUserData.id && (
+          {user_id && user?.id === user_id && (
             <Button onClick={delTheme} variant="outlined" color="error" startIcon={<DeleteIcon />}>
               Удалить тему
             </Button>
@@ -56,12 +59,12 @@ export const ForumMessagesListPage: React.FC = () => {
 
         <h2 className={styles.ForumPage__header}>
           <NavLink to={ROUTES.forum.path}>{"<"}</NavLink>
-          {themeData.themeTitle}
+          {title}
         </h2>
 
-        {themeData.themeMessages.map((item) => (
-          <MessageItem key={item.messageId} messageData={item} />
-        ))}
+        {/*{themeData.themeMessages.map((item) => (*/}
+        {/*  <MessageItem key={item.messageId} messageData={item} />*/}
+        {/*))}*/}
 
         <form className={styles.ForumPage__form} onSubmit={addMessage}>
           <TextField

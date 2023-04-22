@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
 
 import { authSlice } from "./slices/auth-slice";
+import { forumSlice } from "./slices/forum-slice";
 import { gameSlice } from "./slices/gameSlice";
 import { oAuthSlice } from "./slices/oauth-slice";
 import { themeSlice } from "./slices/themeSlice";
@@ -12,4 +13,5 @@ export const rootReducer = combineReducers({
   oauth: oAuthSlice.reducer,
   game: gameSlice.reducer,
   theme: themeSlice.reducer,
+  forum: forumSlice.reducer,
 });

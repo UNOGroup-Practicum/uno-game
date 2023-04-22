@@ -1,15 +1,27 @@
 import { Button, Container, TextField } from "@mui/material";
 
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-import { forumData } from "./data/data";
+import { useDispatch } from "../../services/hooks";
+import { authSelect } from "../../services/slices/auth-slice";
+import { forumSelect, forumThunks } from "../../services/slices/forum-slice";
+
 import { ThemeItem } from "./ThemeItem/ThemeItem";
 
 import styles from "./ForumPage.module.scss";
 
 export const ForumThemesListPage: React.FC = () => {
+  const dispatch = useDispatch();
+  const { themes } = useSelector(forumSelect);
+  const { user } = useSelector(authSelect);
   const [title, setTitle] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
+
+  useEffect(() => {
+    // TODO: исправить типизацию - убрать true
+    dispatch(forumThunks.getForumThemes(true));
+  }, []);
 
   useEffect(() => {
     title.length ? setIsDisabled(false) : setIsDisabled(true);
@@ -17,9 +29,8 @@ export const ForumThemesListPage: React.FC = () => {
 
   const addTheme = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!isDisabled) {
-      // здесь будет создание темы
-      console.log(title);
+    if (!isDisabled && user) {
+      dispatch(forumThunks.putForumThemes({ user_id: user.id, title }));
 
       setTitle("");
     }
@@ -55,8 +66,8 @@ export const ForumThemesListPage: React.FC = () => {
           </Button>
         </form>
 
-        {forumData.map((item) => (
-          <ThemeItem key={item.themeId} {...item} />
+        {themes.map((theme) => (
+          <ThemeItem key={theme.id} {...theme} />
         ))}
       </main>
     </Container>

@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { RequestTheme } from "pages/ForumPage/types/types";
+
 const instance = axios.create({
   baseURL: __API_BASEURL__,
   withCredentials: true,
@@ -8,7 +10,10 @@ const instance = axios.create({
 export const forumAPI = {
   async getForumThemes() {
     const response = await instance.get("/forum");
-    console.log(response);
-    return response;
+    return response.data.data;
+  },
+  async putForumThemes(data: RequestTheme) {
+    const response = await instance.put("/forum", data);
+    return response.data.data;
   },
 };

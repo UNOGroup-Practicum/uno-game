@@ -51,13 +51,8 @@ const AdvantagesItem: React.FC<React.PropsWithChildren> = ({ children }) => {
 };
 
 export const HomePage = () => {
-  const onBtnClick = async () => {
-    const response = await forumAPI.getForumThemes().catch((err) => console.log(err));
-    console.log(response);
-  };
   return (
     <>
-      <button onClick={onBtnClick}>Запрос</button>
       <section className={styles.promo} data-testid="page-home">
         <div className={styles.promo__bg}>
           <Picture webp={promoBgWebp}>

@@ -21,3 +21,10 @@ export type ThemeType = {
   themeCreationDate: Date;
   themeMessages: MessageType[];
 };
+export type Theme = {
+  id: number;
+  user_id: number;
+  title: string;
+  createdAt: Date;
+};
+export type RequestTheme = Omit<Theme, "id" | "createdAt">;
