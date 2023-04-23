@@ -75,6 +75,7 @@ export async function startServer() {
           .cookie("themeUID", themeUIDServer, {
             maxAge: 3600000 * 24 * 365, // 1 час * 24 * 365
             httpOnly: true,
+            domain: req.hostname === "localhost" ? `${req.hostname}` : `.${req.hostname}`,
           })
           .status(200)
           .set({ "Content-Type": "text/html" })

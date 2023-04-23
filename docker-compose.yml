@@ -14,7 +14,7 @@ services:
           - CLIENT_PORT=${CLIENT_PORT}
         depends_on:
             - uno-db
-            -
+            - server
         networks:
             - awesome
     server:
