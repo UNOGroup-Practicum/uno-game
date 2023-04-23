@@ -12,6 +12,11 @@ services:
             - "${CLIENT_PORT}:${CLIENT_PORT}"
         environment:
           - CLIENT_PORT=${CLIENT_PORT}
+        depends_on:
+            - uno-db
+            -
+        networks:
+            - awesome
     server:
         container_name: practicum-server
         image: practicum-server

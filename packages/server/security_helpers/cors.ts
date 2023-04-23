@@ -1,6 +1,12 @@
 import cors from "cors";
 
-const whitelist = ["http://localhost:3000"];
+const whitelist = [
+  "http://localhost:3000",
+  "http://uno-game.ru",
+  "http://www.uno-game.ru",
+  "https://uno-game.ru",
+  "https://www.uno-game.ru",
+];
 const corsOptions = {
   //@ts-ignore
   origin: function (origin, callback) {
