@@ -23,14 +23,9 @@ export const ForumMessage = sequelize.define("ForumMessage", forum_message, {});
 export const ForumMessageLike = sequelize.define("ForumMessageLike", forum_message_like, {});
 
 export async function dbConnect() {
-  // создаём тему
-  const user_id = 224437;
-  const title = "Вопросы разработчикам";
-
   try {
-    await ForumTheme.create({ user_id, title });
     await sequelize.authenticate(); // Проверка аутентификации в БД
-    await sequelize.sync(); // Синхронизация базы данных
+    await sequelize.sync({ force: true }); // Синхронизация базы данных
     console.log("Connection has been established successfully.");
   } catch (error) {
     console.error("Unable to connect to the database:", error);

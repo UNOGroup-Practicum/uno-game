@@ -9,22 +9,19 @@ export type UserType = {
   email: string;
 };
 export type MessageType = {
-  messageId: number;
-  messageCreatorUser: Pick<UserType, "id" | "display_name" | "avatar">;
-  messageText: string;
-  messageCreationDate: Date;
+  id: number;
+  theme_id: number;
+  user_id: number;
+  user_display_name: string;
+  user_avatar: string;
+  message: string;
+  parent_message_id: number | null;
+  createdAt: Date;
 };
 export type ThemeType = {
-  themeId: number;
-  themeCreatorUser: Pick<UserType, "id" | "display_name" | "avatar">;
-  themeTitle: string;
-  themeCreationDate: Date;
-  themeMessages: MessageType[];
-};
-export type Theme = {
   id: number;
   user_id: number;
   title: string;
   createdAt: Date;
 };
-export type RequestTheme = Omit<Theme, "id" | "createdAt">;
+export type RequestTheme = Omit<ThemeType, "id" | "createdAt">;

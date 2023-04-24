@@ -1,15 +1,44 @@
 import { Request, Response } from "express";
-import { ForumTheme } from "../db";
+import { ForumMessage, ForumTheme } from "../db";
 
-export async function getAllForumThemes(_req: Request, res: Response) {
+async function createFirstForumTheme(res: Response) {
+  const themeData = {
+    user_id: 224437,
+    title: "Вопросы разработчикам",
+  };
+  const messageData = {
+    theme_id: 1,
+    user_id: 224437,
+    user_avatar:
+      "/2185cd69-d06c-43c4-815e-20a7e1fa59c8/0ec6586e-6519-4e27-a1c3-d52fc90ec9a4_mainPhoto.jpg",
+    user_display_name: "Evg",
+    message: "Оставьте свой вопрос разработчикам!",
+  };
+
   try {
-    const themes = await ForumTheme.findAll();
-    res.status(200).json({ data: themes });
+    const createdThemeData = await ForumTheme.create(themeData);
+    const createdMessageData = await ForumMessage.create(messageData);
+    console.log("createdThemeData", createdThemeData);
+    console.log("createdMessageData", createdMessageData);
   } catch (error) {
-    console.log(error);
     res.status(400).json({ error: (error as Error).message });
   }
 }
+
+export async function getAllForumThemes(_req: Request, res: Response) {
+  try {
+    let themes = await ForumTheme.findAll();
+    if (!themes.length) {
+      await createFirstForumTheme(res);
+      themes = await ForumTheme.findAll();
+    }
+    res.status(200).json({ data: themes });
+    return;
+  } catch (error) {
+    res.status(400).json({ error: (error as Error).message });
+  }
+}
+
 export async function putForumTheme(req: Request, res: Response) {
   const { user_id, title } = req.body;
 
@@ -21,6 +50,28 @@ export async function putForumTheme(req: Request, res: Response) {
       res.status(200).json({ data: themes });
     } else {
       res.status(400).json({ message: "theme not saved" });
+    }
+  } catch (error) {
+    res.status(400).json({ error: (error as Error).message });
+  }
+}
+
+export async function getForumThemeMessages(req: Request, res: Response) {
+  try {
+    if (req.query.theme_id) {
+      const theme_id = +req.query.theme_id;
+      console.log("theme_id", theme_id);
+      const theme = await ForumTheme.findOne({ where: { theme_id } });
+      console.log("theme", theme);
+
+      // TODO: исправить типизацию
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const messages = await ForumTheme.findAll({ where: { theme_id: theme.id } });
+      console.log("messages", messages);
+      res.status(200).json({ data: messages });
+    } else {
+      throw new Error("Нет query-параметра!");
     }
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });

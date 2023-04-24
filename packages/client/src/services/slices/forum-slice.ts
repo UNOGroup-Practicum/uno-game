@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-import { RequestTheme, Theme } from "../../pages/ForumPage/types/types";
+import { RequestTheme, ThemeType } from "../../pages/ForumPage/types/types";
 import { forumAPI } from "../api/forumApi";
 import { RootState } from "../store";
 
@@ -8,7 +8,7 @@ type ForumState = {
   isLoading: boolean;
   error: string | null;
   isSuccess: boolean;
-  themes: Theme[];
+  themes: ThemeType[];
 };
 
 export const initialState: ForumState = {
@@ -65,7 +65,7 @@ export const forumSlice = createSlice({
       state.isLoading = false;
       state.error = action.error.message ? action.error.message : null;
     });
-    // получение тем
+    // создание темы
     // builder.addCase(forumThunks.putForumThemes.pending, (state) => {
     //   state.isLoading = true;
     //   state.error = null;

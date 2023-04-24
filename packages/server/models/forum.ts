@@ -26,6 +26,14 @@ export const forum_message = {
     type: DataType.INTEGER,
     allowNull: false,
   },
+  user_display_name: {
+    type: DataType.STRING,
+    allowNull: false,
+  },
+  user_avatar: {
+    type: DataType.STRING,
+    allowNull: false,
+  },
   user_id: {
     type: DataType.INTEGER,
     allowNull: false,
@@ -33,6 +41,11 @@ export const forum_message = {
   message: {
     type: DataType.STRING,
     allowNull: false,
+  },
+  parent_message_id: {
+    type: DataType.INTEGER,
+    allowNull: true,
+    defaultValue: null,
   },
 };
 
