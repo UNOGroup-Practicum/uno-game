@@ -3,26 +3,38 @@ import { Avatar, Button, Container, TextField } from "@mui/material";
 
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
+
+import { useDispatch } from "services/hooks";
+import { authSelect } from "services/slices/auth-slice";
+import { forumSelect, forumThunks } from "services/slices/forum-slice";
 
 import { ROUTES } from "../../constants";
-import { authSelect } from "../../services/slices/auth-slice";
-import { forumSelect } from "../../services/slices/forum-slice";
+
+import { MessageItem } from "./MessageItem/MessageItem";
 
 import styles from "./ForumPage.module.scss";
 import stylesMessageItem from "./MessageItem/MessageItem.module.scss";
 
 export const ForumMessagesListPage: React.FC = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [text, setText] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
 
-  const { themes } = useSelector(forumSelect);
-  const { themeId } = useParams<string>();
-  // @ts-ignore
-  const { user_id, title } = themes[+themeId];
-  console.log(user_id, title);
-
+  const { themes, currentMessages } = useSelector(forumSelect);
   const { user } = useSelector(authSelect);
+  const { themeId } = useParams<string>();
+
+  // TODO: исправить типизацию
+  // @ts-ignore
+  const { user_id, title } = themes.find((theme) => theme.id === +themeId);
+
+  useEffect(() => {
+    // TODO: исправить типизацию
+    // @ts-ignore
+    dispatch(forumThunks.getForumCurrentMessages(+themeId));
+  }, []);
 
   useEffect(() => {
     text.length ? setIsDisabled(false) : setIsDisabled(true);
@@ -39,7 +51,10 @@ export const ForumMessagesListPage: React.FC = () => {
   };
 
   const delTheme = () => {
-    console.log(`Theme ${themeId} deleted`);
+    // TODO: исправить типизацию
+    // @ts-ignore
+    dispatch(forumThunks.deleteForumTheme(+themeId));
+    navigate(ROUTES.forum.path);
   };
 
   return (
@@ -62,9 +77,9 @@ export const ForumMessagesListPage: React.FC = () => {
           {title}
         </h2>
 
-        {/*{themeData.themeMessages.map((item) => (*/}
-        {/*  <MessageItem key={item.messageId} messageData={item} />*/}
-        {/*))}*/}
+        {currentMessages.map((item) => (
+          <MessageItem key={item.id} messageData={item} />
+        ))}
 
         <form className={styles.ForumPage__form} onSubmit={addMessage}>
           <TextField

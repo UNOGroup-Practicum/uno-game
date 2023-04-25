@@ -41,7 +41,6 @@ export async function getAllForumThemes(_req: Request, res: Response) {
 
 export async function putForumTheme(req: Request, res: Response) {
   const { user_id, title } = req.body;
-
   try {
     const createdData = await ForumTheme.create({ user_id, title });
 
@@ -56,18 +55,37 @@ export async function putForumTheme(req: Request, res: Response) {
   }
 }
 
-export async function getForumThemeMessages(req: Request, res: Response) {
+export async function deleteForumThemeById(req: Request, res: Response) {
   try {
-    if (req.query.theme_id) {
-      const theme_id = +req.query.theme_id;
-      console.log("theme_id", theme_id);
-      const theme = await ForumTheme.findOne({ where: { theme_id } });
-      console.log("theme", theme);
-
+    if (req.params.theme_id) {
+      const theme_id = +req.params.theme_id;
       // TODO: исправить типизацию
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const messages = await ForumTheme.findAll({ where: { theme_id: theme.id } });
+      const theme = await ForumTheme.findByPk(theme_id);
+      if (theme) {
+        await theme.destroy();
+      } else {
+        throw new Error("Тема не найдена!");
+      }
+      const themes = await ForumTheme.findAll();
+      res.status(200).json({ data: themes });
+    } else {
+      throw new Error("Нет query-параметра!");
+    }
+  } catch (error) {
+    res.status(400).json({ error: (error as Error).message });
+  }
+}
+
+export async function getForumThemeMessages(req: Request, res: Response) {
+  try {
+    if (req.params.theme_id) {
+      const theme_id = +req.params.theme_id;
+      // TODO: исправить типизацию
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const messages = await ForumMessage.findAll({ where: { theme_id } });
       console.log("messages", messages);
       res.status(200).json({ data: messages });
     } else {

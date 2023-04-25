@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-import { RequestTheme, ThemeType } from "../../pages/ForumPage/types/types";
+import { MessageType, RequestTheme, ThemeType } from "../../pages/ForumPage/types/types";
 import { forumAPI } from "../api/forumApi";
 import { RootState } from "../store";
 
@@ -9,6 +9,7 @@ type ForumState = {
   error: string | null;
   isSuccess: boolean;
   themes: ThemeType[];
+  currentMessages: MessageType[];
 };
 
 export const initialState: ForumState = {
@@ -16,6 +17,7 @@ export const initialState: ForumState = {
   error: null,
   isSuccess: false,
   themes: [],
+  currentMessages: [],
 };
 
 export const forumThunks = {
@@ -27,12 +29,26 @@ export const forumThunks = {
       dispatch(forumSlice.actions.setForumThemes(newForumThemes));
     }
   ),
-  putForumThemes: createAsyncThunk<void, RequestTheme, { rejectValue: ForumState["error"] }>(
+  putForumTheme: createAsyncThunk<void, RequestTheme, { rejectValue: ForumState["error"] }>(
     "FORUM/themes",
     async (data, { dispatch }) => {
       const newForumThemes = await forumAPI.putForumThemes(data);
       // TODO: запись в state должна делаться здесь или в extraReducers после fulfilled?
       dispatch(forumSlice.actions.setForumThemes(newForumThemes));
+    }
+  ),
+  deleteForumTheme: createAsyncThunk<void, number, { rejectValue: ForumState["error"] }>(
+    "FORUM/themes",
+    async (themeId, { dispatch }) => {
+      const newForumThemes = await forumAPI.deleteForumThemeById(themeId);
+      dispatch(forumSlice.actions.setForumThemes(newForumThemes));
+    }
+  ),
+  getForumCurrentMessages: createAsyncThunk<void, number, { rejectValue: ForumState["error"] }>(
+    "FORUM/messages",
+    async (themeId, { dispatch }) => {
+      const newMessages = await forumAPI.getForumThemeMessagesById(themeId);
+      dispatch(forumSlice.actions.setForumCurrentMessages(newMessages));
     }
   ),
 };
@@ -49,6 +65,9 @@ export const forumSlice = createSlice({
     },
     setForumThemes(state, action) {
       state.themes = action.payload;
+    },
+    setForumCurrentMessages(state, action) {
+      state.currentMessages = action.payload;
     },
   },
   extraReducers: (builder) => {

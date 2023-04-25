@@ -16,4 +16,12 @@ export const forumAPI = {
     const response = await instance.put("/forum", data);
     return response.data.data;
   },
+  async deleteForumThemeById(themeId: number) {
+    const response = await instance.delete(`/forum/${themeId}`);
+    return response.data.data;
+  },
+  async getForumThemeMessagesById(themeId: number) {
+    const response = await instance.get(`/forum/${themeId}`);
+    return response.data.data;
+  },
 };
