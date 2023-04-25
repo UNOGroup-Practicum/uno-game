@@ -7,7 +7,7 @@ import { Location } from "react-router-dom";
 import { StaticRouter } from "react-router-dom/server";
 
 import { themeSlice } from "services/slices/themeSlice";
-import { store } from "services/store";
+import { createStore } from "services/store";
 import { Theme } from "theme/ThemeContext";
 import ThemeProvider from "theme/ThemeProvider";
 
@@ -18,8 +18,10 @@ import createEmotionCache from "./createEmotionCache";
 export function render(url: string | Partial<Location>, theme: Theme) {
   const cache = createEmotionCache();
   const { extractCriticalToChunks, constructStyleTagsFromChunks } = createEmotionServer(cache);
+  const store = createStore();
 
   store.dispatch(themeSlice.actions.setTheme(theme));
+
   const initialState = store.getState();
 
   const html = ReactDOMServer.renderToString(

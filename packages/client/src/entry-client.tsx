@@ -1,22 +1,32 @@
+import { CacheProvider } from "@emotion/react";
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 
-import { store } from "services/store";
+import { createStore, RootState } from "services/store";
 import ThemeProvider from "theme/ThemeProvider";
 import { serviceWorker } from "utils/registerServiceWorker";
 
 import App from "components/app/App";
+
+import createEmotionCache from "./createEmotionCache";
 
 import "./styles/index.scss";
 
 serviceWorker.register();
 
 const cache = createEmotionCache();
-import { CacheProvider } from "@emotion/react";
 
-import createEmotionCache from "./createEmotionCache";
+let preloadedState: RootState | undefined;
+
+if (typeof window !== "undefined") {
+  preloadedState = window.__PRELOADED_STATE__ as RootState;
+  delete window.__PRELOADED_STATE__;
+}
+
+const store = createStore({}, preloadedState);
 
 ReactDOM.hydrateRoot(
   document.getElementById("root") as HTMLElement,
