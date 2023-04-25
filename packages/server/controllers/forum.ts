@@ -38,8 +38,7 @@ export async function getAllForumThemes(_req: Request, res: Response) {
     res.status(400).json({ error: (error as Error).message });
   }
 }
-
-export async function putForumTheme(req: Request, res: Response) {
+export async function postForumTheme(req: Request, res: Response) {
   const { user_id, title } = req.body;
   try {
     const createdData = await ForumTheme.create({ user_id, title });
@@ -54,8 +53,7 @@ export async function putForumTheme(req: Request, res: Response) {
     res.status(400).json({ error: (error as Error).message });
   }
 }
-
-export async function deleteForumThemeById(req: Request, res: Response) {
+export async function deleteForumTheme(req: Request, res: Response) {
   try {
     if (req.params.theme_id) {
       const theme_id = +req.params.theme_id;
@@ -77,7 +75,6 @@ export async function deleteForumThemeById(req: Request, res: Response) {
     res.status(400).json({ error: (error as Error).message });
   }
 }
-
 export async function getForumThemeMessages(req: Request, res: Response) {
   try {
     if (req.params.theme_id) {
@@ -90,6 +87,19 @@ export async function getForumThemeMessages(req: Request, res: Response) {
       res.status(200).json({ data: messages });
     } else {
       throw new Error("Нет query-параметра!");
+    }
+  } catch (error) {
+    res.status(400).json({ error: (error as Error).message });
+  }
+}
+export async function postForumThemeMessage(req: Request, res: Response) {
+  try {
+    const createdData = await ForumMessage.create({ ...req.body });
+    if (createdData) {
+      const themes = await ForumMessage.findAll({ where: { theme_id: req.body.theme_id } });
+      res.status(200).json({ data: themes });
+    } else {
+      res.status(400).json({ message: "message not saved" });
     }
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });

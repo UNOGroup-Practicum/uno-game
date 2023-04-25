@@ -30,7 +30,7 @@ export const ForumThemesListPage: React.FC = () => {
   const addTheme = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isDisabled && user) {
-      dispatch(forumThunks.putForumTheme({ user_id: user.id, title }));
+      dispatch(forumThunks.postForumTheme({ user_id: user.id, title }));
 
       setTitle("");
     }

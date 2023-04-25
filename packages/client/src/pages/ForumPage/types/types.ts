@@ -1,13 +1,3 @@
-export type UserType = {
-  id: number;
-  login: string;
-  first_name: string;
-  second_name: string;
-  display_name: string;
-  avatar: string;
-  phone: string;
-  email: string;
-};
 export type MessageType = {
   id: number;
   theme_id: number;
@@ -16,6 +6,7 @@ export type MessageType = {
   user_avatar: string;
   message: string;
   parent_message_id: number | null;
+  parent_message_text: string | null;
   createdAt: Date;
 };
 export type ThemeType = {
@@ -25,3 +16,4 @@ export type ThemeType = {
   createdAt: Date;
 };
 export type RequestTheme = Omit<ThemeType, "id" | "createdAt">;
+export type RequestMessage = Omit<MessageType, "id" | "createdAt">;

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { RequestTheme } from "pages/ForumPage/types/types";
+import { MessageType, RequestMessage, RequestTheme } from "pages/ForumPage/types/types";
 
 const instance = axios.create({
   baseURL: __API_BASEURL__,
@@ -12,16 +12,20 @@ export const forumAPI = {
     const response = await instance.get("/forum");
     return response.data.data;
   },
-  async putForumThemes(data: RequestTheme) {
-    const response = await instance.put("/forum", data);
+  async postForumThemes(data: RequestTheme) {
+    const response = await instance.post("/forum/theme/", data);
     return response.data.data;
   },
-  async deleteForumThemeById(themeId: number) {
-    const response = await instance.delete(`/forum/${themeId}`);
+  async deleteForumTheme(themeId: number) {
+    const response = await instance.delete(`/forum/theme/${themeId}`);
     return response.data.data;
   },
-  async getForumThemeMessagesById(themeId: number) {
+  async getForumThemeMessages(themeId: number) {
     const response = await instance.get(`/forum/${themeId}`);
+    return response.data.data;
+  },
+  async postForumThemeMessage(data: RequestMessage) {
+    const response = await instance.post("/forum/message/", data);
     return response.data.data;
   },
 };

@@ -11,7 +11,6 @@ type PropsType = {
   messageData: MessageType;
 };
 export const MessageItem: React.FC<PropsType> = ({ messageData }) => {
-  console.log("Date.", messageData.createdAt.toLocaleString("ru", timeOptions));
   return (
     <div className={styles.MessageItem}>
       <div className={styles.MessageItem__user}>

@@ -1,6 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-import { MessageType, RequestTheme, ThemeType } from "../../pages/ForumPage/types/types";
+import {
+  MessageType,
+  RequestMessage,
+  RequestTheme,
+  ThemeType,
+} from "../../pages/ForumPage/types/types";
 import { forumAPI } from "../api/forumApi";
 import { RootState } from "../store";
 
@@ -25,32 +30,39 @@ export const forumThunks = {
   getForumThemes: createAsyncThunk<void, true, { rejectValue: ForumState["error"] }>(
     "FORUM/themes",
     async (data, { dispatch }) => {
-      const newForumThemes = await forumAPI.getForumThemes();
-      dispatch(forumSlice.actions.setForumThemes(newForumThemes));
+      const newThemes = await forumAPI.getForumThemes();
+      dispatch(forumSlice.actions.setForumThemes(newThemes));
     }
   ),
-  putForumTheme: createAsyncThunk<void, RequestTheme, { rejectValue: ForumState["error"] }>(
+  postForumTheme: createAsyncThunk<void, RequestTheme, { rejectValue: ForumState["error"] }>(
     "FORUM/themes",
     async (data, { dispatch }) => {
-      const newForumThemes = await forumAPI.putForumThemes(data);
-      // TODO: запись в state должна делаться здесь или в extraReducers после fulfilled?
-      dispatch(forumSlice.actions.setForumThemes(newForumThemes));
+      const newThemes = await forumAPI.postForumThemes(data);
+      dispatch(forumSlice.actions.setForumThemes(newThemes));
     }
   ),
   deleteForumTheme: createAsyncThunk<void, number, { rejectValue: ForumState["error"] }>(
     "FORUM/themes",
     async (themeId, { dispatch }) => {
-      const newForumThemes = await forumAPI.deleteForumThemeById(themeId);
-      dispatch(forumSlice.actions.setForumThemes(newForumThemes));
+      const newThemes = await forumAPI.deleteForumTheme(themeId);
+      dispatch(forumSlice.actions.setForumThemes(newThemes));
     }
   ),
   getForumCurrentMessages: createAsyncThunk<void, number, { rejectValue: ForumState["error"] }>(
     "FORUM/messages",
     async (themeId, { dispatch }) => {
-      const newMessages = await forumAPI.getForumThemeMessagesById(themeId);
+      const newMessages = await forumAPI.getForumThemeMessages(themeId);
       dispatch(forumSlice.actions.setForumCurrentMessages(newMessages));
     }
   ),
+  postForumThemeMessage: createAsyncThunk<
+    void,
+    RequestMessage,
+    { rejectValue: ForumState["error"] }
+  >("FORUM/themes", async (data, { dispatch }) => {
+    const newMessages = await forumAPI.postForumThemeMessage(data);
+    dispatch(forumSlice.actions.setForumCurrentMessages(newMessages));
+  }),
 };
 
 export const forumSlice = createSlice({
