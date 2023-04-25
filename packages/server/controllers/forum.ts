@@ -83,7 +83,6 @@ export async function getForumThemeMessages(req: Request, res: Response) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const messages = await ForumMessage.findAll({ where: { theme_id } });
-      console.log("messages", messages);
       res.status(200).json({ data: messages });
     } else {
       throw new Error("Нет query-параметра!");

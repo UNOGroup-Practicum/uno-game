@@ -1,0 +1,9 @@
+.Form {
+  display: flex;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--text-color);
+
+  &_input {
+    width: 100%;
+  }
+}

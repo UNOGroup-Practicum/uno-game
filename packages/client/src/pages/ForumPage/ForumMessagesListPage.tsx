@@ -1,7 +1,7 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Avatar, Button, Container, IconButton, TextField } from "@mui/material";
+import { Container, IconButton } from "@mui/material";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 
@@ -11,17 +11,21 @@ import { forumSelect, forumThunks } from "services/slices/forum-slice";
 
 import { ROUTES } from "../../constants";
 
+import { MessageForm } from "./MessageForm/MessageForm";
 import { MessageItem } from "./MessageItem/MessageItem";
 import { RequestMessage } from "./types/types";
 
 import styles from "./ForumPage.module.scss";
-import stylesMessageItem from "./MessageItem/MessageItem.module.scss";
 
+export type AddMessageType = (
+  e: React.FormEvent<HTMLFormElement>,
+  text: string,
+  parent_message_id: number | null,
+  parent_message_text: string | null
+) => void;
 export const ForumMessagesListPage: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [text, setText] = useState("");
-  const [isDisabled, setIsDisabled] = useState(true);
 
   const { themes, currentMessages } = useSelector(forumSelect);
   const { user } = useSelector(authSelect);
@@ -37,33 +41,21 @@ export const ForumMessagesListPage: React.FC = () => {
     dispatch(forumThunks.getForumCurrentMessages(+themeId));
   }, []);
 
-  useEffect(() => {
-    text.length ? setIsDisabled(false) : setIsDisabled(true);
-  }, [text]);
-
-  const addMessage = (
-    e: React.FormEvent<HTMLFormElement>,
-    parent_message_id = null,
-    parent_message_text = null
-  ) => {
+  const addMessage: AddMessageType = (e, text, parent_message_id, parent_message_text) => {
+    console.log("addMessage");
     e.preventDefault();
-    if (!isDisabled) {
-      // здесь будет отправка сообщения
-      console.log(text);
-      const data: RequestMessage = {
-        theme_id: +themeId,
-        user_id: user.id,
-        user_display_name: user.displayName,
-        user_avatar: user.avatar,
-        message: text,
-        parent_message_id,
-        parent_message_text,
-      };
-      console.log(data);
-      dispatch(forumThunks.postForumThemeMessage(data));
-
-      setText("");
-    }
+    // TODO: исправить типизацию
+    const data: RequestMessage = {
+      theme_id: +themeId,
+      user_id: user.id,
+      user_display_name: user.displayName,
+      user_avatar: user.avatar,
+      message: text,
+      parent_message_id,
+      parent_message_text,
+    };
+    console.log(data);
+    dispatch(forumThunks.postForumThemeMessage(data));
   };
 
   const delTheme = () => {
@@ -87,35 +79,11 @@ export const ForumMessagesListPage: React.FC = () => {
             </IconButton>
           )}
         </h2>
-
         {currentMessages.map((item) => (
-          <MessageItem key={item.id} messageData={item} />
+          <MessageItem key={item.id} messageData={item} addMessage={addMessage} />
         ))}
 
-        <form className={styles.ForumPage__form} onSubmit={addMessage}>
-          <TextField
-            className={styles.ForumPage__form_input}
-            multiline
-            variant="outlined"
-            type="search"
-            value={text}
-            placeholder={"Отправить сообщение"}
-            name="title"
-            size="small"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setText(event.target.value);
-            }}
-          />
-          <Button
-            size="small"
-            variant="contained"
-            type="submit"
-            color="warning"
-            disabled={isDisabled}
-          >
-            Отправить
-          </Button>
-        </form>
+        <MessageForm addMessage={addMessage} />
       </main>
     </Container>
   );
