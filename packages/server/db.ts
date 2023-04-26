@@ -17,7 +17,9 @@ const sequelizeOptions: SequelizeOptions = {
 const sequelize = new Sequelize(sequelizeOptions);
 
 // Инициализируем модели
+// темизация
 export const Theme = sequelize.define("Theme", theme, {});
+// форум
 export const ForumTheme = sequelize.define("ForumTheme", forum_theme, { updatedAt: false });
 export const ForumMessage = sequelize.define("ForumMessage", forum_message, { updatedAt: false });
 export const ForumMessageReaction = sequelize.define(
@@ -26,9 +28,19 @@ export const ForumMessageReaction = sequelize.define(
   { timestamps: false }
 );
 
+ForumTheme.hasMany(ForumMessage, {
+  foreignKey: "theme_id",
+  onDelete: "CASCADE",
+});
+ForumMessage.hasMany(ForumMessageReaction, {
+  foreignKey: "message_id",
+  onDelete: "CASCADE",
+});
+
 export async function dbConnect() {
   try {
     await sequelize.authenticate(); // Проверка аутентификации в БД
+    // TODO: убрать force: true
     await sequelize.sync({ force: true }); // Синхронизация базы данных
     console.log("Connection has been established successfully.");
   } catch (error) {

@@ -30,6 +30,7 @@ type GenericAsyncThunk = AsyncThunk<unknown, unknown, AsyncThunkConfig>;
 
 type PendingAction = ReturnType<GenericAsyncThunk["pending"]>;
 type FulfilledAction = ReturnType<GenericAsyncThunk["fulfilled"]>;
+
 interface RejectedAction extends ReturnType<GenericAsyncThunk["rejected"]> {
   error: {
     message: string;
@@ -114,32 +115,6 @@ export const forumSlice = createSlice({
           state.isLoading = false;
         }
       );
-
-    // получение тем
-    // builder.addCase(forumThunks.getForumThemes.pending, (state) => {
-    //   state.isLoading = true;
-    //   state.error = null;
-    // });
-    // builder.addCase(forumThunks.getForumThemes.fulfilled, (state) => {
-    //   state.isLoading = false;
-    // });
-    // builder.addCase(forumThunks.getForumThemes.rejected, (state, action) => {
-    //   state.isLoading = false;
-    //   state.error = action.error.message ? action.error.message : null;
-    // });
-
-    // создание темы
-    // builder.addCase(forumThunks.postForumTheme.pending, (state) => {
-    //   state.isLoading = true;
-    //   state.error = null;
-    // });
-    // builder.addCase(forumThunks.putForumThemes.fulfilled, (state) => {
-    //   state.isLoading = false;
-    // });
-    // builder.addCase(forumThunks.putForumThemes.rejected, (state, action) => {
-    //   state.isLoading = false;
-    //   state.error = action.error.message ? action.error.message : null;
-    // });
   },
 });
 

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ForumMessage, ForumMessageReaction, ForumTheme } from "../db";
 
+// создание базовой темы
 async function createFirstForumTheme(res: Response) {
   const themeData = {
     user_id: 224437,
@@ -14,18 +15,25 @@ async function createFirstForumTheme(res: Response) {
     user_display_name: "Evg",
     message: "Оставьте свой вопрос разработчикам!",
   };
+  const reactionData = {
+    message_id: 1,
+    user_id: 224437,
+  };
 
   try {
     const createdThemeData = await ForumTheme.create(themeData);
     const createdMessageData = await ForumMessage.create(messageData);
+    const createdReactionData = await ForumMessageReaction.create(reactionData);
     console.log("createdThemeData", createdThemeData);
     console.log("createdMessageData", createdMessageData);
+    console.log("createdReactionData", createdReactionData);
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });
   }
 }
 
 export const Forum = {
+  // темы
   getThemes: async (_req: Request, res: Response) => {
     try {
       let themes = await ForumTheme.findAll();
@@ -63,6 +71,7 @@ export const Forum = {
       res.status(400).json({ error: (error as Error).message });
     }
   },
+  // сообщения
   getThemeMessages: async (req: Request, res: Response) => {
     try {
       const theme_id = +req.params.theme_id;
@@ -86,6 +95,7 @@ export const Forum = {
       res.status(400).json({ error: (error as Error).message });
     }
   },
+  // реакции
   getMessageReactions: async (req: Request, res: Response) => {
     try {
       const message_id = +req.params.message_id;

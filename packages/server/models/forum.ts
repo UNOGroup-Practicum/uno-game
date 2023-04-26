@@ -64,7 +64,7 @@ export const forum_message_reaction = {
     allowNull: false,
   },
   message_id: {
-    type: DataType.STRING,
+    type: DataType.INTEGER,
     allowNull: false,
   },
   reaction: {
