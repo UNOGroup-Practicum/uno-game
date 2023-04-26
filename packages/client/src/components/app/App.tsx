@@ -32,24 +32,16 @@ function App() {
   const location = useLocation();
   const [params] = useSearchParams();
   const oAuthCode = params.get("code");
-  /**
-   * NOTE: с React.StrictMode из-за двойного рендера запросы отправляются 2 раза.
-   * В результате возникает racing запросов аутентификации и получения данных пользователя
-   * что ломает схему - получить authCookie, запросить с ней данные пользователя.
-   * По этой причине отправляем только 1 запрос.
-   */
-  let isSendOAuthRequest = false;
 
   useEffect(() => {
-    if (IS_SSR || isSendOAuthRequest || !oAuthCode) {
+    if (IS_SSR || !oAuthCode) {
       return;
     }
 
-    isSendOAuthRequest = true;
     window.history.pushState({}, "", getOAuthRedirectUri());
 
     dispatch(oAuthThunks.login(oAuthCode));
-  }, [oAuthCode, dispatch, isSendOAuthRequest]);
+  }, [oAuthCode, dispatch]);
 
   useEffect(() => {
     const [oldTheme, newTheme] =

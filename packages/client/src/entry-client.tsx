@@ -32,15 +32,13 @@ const store = createStore(new UserService(new YandexAPIClient()), preloadedState
 
 ReactDOM.hydrateRoot(
   document.getElementById("root") as HTMLElement,
-  <React.StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <CacheProvider value={cache}>
-          <ThemeProvider>
-            <App />
-          </ThemeProvider>
-        </CacheProvider>
-      </BrowserRouter>
-    </Provider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <BrowserRouter>
+      <CacheProvider value={cache}>
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
+      </CacheProvider>
+    </BrowserRouter>
+  </Provider>
 );
