@@ -31,7 +31,8 @@ export const forum_message = {
   },
   user_avatar: {
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
+    defaultValue: null,
   },
   user_id: {
     type: DataType.INTEGER,
@@ -52,7 +53,7 @@ export const forum_message = {
     defaultValue: null,
   },
 };
-export const forum_message_like = {
+export const forum_message_reaction = {
   id: {
     type: DataType.INTEGER,
     autoIncrement: true,
@@ -66,8 +67,9 @@ export const forum_message_like = {
     type: DataType.STRING,
     allowNull: false,
   },
-  like: {
+  reaction: {
     type: DataType.STRING,
     allowNull: false,
+    defaultValue: "like",
   },
 };
