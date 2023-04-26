@@ -1,14 +1,20 @@
 import { configureStore } from "@reduxjs/toolkit";
 
+import { TUserService } from "./api/types";
 import { rootReducer } from "./reducers";
 
-// TODO: добавить service
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const createStore = (_service = {}, initialState?: RootState) => {
+export const createStore = (service: TUserService, initialState?: RootState) => {
   return configureStore({
     preloadedState: initialState,
     reducer: rootReducer,
-    devTools: process.env.NODE_ENV !== "production",
+    // devTools: process.env.NODE_ENV !== "production",
+    middleware: (getDefaultMiddleware) => {
+      return getDefaultMiddleware({
+        thunk: {
+          extraArgument: service,
+        },
+      });
+    },
   });
 };
 

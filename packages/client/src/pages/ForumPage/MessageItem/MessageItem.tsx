@@ -10,6 +10,7 @@ import styles from "./MessageItem.module.scss";
 type PropsType = {
   messageData: MessageType;
 };
+
 export const MessageItem: React.FC<PropsType> = ({ messageData }) => {
   return (
     <div className={styles.MessageItem}>
@@ -22,7 +23,10 @@ export const MessageItem: React.FC<PropsType> = ({ messageData }) => {
 
       <p className={styles.MessageItem__text}>{messageData.messageText}</p>
 
-      <p className={styles.MessageItem__text + " " + styles.MessageItem__data}>
+      <p
+        className={styles.MessageItem__text + " " + styles.MessageItem__data}
+        suppressHydrationWarning={true}
+      >
         Cообщение написано {messageData.messageCreationDate.toLocaleString("ru", timeOptions)}
       </p>
     </div>

@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { Route, Routes, useLocation, useSearchParams } from "react-router-dom";
 
-import { useDispatch, useSelector } from "services/hooks";
-import { authSelect, authThunks } from "services/slices/auth-slice";
+import { useDispatch } from "services/hooks";
 import { getOAuthRedirectUri, oAuthThunks } from "services/slices/oauth-slice";
 import { Theme } from "theme/ThemeContext";
 import { useTheme } from "theme/useTheme";
@@ -29,7 +28,6 @@ import { IS_SSR, ROUTES } from "../../constants";
 
 function App() {
   const dispatch = useDispatch();
-  const { user } = useSelector(authSelect);
   const { theme } = useTheme();
   const location = useLocation();
   const [params] = useSearchParams();
@@ -52,12 +50,6 @@ function App() {
 
     dispatch(oAuthThunks.login(oAuthCode));
   }, [oAuthCode, dispatch, isSendOAuthRequest]);
-
-  useEffect(() => {
-    if (!user && !oAuthCode) {
-      dispatch(authThunks.me());
-    }
-  }, [oAuthCode, dispatch]);
 
   useEffect(() => {
     const [oldTheme, newTheme] =

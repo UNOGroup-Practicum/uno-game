@@ -20,7 +20,7 @@ export const ThemeItem: React.FC<PropsType> = ({
     <div className={styles.themeItem}>
       <div className={styles.themeItem__wrapper}>
         <NavLink to={`${ROUTES.forum.path}/${themeId}`}>{themeTitle}</NavLink>
-        <p className={styles.item__wrapper_descr}>
+        <p className={styles.item__wrapper_descr} suppressHydrationWarning={true}>
           {themeCreationDate.toLocaleString("ru", timeOptions)}
         </p>
       </div>

@@ -97,3 +97,11 @@ export type LeaderboardUserData = {
   percent: string;
   email: string;
 };
+
+export type TUserRepository = {
+  getCurrent(): Promise<UserDTO>;
+};
+
+export type TUserService = {
+  getCurrentUser(): Promise<User>;
+};

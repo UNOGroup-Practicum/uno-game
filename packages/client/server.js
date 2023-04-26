@@ -10,6 +10,22 @@ const instance = axios.create({
   withCredentials: true,
 });
 
+class YandexAPISSR {
+  constructor(_cookieHeader) {
+    this._cookieHeader = _cookieHeader;
+  }
+
+  async getCurrent() {
+    const { data: result } = await instance.get("/api/v2/auth/user", {
+      headers: {
+        cookie: this._cookieHeader,
+      },
+    });
+
+    return result;
+  }
+}
+
 export async function startServer() {
   const port = Number(process.env.CLIENT_PORT) || 3000;
   const isProd = process.env.NODE_ENV === "production";
@@ -56,24 +72,29 @@ export async function startServer() {
   app.use("*", async (req, res) => {
     try {
       const url = req.originalUrl;
-      let template, render;
+      let template, ssrModule;
 
       if (!isProd) {
         template = fs.readFileSync(path.resolve("index.html"), "utf-8");
         template = await vite.transformIndexHtml(url, template);
-        render = (await vite.ssrLoadModule("/src/entry-server.tsx")).render;
+        ssrModule = await vite.ssrLoadModule("/src/entry-server.tsx");
       } else {
         template = fs.readFileSync(path.resolve("dist/client/index.html"), "utf-8");
-        render = (await import("./dist/server/entry-server.cjs")).render;
+        ssrModule = await import("./dist/server/entry-server.cjs");
       }
 
+      const { render } = ssrModule;
       const response = await instance
         .post("/theme", { themeUID: req.cookies.themeUID })
         .catch((err) => console.log(err));
       const { theme } = response.data.data.theme;
       const { themeUID: themeUIDServer } = response.data.data;
 
-      const { html, emotionCss, initialState } = render(url, theme);
+      const { html, emotionCss, initialState } = await render(
+        url,
+        theme,
+        new YandexAPISSR(req.headers["cookie"])
+      );
       const htmlWithReplacements = template
         .replace(`<!--app-html-->`, html)
         .replace(`<!--emotionCss-->`, emotionCss)
