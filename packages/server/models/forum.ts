@@ -15,7 +15,6 @@ export const forum_theme = {
     allowNull: false,
   },
 };
-
 export const forum_message = {
   id: {
     type: DataType.INTEGER,
@@ -53,7 +52,6 @@ export const forum_message = {
     defaultValue: null,
   },
 };
-
 export const forum_message_like = {
   id: {
     type: DataType.INTEGER,

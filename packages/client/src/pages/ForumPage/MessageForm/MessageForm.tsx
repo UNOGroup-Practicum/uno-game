@@ -28,7 +28,6 @@ export const MessageForm: React.FC<MessageFormProps> = ({
     addMessage(e, text, parent_message_id || null, parent_message_text || null);
     setText("");
   };
-  // TODO: исправить типизацию
   return (
     <form className={styles.Form} onSubmit={onSubmit}>
       <TextField

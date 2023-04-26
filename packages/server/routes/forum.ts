@@ -1,19 +1,13 @@
 import { Router } from "express";
-import {
-  getAllForumThemes,
-  getForumThemeMessages,
-  postForumTheme,
-  deleteForumTheme,
-  postForumThemeMessage,
-} from "../controllers/forum";
+import { Forum } from "../controllers/forum";
 
 const router = Router();
 
-router.get("/", getAllForumThemes);
-router.post("/theme", postForumTheme);
-router.delete("/theme/:theme_id", deleteForumTheme);
+router.get("/", Forum.getAllThemes);
+router.post("/theme", Forum.postTheme);
+router.delete("/theme/:theme_id", Forum.deleteTheme);
 
-router.get("/:theme_id", getForumThemeMessages);
-router.post("/message", postForumThemeMessage);
+router.get("/:theme_id", Forum.getThemeMessages);
+router.post("/message", Forum.postThemeMessage);
 
 export default router;

@@ -4,7 +4,7 @@ import { authAPI } from "../api/authApi";
 import { LoginRequestData, RegisterRequestData, User } from "../api/types";
 import type { RootState } from "../store";
 
-type AuthState = {
+export type AuthState = {
   user: User | null;
   loading: boolean;
   error: string | null;

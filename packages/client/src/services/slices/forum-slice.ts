@@ -29,7 +29,7 @@ export const forumThunks = {
   // TODO: исправить типизацию - убрать true
   getForumThemes: createAsyncThunk<void, true, { rejectValue: ForumState["error"] }>(
     "FORUM/themes",
-    async (data, { dispatch }) => {
+    async (unusedData, { dispatch }) => {
       const newThemes = await forumAPI.getForumThemes();
       dispatch(forumSlice.actions.setForumThemes(newThemes));
     }

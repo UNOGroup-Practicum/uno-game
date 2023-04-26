@@ -6,14 +6,15 @@ import { useSelector } from "react-redux";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 
 import { useDispatch } from "services/hooks";
-import { authSelect } from "services/slices/auth-slice";
+import { authSelect, AuthState } from "services/slices/auth-slice";
 import { forumSelect, forumThunks } from "services/slices/forum-slice";
 
 import { ROUTES } from "../../constants";
+import { User } from "../../services/api/types";
 
 import { MessageForm } from "./MessageForm/MessageForm";
 import { MessageItem } from "./MessageItem/MessageItem";
-import { RequestMessage } from "./types/types";
+import { RequestMessage, ThemeType } from "./types/types";
 
 import styles from "./ForumPage.module.scss";
 
@@ -28,23 +29,19 @@ export const ForumMessagesListPage: React.FC = () => {
   const navigate = useNavigate();
 
   const { themes, currentMessages } = useSelector(forumSelect);
-  const { user } = useSelector(authSelect);
-  const { themeId } = useParams<string>();
 
-  // TODO: исправить типизацию
-  // @ts-ignore
-  const { user_id, title } = themes.find((theme) => theme.id === +themeId);
+  const user = useSelector(authSelect).user as User;
+  const themeId = useParams().themeId as string;
+
+  const { user_id, title } = themes.find((theme) => theme.id === +themeId) as ThemeType;
 
   useEffect(() => {
-    // TODO: исправить типизацию
-    // @ts-ignore
     dispatch(forumThunks.getForumCurrentMessages(+themeId));
   }, []);
 
   const addMessage: AddMessageType = (e, text, parent_message_id, parent_message_text) => {
     console.log("addMessage");
     e.preventDefault();
-    // TODO: исправить типизацию
     const data: RequestMessage = {
       theme_id: +themeId,
       user_id: user.id,
@@ -59,8 +56,6 @@ export const ForumMessagesListPage: React.FC = () => {
   };
 
   const delTheme = () => {
-    // TODO: исправить типизацию
-    // @ts-ignore
     dispatch(forumThunks.deleteForumTheme(+themeId));
     navigate(ROUTES.forum.path);
   };
@@ -82,7 +77,6 @@ export const ForumMessagesListPage: React.FC = () => {
         {currentMessages.map((item) => (
           <MessageItem key={item.id} messageData={item} addMessage={addMessage} />
         ))}
-
         <MessageForm addMessage={addMessage} />
       </main>
     </Container>
