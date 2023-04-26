@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { AsyncThunk, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import {
   MessageType,
@@ -7,6 +7,7 @@ import {
   ThemeType,
 } from "../../pages/ForumPage/types/types";
 import { forumAPI } from "../api/forumApi";
+import { AsyncThunkConfig } from "../api/types";
 import { RootState } from "../store";
 
 type ForumState = {
@@ -25,15 +26,22 @@ export const initialState: ForumState = {
   currentMessages: [],
 };
 
+type GenericAsyncThunk = AsyncThunk<unknown, unknown, AsyncThunkConfig>;
+
+type PendingAction = ReturnType<GenericAsyncThunk["pending"]>;
+type FulfilledAction = ReturnType<GenericAsyncThunk["fulfilled"]>;
+interface RejectedAction extends ReturnType<GenericAsyncThunk["rejected"]> {
+  error: {
+    message: string;
+  };
+}
+
 export const forumThunks = {
   // TODO: исправить типизацию - убрать true
-  getForumThemes: createAsyncThunk<void, true, { rejectValue: ForumState["error"] }>(
-    "FORUM/themes",
-    async (unusedData, { dispatch }) => {
-      const newThemes = await forumAPI.getForumThemes();
-      dispatch(forumSlice.actions.setForumThemes(newThemes));
-    }
-  ),
+  getForumThemes: createAsyncThunk("FORUM/themes", async (_, { dispatch }) => {
+    const newThemes = await forumAPI.getForumThemes();
+    dispatch(forumSlice.actions.setForumThemes(newThemes));
+  }),
   postForumTheme: createAsyncThunk<void, RequestTheme, { rejectValue: ForumState["error"] }>(
     "FORUM/themes",
     async (data, { dispatch }) => {
@@ -68,6 +76,7 @@ export const forumThunks = {
 export const forumSlice = createSlice({
   name: "FORUM",
   initialState,
+
   reducers: {
     resetError(state) {
       state.error = null;
@@ -82,22 +91,45 @@ export const forumSlice = createSlice({
       state.currentMessages = action.payload;
     },
   },
+
   extraReducers: (builder) => {
-    // TODO: нельзя ли объединить одинаковые действия?
+    builder
+      .addMatcher<PendingAction>(
+        (action) => action.type.endsWith("/pending"),
+        (state) => {
+          state.isLoading = true;
+          state.error = null;
+        }
+      )
+      .addMatcher<RejectedAction>(
+        (action) => action.type.endsWith("/rejected"),
+        (state, action) => {
+          state.isLoading = false;
+          state.error = action.error.message ? action.error.message : null;
+        }
+      )
+      .addMatcher<FulfilledAction>(
+        (action) => action.type.endsWith("/fulfilled"),
+        (state) => {
+          state.isLoading = false;
+        }
+      );
+
     // получение тем
-    builder.addCase(forumThunks.getForumThemes.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(forumThunks.getForumThemes.fulfilled, (state) => {
-      state.isLoading = false;
-    });
-    builder.addCase(forumThunks.getForumThemes.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message ? action.error.message : null;
-    });
+    // builder.addCase(forumThunks.getForumThemes.pending, (state) => {
+    //   state.isLoading = true;
+    //   state.error = null;
+    // });
+    // builder.addCase(forumThunks.getForumThemes.fulfilled, (state) => {
+    //   state.isLoading = false;
+    // });
+    // builder.addCase(forumThunks.getForumThemes.rejected, (state, action) => {
+    //   state.isLoading = false;
+    //   state.error = action.error.message ? action.error.message : null;
+    // });
+
     // создание темы
-    // builder.addCase(forumThunks.putForumThemes.pending, (state) => {
+    // builder.addCase(forumThunks.postForumTheme.pending, (state) => {
     //   state.isLoading = true;
     //   state.error = null;
     // });

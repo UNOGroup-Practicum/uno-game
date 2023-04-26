@@ -13,14 +13,13 @@ import styles from "./ForumPage.module.scss";
 
 export const ForumThemesListPage: React.FC = () => {
   const dispatch = useDispatch();
-  const { themes } = useSelector(forumSelect);
+  const { themes, isLoading } = useSelector(forumSelect);
   const { user } = useSelector(authSelect);
   const [title, setTitle] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
 
   useEffect(() => {
-    // TODO: исправить типизацию - убрать true
-    dispatch(forumThunks.getForumThemes(true));
+    dispatch(forumThunks.getForumThemes());
   }, []);
 
   useEffect(() => {

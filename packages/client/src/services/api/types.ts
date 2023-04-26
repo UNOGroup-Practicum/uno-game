@@ -1,3 +1,4 @@
+import { Dispatch } from "@reduxjs/toolkit";
 import { z } from "zod";
 
 import { apiSchema } from "./schema";
@@ -79,4 +80,14 @@ export type GetTeamLeboardData = {
   ratingFieldName: string;
   cursor: number;
   limit: number;
+};
+export type AsyncThunkConfig = {
+  state?: unknown;
+  dispatch?: Dispatch;
+  extra?: unknown;
+  rejectValue?: unknown;
+  serializedErrorType?: unknown;
+  pendingMeta?: unknown;
+  fulfilledMeta?: unknown;
+  rejectedMeta?: unknown;
 };

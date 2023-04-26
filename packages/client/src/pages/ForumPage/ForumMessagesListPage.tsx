@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 
 import { useDispatch } from "services/hooks";
-import { authSelect, AuthState } from "services/slices/auth-slice";
+import { authSelect } from "services/slices/auth-slice";
 import { forumSelect, forumThunks } from "services/slices/forum-slice";
 
 import { ROUTES } from "../../constants";
