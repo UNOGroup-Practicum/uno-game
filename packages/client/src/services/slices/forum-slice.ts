@@ -1,22 +1,16 @@
-import { AsyncThunk, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import {
-  MessageType,
+  ForumState,
   RequestMessage,
+  RequestReaction,
   RequestTheme,
-  ThemeType,
-} from "../../pages/ForumPage/types/types";
+} from "pages/ForumPage/types/types";
+
 import { forumAPI } from "../api/forumApi";
-import { AsyncThunkConfig } from "../api/types";
 import { RootState } from "../store";
 
-type ForumState = {
-  isLoading: boolean;
-  error: string | null;
-  isSuccess: boolean;
-  themes: ThemeType[];
-  currentMessages: MessageType[];
-};
+import { FulfilledAction, PendingAction, RejectedAction } from "./types";
 
 export const initialState: ForumState = {
   isLoading: false,
@@ -26,52 +20,63 @@ export const initialState: ForumState = {
   currentMessages: [],
 };
 
-type GenericAsyncThunk = AsyncThunk<unknown, unknown, AsyncThunkConfig>;
-
-type PendingAction = ReturnType<GenericAsyncThunk["pending"]>;
-type FulfilledAction = ReturnType<GenericAsyncThunk["fulfilled"]>;
-
-interface RejectedAction extends ReturnType<GenericAsyncThunk["rejected"]> {
-  error: {
-    message: string;
-  };
-}
-
 export const forumThunks = {
-  // TODO: исправить типизацию - убрать true
-  getForumThemes: createAsyncThunk("FORUM/themes", async (_, { dispatch }) => {
-    const newThemes = await forumAPI.getForumThemes();
+  // темы
+  getThemes: createAsyncThunk("FORUM/themes", async (_, { dispatch }) => {
+    const newThemes = await forumAPI.getThemes();
     dispatch(forumSlice.actions.setForumThemes(newThemes));
   }),
-  postForumTheme: createAsyncThunk<void, RequestTheme, { rejectValue: ForumState["error"] }>(
+  postTheme: createAsyncThunk<void, RequestTheme, { rejectValue: ForumState["error"] }>(
     "FORUM/themes",
     async (data, { dispatch }) => {
-      const newThemes = await forumAPI.postForumThemes(data);
+      const newThemes = await forumAPI.postThemes(data);
       dispatch(forumSlice.actions.setForumThemes(newThemes));
     }
   ),
-  deleteForumTheme: createAsyncThunk<void, number, { rejectValue: ForumState["error"] }>(
+  deleteTheme: createAsyncThunk<void, number, { rejectValue: ForumState["error"] }>(
     "FORUM/themes",
     async (themeId, { dispatch }) => {
-      const newThemes = await forumAPI.deleteForumTheme(themeId);
+      const newThemes = await forumAPI.deleteTheme(themeId);
       dispatch(forumSlice.actions.setForumThemes(newThemes));
     }
   ),
-  getForumCurrentMessages: createAsyncThunk<void, number, { rejectValue: ForumState["error"] }>(
+  // сообщения
+  getMessages: createAsyncThunk<void, number, { rejectValue: ForumState["error"] }>(
     "FORUM/messages",
     async (themeId, { dispatch }) => {
-      const newMessages = await forumAPI.getForumThemeMessages(themeId);
+      const newMessages = await forumAPI.getMessages(themeId);
       dispatch(forumSlice.actions.setForumCurrentMessages(newMessages));
     }
   ),
-  postForumThemeMessage: createAsyncThunk<
-    void,
-    RequestMessage,
-    { rejectValue: ForumState["error"] }
-  >("FORUM/themes", async (data, { dispatch }) => {
-    const newMessages = await forumAPI.postForumThemeMessage(data);
-    dispatch(forumSlice.actions.setForumCurrentMessages(newMessages));
-  }),
+  postMessage: createAsyncThunk<void, RequestMessage, { rejectValue: ForumState["error"] }>(
+    "FORUM/messages",
+    async (data, { dispatch }) => {
+      const newMessages = await forumAPI.postMessage(data);
+      dispatch(forumSlice.actions.setForumCurrentMessages(newMessages));
+    }
+  ),
+  // реакции
+  getReactions: createAsyncThunk<void, number, { rejectValue: ForumState["error"] }>(
+    "FORUM/reactions",
+    async (message_id, { dispatch }) => {
+      const newReactions = await forumAPI.getReactions(message_id);
+      dispatch(forumSlice.actions.setForumThemes(newReactions));
+    }
+  ),
+  postReaction: createAsyncThunk<void, RequestReaction, { rejectValue: ForumState["error"] }>(
+    "FORUM/reactions",
+    async (data, { dispatch }) => {
+      const newThemes = await forumAPI.postReaction(data);
+      dispatch(forumSlice.actions.setForumThemes(newThemes));
+    }
+  ),
+  deleteReaction: createAsyncThunk<void, number, { rejectValue: ForumState["error"] }>(
+    "FORUM/reactions",
+    async (themeId, { dispatch }) => {
+      const newThemes = await forumAPI.deleteTheme(themeId);
+      dispatch(forumSlice.actions.setForumThemes(newThemes));
+    }
+  ),
 };
 
 export const forumSlice = createSlice({
@@ -90,6 +95,9 @@ export const forumSlice = createSlice({
     },
     setForumCurrentMessages(state, action) {
       state.currentMessages = action.payload;
+    },
+    setReactions(state, action) {
+      state.currentReactions = action.payload;
     },
   },
 

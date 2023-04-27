@@ -4,15 +4,15 @@ import { Forum } from "../controllers/forum";
 const router = Router();
 
 // темы
-router.get("/", Forum.getThemes);
-router.post("/theme", Forum.postTheme);
-router.delete("/theme/:theme_id", Forum.deleteTheme);
+router.get("/themes/", Forum.getThemes);
+router.post("/themes/", Forum.postTheme);
+router.delete("/themes/:theme_id", Forum.deleteTheme);
 // сообщения
-router.get("/:theme_id", Forum.getThemeMessages);
-router.post("/message", Forum.postThemeMessage);
+router.get("/messages/:theme_id", Forum.getMessages);
+router.post("/messages/", Forum.postMessage);
 // реакции
-router.get("/message/:message_id", Forum.getMessageReactions);
-router.post("/message/:message_id", Forum.postMessageReaction);
-router.delete("/message/reaction/:reaction_id", Forum.deleteMessageReaction);
+router.get("/reactions/:message_id", Forum.getReactions);
+router.post("/reactions/", Forum.postReaction);
+router.delete("/reactions/:reaction_id", Forum.deleteReaction);
 
 export default router;

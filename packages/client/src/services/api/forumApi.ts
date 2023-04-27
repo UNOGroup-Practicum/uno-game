@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { MessageType, RequestMessage, RequestTheme } from "pages/ForumPage/types/types";
+import { RequestMessage, RequestReaction, RequestTheme } from "pages/ForumPage/types/types";
 
 const instance = axios.create({
   baseURL: __API_BASEURL__,
@@ -8,24 +8,39 @@ const instance = axios.create({
 });
 
 export const forumAPI = {
-  async getForumThemes() {
-    const response = await instance.get("/forum");
+  // темы
+  async getThemes() {
+    const response = await instance.get("/forum/themes/");
     return response.data.data;
   },
-  async postForumThemes(data: RequestTheme) {
-    const response = await instance.post("/forum/theme/", data);
+  async postThemes(data: RequestTheme) {
+    const response = await instance.post("/forum/themes/", data);
     return response.data.data;
   },
-  async deleteForumTheme(themeId: number) {
-    const response = await instance.delete(`/forum/theme/${themeId}`);
+  async deleteTheme(themeId: number) {
+    const response = await instance.delete(`/forum/themes/${themeId}`);
     return response.data.data;
   },
-  async getForumThemeMessages(themeId: number) {
-    const response = await instance.get(`/forum/${themeId}`);
+  // сообщения
+  async getMessages(themeId: number) {
+    const response = await instance.get(`/forum/messages/${themeId}`);
     return response.data.data;
   },
-  async postForumThemeMessage(data: RequestMessage) {
-    const response = await instance.post("/forum/message/", data);
+  async postMessage(data: RequestMessage) {
+    const response = await instance.post("/forum/messages/", data);
+    return response.data.data;
+  },
+  // реакции
+  async getReactions(message_id: number) {
+    const response = await instance.get(`/forum/reactions/${message_id}`);
+    return response.data.data;
+  },
+  async postReaction(data: RequestReaction) {
+    const response = await instance.post("/forum/reactions/", data);
+    return response.data.data;
+  },
+  async deleteReactions(reaction_id: number) {
+    const response = await instance.delete(`/forum/reactions/${reaction_id}`);
     return response.data.data;
   },
 };

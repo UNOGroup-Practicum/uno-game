@@ -72,7 +72,7 @@ export const Forum = {
     }
   },
   // сообщения
-  getThemeMessages: async (req: Request, res: Response) => {
+  getMessages: async (req: Request, res: Response) => {
     try {
       const theme_id = +req.params.theme_id;
       const messages = await ForumMessage.findAll({ where: { theme_id } });
@@ -81,7 +81,7 @@ export const Forum = {
       res.status(400).json({ error: (error as Error).message });
     }
   },
-  postThemeMessage: async (req: Request, res: Response) => {
+  postMessage: async (req: Request, res: Response) => {
     try {
       const createdData = await ForumMessage.create({ ...req.body });
       if (createdData) {
@@ -96,7 +96,7 @@ export const Forum = {
     }
   },
   // реакции
-  getMessageReactions: async (req: Request, res: Response) => {
+  getReactions: async (req: Request, res: Response) => {
     try {
       const message_id = +req.params.message_id;
       const reactions = await ForumMessageReaction.findAll({ where: { message_id } });
@@ -105,7 +105,7 @@ export const Forum = {
       res.status(400).json({ error: (error as Error).message });
     }
   },
-  postMessageReaction: async (req: Request, res: Response) => {
+  postReaction: async (req: Request, res: Response) => {
     try {
       await ForumMessageReaction.create({ ...req.body });
       const message_id = +req.body.message_id;
@@ -115,7 +115,7 @@ export const Forum = {
       res.status(400).json({ error: (error as Error).message });
     }
   },
-  deleteMessageReaction: async (req: Request, res: Response) => {
+  deleteReaction: async (req: Request, res: Response) => {
     try {
       const reaction_id = +req.params.reaction_id;
       const reaction = await ForumMessageReaction.findByPk(reaction_id);

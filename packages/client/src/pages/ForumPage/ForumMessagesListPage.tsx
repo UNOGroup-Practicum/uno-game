@@ -5,12 +5,12 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 
+import { User } from "services/api/types";
 import { useDispatch } from "services/hooks";
 import { authSelect } from "services/slices/auth-slice";
 import { forumSelect, forumThunks } from "services/slices/forum-slice";
 
 import { ROUTES } from "../../constants";
-import { User } from "../../services/api/types";
 
 import { MessageForm } from "./MessageForm/MessageForm";
 import { MessageItem } from "./MessageItem/MessageItem";
@@ -36,7 +36,7 @@ export const ForumMessagesListPage: React.FC = () => {
   const { user_id, title } = themes.find((theme) => theme.id === +themeId) as ThemeType;
 
   useEffect(() => {
-    dispatch(forumThunks.getForumCurrentMessages(+themeId));
+    dispatch(forumThunks.getMessages(+themeId));
   }, []);
 
   const addMessage: AddMessageType = (e, text, parent_message_id, parent_message_text) => {
@@ -52,11 +52,11 @@ export const ForumMessagesListPage: React.FC = () => {
       parent_message_text,
     };
     console.log(data);
-    dispatch(forumThunks.postForumThemeMessage(data));
+    dispatch(forumThunks.postMessage(data));
   };
 
   const delTheme = () => {
-    dispatch(forumThunks.deleteForumTheme(+themeId));
+    dispatch(forumThunks.deleteTheme(+themeId));
     navigate(ROUTES.forum.path);
   };
 
