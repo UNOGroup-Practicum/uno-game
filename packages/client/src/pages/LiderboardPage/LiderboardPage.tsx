@@ -1,7 +1,7 @@
 import { Container } from "@mui/material";
 import { Button, Stack, Typography } from "@mui/material";
 
-import { useLayoutEffect } from "react";
+import { useEffect } from "react";
 
 import { useDispatch } from "services/hooks";
 import { getLeaderboardData } from "services/slices/leaderboardSlice";
@@ -13,7 +13,7 @@ import styles from "./LiderboardPage.module.scss";
 export const LiderboardPage = () => {
   const dispatch = useDispatch();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     dispatch(getLeaderboardData());
   }, []);
 

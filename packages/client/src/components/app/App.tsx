@@ -1,9 +1,8 @@
 import { useEffect } from "react";
 import { Route, Routes, useLocation, useSearchParams } from "react-router-dom";
 
-import { useDispatch, useSelector } from "services/hooks";
-import { authSelect, authThunks } from "services/slices/auth-slice";
-import { oAuthThunks } from "services/slices/oauth-slice";
+import { useDispatch } from "services/hooks";
+import { getOAuthRedirectUri, oAuthThunks } from "services/slices/oauth-slice";
 import { Theme } from "theme/ThemeContext";
 import { useTheme } from "theme/useTheme";
 import { toggleFullScreen } from "utils/toggleFullScreen";
@@ -25,28 +24,24 @@ import { AuthPagesRoute } from "components/auth-pages-route/AuthPagesRoute";
 import { ErrorBoundary } from "components/error-boundary/ErrorBoundary";
 import { ProtectedRoute } from "components/protected-route/ProtectedRoute";
 
-import { ROUTES } from "../../constants";
+import { IS_SSR, ROUTES } from "../../constants";
 
 function App() {
   const dispatch = useDispatch();
-  const { user } = useSelector(authSelect);
   const { theme } = useTheme();
   const location = useLocation();
   const [params] = useSearchParams();
+  const oAuthCode = params.get("code");
 
   useEffect(() => {
-    const code = params.get("code");
-
-    if (code) {
-      dispatch(oAuthThunks.login(code));
+    if (IS_SSR || !oAuthCode) {
+      return;
     }
-  }, [params]);
 
-  useEffect(() => {
-    if (!user) {
-      dispatch(authThunks.me());
-    }
-  }, [dispatch]);
+    window.history.pushState({}, "", getOAuthRedirectUri());
+
+    dispatch(oAuthThunks.login(oAuthCode));
+  }, [oAuthCode, dispatch]);
 
   useEffect(() => {
     const [oldTheme, newTheme] =

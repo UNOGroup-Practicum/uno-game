@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { authAPI } from "../api/authApi";
-import { LoginRequestData, RegisterRequestData, User } from "../api/types";
+import { LoginRequestData, RegisterRequestData, TUserService, User } from "../api/types";
 import type { RootState } from "../store";
 
 type AuthState = {
@@ -20,11 +20,11 @@ const thunkMe = createAsyncThunk<
   AuthState["user"],
   boolean | undefined,
   { rejectValue: AuthState["error"] }
->("AUTH/me", async (showError = false, { rejectWithValue }) => {
+>("AUTH/me", async (showError = false, { extra, rejectWithValue }) => {
   try {
-    const result = await authAPI.me();
+    const service: TUserService = extra as TUserService;
 
-    return result;
+    return service.getCurrentUser();
   } catch (error) {
     if (showError && error instanceof Error) {
       return rejectWithValue(error.message);

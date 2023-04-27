@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { configureStore } from "@reduxjs/toolkit";
 import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -6,6 +7,8 @@ import React from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 
+import { UserService } from "services/api/UserService";
+import { YandexAPIClient } from "services/api/YandexAPIClient";
 import { rootReducer } from "services/reducers";
 import ThemeProvider from "theme/ThemeProvider";
 
@@ -52,3 +55,25 @@ export const renderWithRouter = (
     ),
   };
 };
+
+function createThunkMiddleware() {
+  const middleware =
+    // @ts-ignore
+
+
+      ({ dispatch, getState }) =>
+      // @ts-ignore
+      (next) =>
+      // @ts-ignore
+      (action) => {
+        if (typeof action === "function") {
+          return action(dispatch, getState, new UserService(new YandexAPIClient()));
+        }
+
+        return next(action);
+      };
+
+  return middleware;
+}
+
+export const thunkWithAuthService = createThunkMiddleware();
