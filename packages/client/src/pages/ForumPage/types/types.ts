@@ -17,6 +17,7 @@ export type MessageType = {
 };
 export type ReactionsType = {
   id: number;
+  theme_id: number;
   message_id: number;
   user_id: number;
   reaction: string;

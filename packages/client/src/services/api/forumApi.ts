@@ -31,8 +31,8 @@ export const forumAPI = {
     return response.data.data;
   },
   // реакции
-  async getReactions(message_id: number) {
-    const response = await instance.get(`/forum/reactions/${message_id}`);
+  async getReactions(theme_id: number) {
+    const response = await instance.get(`/forum/reactions/${theme_id}`);
     return response.data.data;
   },
   async postReaction(data: RequestReaction) {

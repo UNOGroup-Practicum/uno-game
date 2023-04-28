@@ -32,6 +32,10 @@ ForumTheme.hasMany(ForumMessage, {
   foreignKey: "theme_id",
   onDelete: "CASCADE",
 });
+ForumTheme.hasMany(ForumMessageReaction, {
+  foreignKey: "theme_id",
+  onDelete: "CASCADE",
+});
 ForumMessage.hasMany(ForumMessageReaction, {
   foreignKey: "message_id",
   onDelete: "CASCADE",

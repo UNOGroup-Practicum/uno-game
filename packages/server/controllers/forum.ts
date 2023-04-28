@@ -16,6 +16,7 @@ async function createFirstForumTheme(res: Response) {
     message: "Оставьте свой вопрос разработчикам!",
   };
   const reactionData = {
+    theme_id: 1,
     message_id: 1,
     user_id: 224437,
   };
@@ -76,7 +77,8 @@ export const Forum = {
     try {
       const theme_id = +req.params.theme_id;
       const messages = await ForumMessage.findAll({ where: { theme_id } });
-      res.status(200).json({ data: messages });
+      const reactions = await ForumMessageReaction.findAll({ where: { theme_id } });
+      res.status(200).json({ data: { messages, reactions } });
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
@@ -98,8 +100,8 @@ export const Forum = {
   // реакции
   getReactions: async (req: Request, res: Response) => {
     try {
-      const message_id = +req.params.message_id;
-      const reactions = await ForumMessageReaction.findAll({ where: { message_id } });
+      const theme_id = +req.params.theme_id;
+      const reactions = await ForumMessageReaction.findAll({ where: { theme_id } });
       res.status(200).json({ data: reactions });
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });

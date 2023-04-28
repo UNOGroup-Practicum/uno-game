@@ -11,7 +11,7 @@ router.delete("/themes/:theme_id", Forum.deleteTheme);
 router.get("/messages/:theme_id", Forum.getMessages);
 router.post("/messages/", Forum.postMessage);
 // реакции
-router.get("/reactions/:message_id", Forum.getReactions);
+router.get("/reactions/:theme_id", Forum.getReactions);
 router.post("/reactions/", Forum.postReaction);
 router.delete("/reactions/:reaction_id", Forum.deleteReaction);
 

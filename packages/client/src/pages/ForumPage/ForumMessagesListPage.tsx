@@ -40,7 +40,6 @@ export const ForumMessagesListPage: React.FC = () => {
   }, []);
 
   const addMessage: AddMessageType = (e, text, parent_message_id, parent_message_text) => {
-    console.log("addMessage");
     e.preventDefault();
     const data: RequestMessage = {
       theme_id: +themeId,
@@ -51,7 +50,6 @@ export const ForumMessagesListPage: React.FC = () => {
       parent_message_id,
       parent_message_text,
     };
-    console.log(data);
     dispatch(forumThunks.postMessage(data));
   };
 

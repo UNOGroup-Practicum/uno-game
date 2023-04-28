@@ -63,6 +63,10 @@ export const forum_message_reaction = {
     type: DataType.INTEGER,
     allowNull: false,
   },
+  theme_id: {
+    type: DataType.INTEGER,
+    allowNull: false,
+  },
   message_id: {
     type: DataType.INTEGER,
     allowNull: false,

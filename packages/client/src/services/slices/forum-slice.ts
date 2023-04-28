@@ -18,63 +18,67 @@ export const initialState: ForumState = {
   isSuccess: false,
   themes: [],
   currentMessages: [],
+  currentReactions: [],
 };
 
 export const forumThunks = {
   // темы
   getThemes: createAsyncThunk("FORUM/themes", async (_, { dispatch }) => {
     const newThemes = await forumAPI.getThemes();
-    dispatch(forumSlice.actions.setForumThemes(newThemes));
+    dispatch(forumSlice.actions.setThemes(newThemes));
   }),
   postTheme: createAsyncThunk<void, RequestTheme, { rejectValue: ForumState["error"] }>(
     "FORUM/themes",
     async (data, { dispatch }) => {
       const newThemes = await forumAPI.postThemes(data);
-      dispatch(forumSlice.actions.setForumThemes(newThemes));
+      dispatch(forumSlice.actions.setThemes(newThemes));
     }
   ),
   deleteTheme: createAsyncThunk<void, number, { rejectValue: ForumState["error"] }>(
     "FORUM/themes",
     async (themeId, { dispatch }) => {
       const newThemes = await forumAPI.deleteTheme(themeId);
-      dispatch(forumSlice.actions.setForumThemes(newThemes));
+      dispatch(forumSlice.actions.setThemes(newThemes));
     }
   ),
   // сообщения
   getMessages: createAsyncThunk<void, number, { rejectValue: ForumState["error"] }>(
     "FORUM/messages",
     async (themeId, { dispatch }) => {
-      const newMessages = await forumAPI.getMessages(themeId);
-      dispatch(forumSlice.actions.setForumCurrentMessages(newMessages));
+      const newData = await forumAPI.getMessages(themeId);
+      const newMessages = newData.messages;
+      const newReactions = newData.reactions;
+      dispatch(forumSlice.actions.setMessages(newMessages));
+      dispatch(forumSlice.actions.setReactions(newReactions));
     }
   ),
   postMessage: createAsyncThunk<void, RequestMessage, { rejectValue: ForumState["error"] }>(
     "FORUM/messages",
     async (data, { dispatch }) => {
       const newMessages = await forumAPI.postMessage(data);
-      dispatch(forumSlice.actions.setForumCurrentMessages(newMessages));
+      dispatch(forumSlice.actions.setMessages(newMessages));
     }
   ),
   // реакции
   getReactions: createAsyncThunk<void, number, { rejectValue: ForumState["error"] }>(
     "FORUM/reactions",
-    async (message_id, { dispatch }) => {
-      const newReactions = await forumAPI.getReactions(message_id);
-      dispatch(forumSlice.actions.setForumThemes(newReactions));
+    async (theme_id, { dispatch }) => {
+      const newReactions = await forumAPI.getReactions(theme_id);
+      dispatch(forumSlice.actions.setReactions(newReactions));
     }
   ),
   postReaction: createAsyncThunk<void, RequestReaction, { rejectValue: ForumState["error"] }>(
     "FORUM/reactions",
     async (data, { dispatch }) => {
-      const newThemes = await forumAPI.postReaction(data);
-      dispatch(forumSlice.actions.setForumThemes(newThemes));
+      const newReactions = await forumAPI.postReaction(data);
+      dispatch(forumSlice.actions.setReactions(newReactions));
     }
   ),
   deleteReaction: createAsyncThunk<void, number, { rejectValue: ForumState["error"] }>(
     "FORUM/reactions",
-    async (themeId, { dispatch }) => {
-      const newThemes = await forumAPI.deleteTheme(themeId);
-      dispatch(forumSlice.actions.setForumThemes(newThemes));
+    async (reaction_id, { dispatch }) => {
+      const newReactions = await forumAPI.deleteReactions(reaction_id);
+      dispatch(forumSlice.actions.setReactions(newReactions));
     }
   ),
 };
@@ -90,10 +94,10 @@ export const forumSlice = createSlice({
     resetIsSuccess(state) {
       state.isSuccess = false;
     },
-    setForumThemes(state, action) {
+    setThemes(state, action) {
       state.themes = action.payload;
     },
-    setForumCurrentMessages(state, action) {
+    setMessages(state, action) {
       state.currentMessages = action.payload;
     },
     setReactions(state, action) {

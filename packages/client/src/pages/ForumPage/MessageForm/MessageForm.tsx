@@ -2,6 +2,9 @@ import { Button, TextField } from "@mui/material";
 
 import React, { useEffect, useState } from "react";
 
+import { useDispatch } from "services/hooks";
+
+import { forumThunks } from "../../../services/slices/forum-slice";
 import { AddMessageType } from "../ForumMessagesListPage";
 
 import styles from "./MessageForm.module.scss";
@@ -20,6 +23,11 @@ export const MessageForm: React.FC<MessageFormProps> = ({
 }) => {
   const [text, setText] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(forumThunks.getReactions(1));
+  }, []);
 
   useEffect(() => {
     text.length ? setIsDisabled(false) : setIsDisabled(true);
