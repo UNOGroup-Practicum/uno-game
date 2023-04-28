@@ -1,6 +1,6 @@
 import { Sequelize, SequelizeOptions } from "sequelize-typescript";
 import theme from "./models/theme";
-import { forum_message, forum_message_reaction, forum_theme } from "./models/forum";
+import { forum_message, forum_reaction, forum_theme } from "./models/forum";
 
 const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_PORT, POSTGRES_HOST } = process.env;
 
@@ -22,11 +22,9 @@ export const Theme = sequelize.define("Theme", theme, {});
 // форум
 export const ForumTheme = sequelize.define("ForumTheme", forum_theme, { updatedAt: false });
 export const ForumMessage = sequelize.define("ForumMessage", forum_message, { updatedAt: false });
-export const ForumMessageReaction = sequelize.define(
-  "ForumMessageReaction",
-  forum_message_reaction,
-  { timestamps: false }
-);
+export const ForumMessageReaction = sequelize.define("ForumMessageReaction", forum_reaction, {
+  timestamps: false,
+});
 
 ForumTheme.hasMany(ForumMessage, {
   foreignKey: "theme_id",

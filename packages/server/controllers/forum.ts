@@ -110,8 +110,8 @@ export const Forum = {
   postReaction: async (req: Request, res: Response) => {
     try {
       await ForumMessageReaction.create({ ...req.body });
-      const message_id = +req.body.message_id;
-      const reactions = await ForumMessageReaction.findAll({ where: { message_id } });
+      const theme_id = +req.body.theme_id;
+      const reactions = await ForumMessageReaction.findAll({ where: { theme_id } });
       res.status(200).json({ data: reactions });
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
@@ -121,16 +121,10 @@ export const Forum = {
     try {
       const reaction_id = +req.params.reaction_id;
       const reaction = await ForumMessageReaction.findByPk(reaction_id);
-      console.log("reaction", reaction);
-      if (reaction) {
-        await reaction.destroy();
-      } else {
-        throw new Error("Тема не найдена!");
-      }
-      // TODO: исправить типизацию
       // @ts-ignore
-      const message_id = reaction.message_id;
-      const reactions = await ForumMessageReaction.findAll({ where: { message_id } });
+      const theme_id = reaction?.theme_id;
+      await reaction?.destroy();
+      const reactions = await ForumMessageReaction.findAll({ where: { theme_id } });
       res.status(200).json({ data: reactions });
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });

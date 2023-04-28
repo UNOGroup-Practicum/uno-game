@@ -53,7 +53,7 @@ export const forum_message = {
     defaultValue: null,
   },
 };
-export const forum_message_reaction = {
+export const forum_reaction = {
   id: {
     type: DataType.INTEGER,
     autoIncrement: true,
