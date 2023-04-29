@@ -1,5 +1,14 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Container, IconButton } from "@mui/material";
+import {
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+} from "@mui/material";
 
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -27,13 +36,18 @@ export type AddMessageType = (
 export const ForumMessagesListPage: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const { themes, currentMessages } = useSelector(forumSelect);
-
   const user = useSelector(authSelect).user as User;
   const themeId = useParams().themeId as string;
-
   const { user_id, title } = themes.find((theme) => theme.id === +themeId) as ThemeType;
+
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     dispatch(forumThunks.getMessages(+themeId));
@@ -67,7 +81,7 @@ export const ForumMessagesListPage: React.FC = () => {
             {title}
           </div>
           {user_id && user?.id === user_id && (
-            <IconButton aria-label="delete" color="error" onClick={delTheme}>
+            <IconButton aria-label="delete" color="error" onClick={handleClickOpen}>
               <DeleteIcon />
             </IconButton>
           )}
@@ -76,6 +90,31 @@ export const ForumMessagesListPage: React.FC = () => {
           <MessageItem key={item.id} messageData={item} addMessage={addMessage} />
         ))}
         <MessageForm addMessage={addMessage} />
+
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {`Вы действительно хотите удалить эту тему?`}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              При удалении темы, будут удалены также все сообщения в этой теме. Отменить данное
+              действие будет невозможно!
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} autoFocus>
+              Отменить
+            </Button>
+            <Button onClick={delTheme} color="error">
+              Удалить
+            </Button>
+          </DialogActions>
+        </Dialog>
       </main>
     </Container>
   );

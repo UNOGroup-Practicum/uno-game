@@ -5,10 +5,11 @@ import { Avatar, IconButton, Typography } from "@mui/material";
 
 import React, { useState } from "react";
 
-import { User } from "../../../services/api/types";
-import { useDispatch, useSelector } from "../../../services/hooks";
-import { authSelect } from "../../../services/slices/auth-slice";
-import { forumThunks } from "../../../services/slices/forum-slice";
+import { User } from "services/api/types";
+import { useDispatch, useSelector } from "services/hooks";
+import { authSelect } from "services/slices/auth-slice";
+import { forumThunks } from "services/slices/forum-slice";
+
 import { AddMessageType } from "../ForumMessagesListPage";
 import { timeOptions } from "../helpers/timeOptions";
 import { MessageForm } from "../MessageForm/MessageForm";
@@ -49,10 +50,8 @@ export const MessageItem: React.FC<PropsType> = ({ messageData, addMessage }) =>
         user_id: user.id,
         reaction: "like",
       };
-      console.log("add: ", dataRequest);
       dispatch(forumThunks.postReaction(dataRequest));
     } else {
-      console.log("del: ", myLike);
       dispatch(forumThunks.deleteReaction(myLike.id));
     }
   };

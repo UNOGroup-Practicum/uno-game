@@ -13,7 +13,7 @@ import styles from "./ForumPage.module.scss";
 
 export const ForumThemesListPage: React.FC = () => {
   const dispatch = useDispatch();
-  const { themes, isLoading } = useSelector(forumSelect);
+  const { themes } = useSelector(forumSelect);
   const { user } = useSelector(authSelect);
   const [title, setTitle] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
@@ -43,7 +43,6 @@ export const ForumThemesListPage: React.FC = () => {
         <form className={styles.ForumPage__form} onSubmit={(e) => addTheme(e)}>
           <TextField
             className={styles.ForumPage__form_input}
-            multiline
             name={"title"}
             placeholder={"Создать новую тему"}
             value={title}

@@ -22,12 +22,9 @@ async function createFirstForumTheme(res: Response) {
   };
 
   try {
-    const createdThemeData = await ForumTheme.create(themeData);
-    const createdMessageData = await ForumMessage.create(messageData);
-    const createdReactionData = await ForumMessageReaction.create(reactionData);
-    console.log("createdThemeData", createdThemeData);
-    console.log("createdMessageData", createdMessageData);
-    console.log("createdReactionData", createdReactionData);
+    await ForumTheme.create(themeData);
+    await ForumMessage.create(messageData);
+    await ForumMessageReaction.create(reactionData);
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });
   }
@@ -39,6 +36,7 @@ export const Forum = {
     try {
       let themes = await ForumTheme.findAll();
       if (!themes.length) {
+        // если нет ни одной темы, то создаём стартовую тему
         await createFirstForumTheme(res);
         themes = await ForumTheme.findAll();
       }
@@ -48,8 +46,8 @@ export const Forum = {
     }
   },
   postTheme: async (req: Request, res: Response) => {
-    const { user_id, title } = req.body;
     try {
+      const { user_id, title } = req.body;
       await ForumTheme.create({ user_id, title });
       const themes = await ForumTheme.findAll();
       res.status(200).json({ data: themes });
@@ -61,11 +59,7 @@ export const Forum = {
     try {
       const theme_id = +req.params.theme_id;
       const theme = await ForumTheme.findByPk(theme_id);
-      if (theme) {
-        await theme.destroy();
-      } else {
-        throw new Error("Тема не найдена!");
-      }
+      await theme?.destroy();
       const themes = await ForumTheme.findAll();
       res.status(200).json({ data: themes });
     } catch (error) {
@@ -85,14 +79,10 @@ export const Forum = {
   },
   postMessage: async (req: Request, res: Response) => {
     try {
-      const createdData = await ForumMessage.create({ ...req.body });
-      if (createdData) {
-        const theme_id = +req.body.theme_id;
-        const themes = await ForumMessage.findAll({ where: { theme_id } });
-        res.status(200).json({ data: themes });
-      } else {
-        res.status(400).json({ message: "message not saved" });
-      }
+      await ForumMessage.create({ ...req.body });
+      const theme_id = +req.body.theme_id;
+      const themes = await ForumMessage.findAll({ where: { theme_id } });
+      res.status(200).json({ data: themes });
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
@@ -121,6 +111,7 @@ export const Forum = {
     try {
       const reaction_id = +req.params.reaction_id;
       const reaction = await ForumMessageReaction.findByPk(reaction_id);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const theme_id = reaction?.theme_id;
       await reaction?.destroy();

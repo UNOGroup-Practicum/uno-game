@@ -72,6 +72,7 @@ export const forum_reaction = {
     allowNull: false,
   },
   reaction: {
+    // на случай добавления других реакций
     type: DataType.STRING,
     allowNull: false,
     defaultValue: "like",
