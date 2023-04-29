@@ -7,10 +7,10 @@ on:
   # Позволяет запускать вручную из GitHub
   workflow_dispatch:
 
-	# Позволяет запускать при push в main (и при commit и при merge) 
-	push:
-	    branches:
-	      - main
+  # Позволяет запускать при push в main (и при commit и при merge) 
+  push:
+    branches:
+    - main
 
 # Определяем процесс (состоит из нескольких последовательных/параллельных джобов)
 jobs:
