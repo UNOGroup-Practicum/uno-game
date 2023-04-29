@@ -12,11 +12,11 @@ type OAuthState = {
   error: string | null;
 };
 
-const getRedirectUri = () => (IS_SSR ? "" : window.location.origin);
+export const getOAuthRedirectUri = () => (IS_SSR ? "" : `${window.location.origin}/`);
 
 const OAUTH_URI_AUTHORIZE = "https://oauth.yandex.ru/authorize?response_type=code";
 // Пока получаем id клиента динамически через API яндекса, берем для redirect_uri текущий домен
-const REDIRECT_URI = getRedirectUri();
+const REDIRECT_URI = getOAuthRedirectUri();
 
 export const initialState: OAuthState = {
   loading: false,

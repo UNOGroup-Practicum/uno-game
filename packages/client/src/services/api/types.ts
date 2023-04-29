@@ -1,6 +1,8 @@
 import { Dispatch } from "@reduxjs/toolkit";
 import { z } from "zod";
 
+import { RATING_FIELD_NAME } from "../../constants";
+
 import { apiSchema } from "./schema";
 
 export type APIError = {
@@ -65,9 +67,10 @@ export type User = {
 
 export type UserToLeboardData = {
   name: string;
+  email: string;
   avatar?: string;
-  winsNumber: number;
-  gamesNumber: number;
+  winsAmount: number;
+  [RATING_FIELD_NAME]: number;
 };
 
 export type UserToLeboardExtData = {
@@ -81,6 +84,7 @@ export type GetTeamLeboardData = {
   cursor: number;
   limit: number;
 };
+
 export type AsyncThunkConfig = {
   state?: unknown;
   dispatch?: Dispatch;
@@ -90,4 +94,26 @@ export type AsyncThunkConfig = {
   pendingMeta?: unknown;
   fulfilledMeta?: unknown;
   rejectedMeta?: unknown;
+
+export type GetTeamLeboardResponse = {
+  data: UserToLeboardData;
+};
+
+export type LeaderboardUserData = {
+  position: number;
+  imgUrl: string | undefined;
+  name: string;
+  games: number;
+  wins: number;
+  percent: string;
+  email: string;
+};
+
+export type TUserRepository = {
+  getCurrent(): Promise<UserDTO>;
+};
+
+export type TUserService = {
+  getCurrentUser(): Promise<User>;
+
 };

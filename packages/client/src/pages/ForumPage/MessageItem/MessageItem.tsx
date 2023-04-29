@@ -23,6 +23,7 @@ type PropsType = {
   messageData: MessageType;
   addMessage: AddMessageType;
 };
+
 export const MessageItem: React.FC<PropsType> = ({ messageData, addMessage }) => {
   const [isComment, setIsComment] = useState(false);
   const dispatch = useDispatch();
@@ -55,7 +56,7 @@ export const MessageItem: React.FC<PropsType> = ({ messageData, addMessage }) =>
       dispatch(forumThunks.deleteReaction(myLike.id));
     }
   };
-
+  
   return (
     <>
       <div className={styles.MessageItem}>
@@ -70,7 +71,10 @@ export const MessageItem: React.FC<PropsType> = ({ messageData, addMessage }) =>
 
         <p className={styles.MessageItem__text}>{messageData.message}</p>
 
-        <p className={styles.MessageItem__text + " " + styles.MessageItem__data}>
+        <p
+          className={styles.MessageItem__text + " " + styles.MessageItem__data}
+          suppressHydrationWarning={true}
+        >
           Сообщение написано {new Date(messageData.createdAt).toLocaleString("ru", timeOptions)}
         </p>
         <IconButton

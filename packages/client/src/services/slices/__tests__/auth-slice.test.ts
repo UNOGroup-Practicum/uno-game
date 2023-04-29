@@ -1,7 +1,6 @@
 import { mainUser } from "__tests__/fixtures";
-import { delay, withoutMetaKey } from "__tests__/utils";
+import { delay, thunkWithAuthService, withoutMetaKey } from "__tests__/utils";
 import configureMockStore from "redux-mock-store";
-import thunk from "redux-thunk";
 
 import { transformUser } from "services/api/transformers";
 
@@ -39,7 +38,7 @@ describe("AUTH slice", () => {
   });
 
   it("should handle authThunks.me and set user", async () => {
-    const middlewares = [thunk];
+    const middlewares = [thunkWithAuthService];
     const mockStore = configureMockStore(middlewares);
     const store = mockStore({ ...initialState });
     const expectedActions = [
@@ -54,7 +53,7 @@ describe("AUTH slice", () => {
   });
 
   it("should handle authThunks.login and set user", async () => {
-    const middlewares = [thunk];
+    const middlewares = [thunkWithAuthService];
     const mockStore = configureMockStore(middlewares);
     const store = mockStore({ ...initialState });
     const loginRequestData = { login: "valid", password: "valid" };
@@ -75,7 +74,7 @@ describe("AUTH slice", () => {
   });
 
   it("should handle authThunks.login and set error", async () => {
-    const middlewares = [thunk];
+    const middlewares = [thunkWithAuthService];
     const mockStore = configureMockStore(middlewares);
     const store = mockStore({ ...initialState });
     const loginRequestData = { login: "invalid", password: "invalid" };
@@ -91,7 +90,7 @@ describe("AUTH slice", () => {
   });
 
   it("should handle authThunks.logout and reset user", async () => {
-    const middlewares = [thunk];
+    const middlewares = [thunkWithAuthService];
     const mockStore = configureMockStore(middlewares);
     const store = mockStore({ ...initialState, user: transformUser(mainUser) });
     const expectedActions = [

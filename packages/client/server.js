@@ -1,6 +1,7 @@
 import axios from "axios";
 import cookieParser from "cookie-parser";
 import express from "express";
+import { createProxyMiddleware } from "http-proxy-middleware";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -9,19 +10,35 @@ const instance = axios.create({
   withCredentials: true,
 });
 
+class YandexAPISSR {
+  constructor(_cookieHeader) {
+    this._cookieHeader = _cookieHeader;
+  }
+
+  async getCurrent() {
+    const { data: result } = await instance.get("/api/v2/auth/user", {
+      headers: {
+        cookie: this._cookieHeader,
+      },
+    });
+
+    return result;
+  }
+}
+
 export async function startServer() {
   const port = Number(process.env.CLIENT_PORT) || 3000;
   const isProd = process.env.NODE_ENV === "production";
-  const indexProd = isProd ? fs.readFileSync(path.resolve("dist/client/index.html"), "utf-8") : "";
   const root = process.cwd();
-
   const app = express();
+
   app.use(cookieParser());
 
   /**
    * @type {import('vite').ViteDevServer}
    */
   let vite;
+
   if (!isProd) {
     vite = await (
       await import("vite")
@@ -41,41 +58,56 @@ export async function startServer() {
     );
   }
 
+  app.use(
+    "/api/v2",
+    createProxyMiddleware({
+      changeOrigin: true,
+      cookieDomainRewrite: {
+        "*": "",
+      },
+      target: process.env.API_BASEURL,
+    })
+  );
+
   app.use("*", async (req, res) => {
     try {
       const url = req.originalUrl;
+      let template, ssrModule;
 
-      let template, render;
       if (!isProd) {
         template = fs.readFileSync(path.resolve("index.html"), "utf-8");
         template = await vite.transformIndexHtml(url, template);
-        render = (await vite.ssrLoadModule("/src/entry-server.tsx")).render;
+        ssrModule = await vite.ssrLoadModule("/src/entry-server.tsx");
       } else {
-        template = indexProd;
-        render = (await import("./dist/server/entry-server.cjs")).render;
+        template = fs.readFileSync(path.resolve("dist/client/index.html"), "utf-8");
+        ssrModule = await import("./dist/server/entry-server.cjs");
       }
 
-      const { themeUID: themeUIDClient } = await req.cookies;
+      const { render } = ssrModule;
       const response = await instance
         .post("/theme", { themeUID: req.cookies.themeUID })
         .catch((err) => console.log(err));
       const { theme } = response.data.data.theme;
       const { themeUID: themeUIDServer } = response.data.data;
 
-      const { html, emotionCss, initialState } = render(url, theme);
+      const { html, emotionCss, initialState } = await render(
+        url,
+        theme,
+        new YandexAPISSR(req.headers["cookie"])
+      );
       const htmlWithReplacements = template
         .replace(`<!--app-html-->`, html)
         .replace(`<!--emotionCss-->`, emotionCss)
         .replace(`<!--store-data-->`, JSON.stringify(initialState).replace(/</g, "\\u003c"));
 
-      if (themeUIDClient === themeUIDServer) {
+      if (req.cookies.themeUID === themeUIDServer) {
         res.status(200).set({ "Content-Type": "text/html" }).end(htmlWithReplacements);
       } else {
         res
           .cookie("themeUID", themeUIDServer, {
             maxAge: 3600000 * 24 * 365, // 1 час * 24 * 365
             httpOnly: true,
-            sameSite: true,
+            domain: req.hostname === "localhost" ? `${req.hostname}` : `.${req.hostname}`,
           })
           .status(200)
           .set({ "Content-Type": "text/html" })

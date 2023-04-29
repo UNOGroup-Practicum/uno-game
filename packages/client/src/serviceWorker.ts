@@ -72,8 +72,12 @@ function isUnprocessedRequest(request: Request) {
     return true;
   }
 
-  // Get API
-  if (request.method === "GET" && request.url.match(/^\/api\/.+/)) {
+  if (request.method !== "GET") {
+    return true;
+  }
+
+  // API
+  if (request.url.match(/^\/api\/.+/)) {
     return true;
   }
 

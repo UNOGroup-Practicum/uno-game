@@ -1,5 +1,12 @@
+import { RATING_FIELD_NAME } from "../../constants";
+
 import { request } from "./apiRequest";
-import { GetTeamLeboardData, UserToLeboardData, UserToLeboardExtData } from "./types";
+import {
+  GetTeamLeboardData,
+  GetTeamLeboardResponse,
+  UserToLeboardData,
+  UserToLeboardExtData,
+} from "./types";
 
 const teamName = "unoGroup";
 
@@ -7,13 +14,17 @@ export const leaderboardAPI = {
   addUserToLeaderboard: (data: UserToLeboardData) => {
     const extendedData: UserToLeboardExtData = {
       data,
-      ratingFieldName: "gamesNumber",
+      ratingFieldName: RATING_FIELD_NAME,
       teamName,
     };
-    request.post("leaderboard", extendedData);
+    return request.post("leaderboard", extendedData);
   },
 
-  getTeamLeaderboard: (data: GetTeamLeboardData): Promise<UserToLeboardData> => {
+  getTeamLeaderboard: (data: GetTeamLeboardData): Promise<GetTeamLeboardResponse[]> => {
     return request.post(`leaderboard/${teamName}`, data);
+  },
+
+  getTeamLeaderboardAll: (data: GetTeamLeboardData): Promise<GetTeamLeboardResponse[]> => {
+    return request.post("leaderboard/all", data);
   },
 };

@@ -8,8 +8,10 @@ RUN yarn install --frozen-lockfile
 
 COPY . .
 
-RUN yarn lerna bootstrap && yarn build:client
+RUN yarn lerna bootstrap && yarn build
 
 EXPOSE 3000
 
-CMD yarn start:client
+EXPOSE 3001
+
+CMD yarn start
