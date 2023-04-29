@@ -1,30 +1,15 @@
 version: "3.9"
 
 services:
-    client:
-        container_name: practicum-client
-        image: practicum-client
+    app:
+        container_name: practicum-app
+        image: practicum-app
         build:
             context: .
-            dockerfile: Dockerfile.client
+            dockerfile: Dockerfile
         restart: always
         ports:
             - "${CLIENT_PORT}:${CLIENT_PORT}"
-        environment:
-          - CLIENT_PORT=${CLIENT_PORT}
-        depends_on:
-            - uno-db
-            - server
-        networks:
-            - awesome
-    server:
-        container_name: practicum-server
-        image: practicum-server
-        build:
-            context: .
-            dockerfile: Dockerfile.server
-        restart: always
-        ports:
             - "${SERVER_PORT}:${SERVER_PORT}"
         environment:
             SERVER_PORT: ${SERVER_PORT}
