@@ -1,4 +1,5 @@
 import LogoutIcon from "@mui/icons-material/Logout";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { Box, Button, ButtonGroup, Chip, Modal, Typography } from "@mui/material";
 
 import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -7,6 +8,9 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "services/hooks";
 import { authSelect } from "services/slices/auth-slice";
 import { gameSelect, gameSlice } from "services/slices/gameSlice";
+import { getLeaderboardData, postLeaderboardData } from "services/slices/leaderboardSlice";
+
+import Player from "components/player/Player";
 
 import { ROUTES } from "../../constants";
 
@@ -32,6 +36,7 @@ import styles from "./Game.module.scss";
 
 function Game() {
   const refFirstGamerMove = useRef(0);
+  const refAmountRenders = useRef(0);
   const refTimers = useRef<{ timer1: number; timer2: number }>();
   const refCountTakeOneCard = useRef(0);
   const refCountTakeTwoCards = useRef(0);
@@ -39,6 +44,7 @@ function Game() {
   const refCountOrderColor = useRef(0);
   const refCardColor = useRef<Color | null>(null);
   const refCountSkipTurn = useRef(0);
+  const refDeleteAnimation = useRef<true | false>(false);
   const ref = useRef<HTMLCanvasElement>(null);
   const { gameVariant } = useSelector(gameSelect);
   const { user } = useSelector(authSelect);
@@ -53,7 +59,6 @@ function Game() {
   const [isModalOpen, setIsModalOpen] = useState<true | false>(false);
   const [isModalCardColorOpen, setIsModalCardColorOpen] = useState<true | false>(false);
   const [win, setWin] = useState<string | null>(null);
-  const [isButtonExitDisplayed, setIsButtonExitDisplayed] = useState<true | false>(false);
   const [cardColor, setCardColor] = useState<Color | null>(null);
 
   useLayoutEffect(() => {
@@ -71,6 +76,20 @@ function Game() {
         name: "Robot",
       },
     ]);
+    dispatch(getLeaderboardData());
+
+    return () => {
+      if (process.env.NODE_ENV === "production") {
+        refDeleteAnimation.current = true;
+      } else {
+        if (refAmountRenders.current === 1) {
+          refDeleteAnimation.current = true;
+          refAmountRenders.current = 0;
+        }
+      }
+      refAmountRenders.current++;
+      clearIntervals(refTimers);
+    };
   }, []);
 
   useEffect(() => {
@@ -83,6 +102,7 @@ function Game() {
         if (gamerCards === 0) {
           setWin(gamersList[1].name);
           setIsModalOpen(true);
+          dispatch(postLeaderboardData("lose"));
         } else {
           const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[0].name);
           refTimers.current = { timer1, timer2 };
@@ -176,6 +196,7 @@ function Game() {
         if (gamerCards === 0) {
           setWin(gamersList[0].name);
           setIsModalOpen(true);
+          dispatch(postLeaderboardData("win"));
         } else {
           const [timer1, timer2] = signalizeName(ctx, gamersPositions, gamersList[1].name);
           refTimers.current = { timer1, timer2 };
@@ -305,7 +326,7 @@ function Game() {
           shuffleArrayCards,
           createUserCardsDuringCardsDistribution,
           setShuffleArrayCards,
-          setIsButtonExitDisplayed,
+          refDeleteAnimation,
           gamersPositions[0].cards[0],
           gamersPositions[0].cards[1]
         );
@@ -319,15 +340,24 @@ function Game() {
 
   return (
     <>
-      {isButtonExitDisplayed && (
-        <Button
-          variant="contained"
-          sx={{ position: "absolute", top: "10px", left: "10px", zIndex: "1" }}
-          onClick={() => navigate(ROUTES.gamePreparing.path)}
-        >
-          <LogoutIcon sx={{ transform: "rotate(180deg)" }} />
-        </Button>
-      )}
+      <Button
+        variant="contained"
+        sx={{ position: "absolute", top: "10px", left: "10px", zIndex: "1" }}
+        onClick={() => navigate(ROUTES.home.path)}
+      >
+        <LogoutIcon sx={{ transform: "rotate(180deg)" }} />
+      </Button>
+      <Button
+        variant="contained"
+        sx={{ position: "absolute", top: "10px", left: "160px", zIndex: "1" }}
+        onClick={() => {
+          navigate(ROUTES.gamePreparing.path, { state: "restart" });
+          dispatch(gameSlice.actions.setGameVariant(null));
+        }}
+      >
+        <RestartAltIcon />
+      </Button>
+      <Player url={"https://uno-group.hb.bizmrg.com/Blank_Jones_-_Sunny_Life_74528962.mp3"} />
       {cardColor && (
         <Chip
           sx={{
@@ -345,10 +375,6 @@ function Game() {
       )}
       <Modal
         open={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          dispatch(gameSlice.actions.setGameVariant(null));
-        }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -365,11 +391,34 @@ function Game() {
             p: 4,
             display: "flex",
             justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "20px",
           }}
         >
           <Typography id="modal-modal-title" variant="h6" component="h6">
             Победитель: {win}
           </Typography>
+          <Box sx={{ display: "flex", gap: "15px" }}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                navigate(ROUTES.home.path);
+                dispatch(gameSlice.actions.setGameVariant(null));
+              }}
+            >
+              <LogoutIcon sx={{ transform: "rotate(180deg)" }} />
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => {
+                navigate(ROUTES.gamePreparing.path, { state: "restart" });
+                dispatch(gameSlice.actions.setGameVariant(null));
+              }}
+            >
+              <RestartAltIcon />
+            </Button>
+          </Box>
         </Box>
       </Modal>
       <Modal

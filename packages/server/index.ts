@@ -1,20 +1,37 @@
 import dotenv from "dotenv";
-import cors from "cors";
 dotenv.config();
-
 import express from "express";
-import { createClientAndConnect } from "./db";
+import cors from "./security_helpers/cors";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import { dbConnect } from "./db";
+import router from "./routes/index";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
-const app = express();
-app.use(cors());
 const port = Number(process.env.SERVER_PORT) || 3001;
+const app = express();
 
-createClientAndConnect();
+app.use(cookieParser());
+app.use(cors);
 
-app.get("/", (_, res) => {
-  res.json("👋 Howdy from the server :)");
-});
+app.use(
+  "/api/v2",
+  createProxyMiddleware({
+    changeOrigin: true,
+    cookieDomainRewrite: {
+      "*": "",
+    },
+    target: process.env.API_YANDEX_BASEURL,
+  })
+);
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+dbConnect();
+
+app.use(router);
 
 app.listen(port, () => {
-  console.log(`  ➜ 🎸 Server is listening on port: ${port}`);
+  console.log(`➜ 🎸 BackendServer is listening on http://localhost:${port}`);
 });

@@ -1,10 +1,11 @@
 import { useEffect } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, useSearchParams } from "react-router-dom";
 
-import { useDispatch, useSelector } from "services/hooks";
-import { authSelect, authThunks } from "services/slices/auth-slice";
+import { useDispatch } from "services/hooks";
+import { getOAuthRedirectUri, oAuthThunks } from "services/slices/oauth-slice";
 import { Theme } from "theme/ThemeContext";
 import { useTheme } from "theme/useTheme";
+import { toggleFullScreen } from "utils/toggleFullScreen";
 
 import { ForumMessagesListPage } from "pages/ForumPage/ForumMessagesListPage";
 import { ForumThemesListPage } from "pages/ForumPage/ForumThemesListPage";
@@ -23,19 +24,24 @@ import { AuthPagesRoute } from "components/auth-pages-route/AuthPagesRoute";
 import { ErrorBoundary } from "components/error-boundary/ErrorBoundary";
 import { ProtectedRoute } from "components/protected-route/ProtectedRoute";
 
-import { ROUTES } from "../../constants";
+import { IS_SSR, ROUTES } from "../../constants";
 
 function App() {
   const dispatch = useDispatch();
-  const { user } = useSelector(authSelect);
   const { theme } = useTheme();
   const location = useLocation();
+  const [params] = useSearchParams();
+  const oAuthCode = params.get("code");
 
   useEffect(() => {
-    if (!user) {
-      dispatch(authThunks.me());
+    if (IS_SSR || !oAuthCode) {
+      return;
     }
-  }, [dispatch]);
+
+    window.history.pushState({}, "", getOAuthRedirectUri());
+
+    dispatch(oAuthThunks.login(oAuthCode));
+  }, [oAuthCode, dispatch]);
 
   useEffect(() => {
     const [oldTheme, newTheme] =
@@ -44,6 +50,18 @@ function App() {
     document.body.classList.add("app", newTheme);
     document.body.classList.remove(oldTheme);
   }, [theme]);
+
+  useEffect(() => {
+    const onPressKey = (event: KeyboardEvent) => {
+      if (event.altKey && event.key === "Enter") {
+        toggleFullScreen();
+      }
+    };
+    document.addEventListener("keyup", onPressKey);
+    return () => {
+      document.removeEventListener("keyup", onPressKey);
+    };
+  }, []);
 
   return (
     <>

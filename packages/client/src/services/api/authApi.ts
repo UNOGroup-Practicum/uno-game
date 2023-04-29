@@ -1,4 +1,7 @@
+import { parseSchema } from "utils/parseSchema";
+
 import { request } from "./apiRequest";
+import { apiSchema } from "./schema";
 import { transformUser } from "./transformers";
 import { LoginRequestData, RegisterRequestData, User, UserDTO } from "./types";
 
@@ -8,6 +11,8 @@ export const authAPI = {
 
   me: async (): Promise<User> => {
     const result = await request.get<UserDTO>("auth/user");
+
+    parseSchema(apiSchema.UserDTO, result);
 
     return transformUser(result);
   },

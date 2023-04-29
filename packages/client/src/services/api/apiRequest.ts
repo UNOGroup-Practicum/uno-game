@@ -10,7 +10,7 @@ export class ApiError extends Error {
 }
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_ENDPOINT,
+  baseURL: __API_ENDPOINT__,
   withCredentials: true,
 });
 

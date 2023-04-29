@@ -1,36 +1,40 @@
 import { createTheme, ThemeProvider as ThemeProviderMui } from "@mui/material/styles";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
+
+import { useDispatch, useSelector } from "services/hooks";
+import { themeSlice } from "services/slices/themeSlice";
 
 import { muiComponents } from "./muiComponents";
 import { muiPallete, setGlobalStyles } from "./muiPallete";
 import { muiTypography } from "./muiTypography";
-import { LOCAL_STORAGE_THEME_KEY, Theme, ThemeContext } from "./ThemeContext";
-
-const defaultTheme = (localStorage.getItem(LOCAL_STORAGE_THEME_KEY) as Theme) || Theme.DARK;
+import { Theme, ThemeContext } from "./ThemeContext";
 
 const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>(defaultTheme);
+  const { theme: appTheme } = useSelector((state) => state.theme);
+  const dispatch = useDispatch();
+
+  const setTheme = (theme: Theme) => dispatch(themeSlice.actions.setTheme(theme));
 
   const themeMui = useMemo(
     () =>
       createTheme({
         palette: {
-          mode: theme,
-          ...muiPallete(theme),
+          mode: appTheme,
+          ...muiPallete(appTheme),
         },
-        components: { ...muiComponents(theme) },
+        components: { ...muiComponents(appTheme) },
         typography: { ...muiTypography() },
       }),
-    [theme]
+    [appTheme]
   );
 
   const defaultProps = useMemo(
     () => ({
-      theme: theme,
+      theme: appTheme,
       setTheme: setTheme,
     }),
-    [theme]
+    [appTheme]
   );
 
   return (

@@ -6,11 +6,17 @@ export const muiPallete = (mode: Theme) => {
   return mode === Theme.LIGHT
     ? {
         background: {
-          paper: "coral",
+          paper: "#96C5C5",
+        },
+        primary: {
+          light: "#B8D8D8",
+          dark: "#89BEBE",
+          main: "#51A0B8",
+          contrastText: "#EEF5DB",
         },
         success: {
           light: "#4caf50",
-          main: "#2e7d32",
+          main: "#8BC34A",
           dark: "#1b5e20",
           contrastText: "#fff",
         },
@@ -19,6 +25,9 @@ export const muiPallete = (mode: Theme) => {
           main: "#01386a",
           dark: "#011c34",
           contrastText: "#fff",
+        },
+        warning: {
+          main: "#FFA585",
         },
       }
     : {

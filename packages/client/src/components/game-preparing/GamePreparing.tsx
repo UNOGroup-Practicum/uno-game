@@ -10,10 +10,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { customAlphabet } from "nanoid";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import { nanoid } from "@reduxjs/toolkit";
 
 import { FormEvent, memo, useCallback, useLayoutEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 import { useDispatch } from "services/hooks";
 import { gameSlice } from "services/slices/gameSlice";
@@ -22,15 +24,15 @@ import gamer from "assets/images/gamer.png";
 
 import { ROUTES } from "../../constants";
 
-const nanoid = customAlphabet("123456789", 4);
-
 function GamePreparing() {
   const [isWithFriendsCardClicked, setIsWithFriendsCardClicked] = useState<boolean>(false);
   const [isRoomCardClicked, setIsRoomCardClicked] = useState<boolean>(false);
   const [IDRoom, setIDRoom] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isCircularProgress, setIsCircularProgress] = useState<true | false>(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useLayoutEffect(() => {
     if (searchParams.get("prestart") === "1") {
@@ -39,13 +41,28 @@ function GamePreparing() {
     } else if (searchParams.get("prestart") === "2") {
       setIsRoomCardClicked(true);
       setIsWithFriendsCardClicked(false);
-      setIDRoom(nanoid());
+      setIDRoom(nanoid(4));
     } else {
       setIsWithFriendsCardClicked(false);
       setIsRoomCardClicked(false);
       dispatch(gameSlice.actions.setGameVariant(null));
     }
   }, [searchParams]);
+
+  useLayoutEffect(() => {
+    if (location.state === "restart") {
+      const header = document.body.querySelector("header") as HTMLElement;
+      const footer = document.body.querySelector("footer") as HTMLElement;
+      header.style.display = "none";
+      footer.style.display = "none";
+      setIsCircularProgress(true);
+      setTimeout(() => {
+        navigate(ROUTES.game.path, { state: "" });
+        dispatch(gameSlice.actions.setGameVariant("solo"));
+        setIsCircularProgress(false);
+      }, 1000);
+    }
+  }, [location]);
 
   const handleSoloCardClick = useCallback(() => {
     dispatch(gameSlice.actions.setGameVariant("solo"));
@@ -77,6 +94,14 @@ function GamePreparing() {
 
   function handleFormSubmit(e: FormEvent) {
     e.preventDefault();
+  }
+
+  if (isCircularProgress) {
+    return (
+      <Backdrop sx={{ color: "#fff" }} open={isCircularProgress}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
   }
 
   if (isWithFriendsCardClicked) {

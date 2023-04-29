@@ -1,10 +1,11 @@
 import { Box, Button, Container, Link, Stack, TextField, Typography } from "@mui/material";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import { useDispatch, useSelector } from "services/hooks";
 import { authSelect, authSlice, authThunks } from "services/slices/auth-slice";
+import { oAuthSelect, oAuthSlice, oAuthThunks } from "services/slices/oauth-slice";
 import { InputNames, REQUIRED_MESSAGE, validationTemplate } from "utils/validation/validation";
 
 import { ROUTES } from "../../constants";
@@ -19,7 +20,8 @@ type TFormInput = {
 export const LoginPage = () => {
   const dispatch = useDispatch();
   const { error: authError, loading } = useSelector(authSelect);
-  const [authErrorLocal, setAuthErrorLocal] = useState(authError);
+  const { error: oAuthError, loading: oAuthLoading } = useSelector(oAuthSelect);
+  const [authErrorLocal, setAuthErrorLocal] = useState(authError || oAuthError);
   const {
     control,
     handleSubmit,
@@ -39,13 +41,25 @@ export const LoginPage = () => {
     }
   }, [dispatch, authError, setAuthErrorLocal]);
 
+  useEffect(() => {
+    if (oAuthError) {
+      setAuthErrorLocal(oAuthError);
+      dispatch(oAuthSlice.actions.resetError());
+    }
+  }, [dispatch, oAuthError, setAuthErrorLocal]);
+
   const onSubmit: SubmitHandler<TFormInput> = async (data) => {
     authErrorLocal && setAuthErrorLocal(null);
     dispatch(authThunks.login(data));
   };
 
+  const handleLoginWithYandex = async (event: React.MouseEvent) => {
+    event.preventDefault();
+    dispatch(oAuthThunks.getServiceId());
+  };
+
   return (
-    <div className={styles.root}>
+    <div className={styles.root} data-testid="page-login">
       <Container maxWidth="md">
         <Typography variant="h4" component="h1" align="center" marginBottom={3}>
           Вход
@@ -89,7 +103,7 @@ export const LoginPage = () => {
               )}
             />
           </Stack>
-          {loading && (
+          {(loading || oAuthLoading) && (
             <Box mt={2} textAlign={"center"}>
               ...Loading
             </Box>
@@ -113,10 +127,30 @@ export const LoginPage = () => {
           >
             Войти
           </Button>
+          <Button
+            fullWidth={true}
+            size="large"
+            type="button"
+            variant="contained"
+            color="warning"
+            onClick={handleLoginWithYandex}
+            sx={{
+              marginTop: "20px",
+              marginBottom: "10px",
+            }}
+          >
+            Войти с Яндекс ID
+          </Button>
         </form>
         <Link href={ROUTES.signUp.path} underline="none">
-          <Typography align="center" fontSize="16px" color="text.disabled" fontWeight="bold">
-            Нет аккаунта?
+          <Typography
+            align="center"
+            fontSize="16px"
+            color="text.disabled"
+            fontWeight="bold"
+            mt="20px"
+          >
+            Регистрация
           </Typography>
         </Link>
       </Container>

@@ -1,5 +1,15 @@
+import { authThunks } from "services/slices/auth-slice";
+import { AppDispatch } from "services/store";
+
+export type Route = {
+  path: string;
+  loader?: (dispatch: AppDispatch) => void;
+};
+
+export const loadUser = (dispatch: AppDispatch) => dispatch(authThunks.me());
+
 //routes
-export const ROUTES = {
+export const ROUTES: Record<string, Route> = {
   home: {
     path: "/",
   },
@@ -26,3 +36,9 @@ export const ROUTES = {
     path: "/game",
   },
 };
+
+export const SCHEMA_ERROR_MESSAGE = "Schema response is not valid";
+
+export const IS_SSR = typeof window === "undefined";
+
+export const RATING_FIELD_NAME = "gamesAmount";

@@ -1,3 +1,5 @@
+$form-max-width: 510px;
+
 .profile {
   position: relative;
 
@@ -9,6 +11,18 @@
 
   height: auto;
   margin: 6rem 0;
+
+  &_show {
+    transform: scale(1);
+    opacity: 1;
+    transition: all 0.1s 0.2s;
+  }
+
+  &_hide {
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.1s 0s;
+  }
 
   &__photo {
     position: relative;
@@ -85,7 +99,7 @@
   }
 
   &__form {
-    max-width: 510px;
+    max-width: $form-max-width;
     margin: 3rem auto 0;
 
     label {
@@ -105,5 +119,25 @@
         color: currentcolor;
       }
     }
+  }
+}
+
+.modalForm {
+  &__container {
+    width: 100%;
+    max-width: $form-max-width;
+    margin: 0 auto;
+
+    & > div {
+      margin: 0;
+    }
+  }
+
+  &__paper {
+    width: 100%;
+  }
+
+  &__dialogContent {
+    background-color: var(--bg-color);
   }
 }

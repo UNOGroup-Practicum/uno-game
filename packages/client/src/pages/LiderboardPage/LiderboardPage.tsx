@@ -1,17 +1,28 @@
 import { Container } from "@mui/material";
 import { Button, Stack, Typography } from "@mui/material";
 
+import { useEffect } from "react";
+
+import { useDispatch } from "services/hooks";
+import { getLeaderboardData } from "services/slices/leaderboardSlice";
+
 import { LeaderboardProfile } from "components/leaderboard-profile/LeaderbordProfile";
 
 import styles from "./LiderboardPage.module.scss";
 
 export const LiderboardPage = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getLeaderboardData());
+  }, []);
+
   const handleFilter = (e: React.MouseEvent<HTMLElement>): void => {
     console.log(e);
   };
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} data-testid="page-leaderboard">
       <Container maxWidth="md">
         <Typography variant="h4" component="h1" align="center" marginBottom={3}>
           Список лидеров
