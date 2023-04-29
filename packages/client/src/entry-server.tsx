@@ -15,7 +15,7 @@ import ThemeProvider from "theme/ThemeProvider";
 
 import App from "components/app/App";
 
-import { loadUser,Route, ROUTES } from "./constants";
+import { loadUser, Route, ROUTES } from "./constants";
 import createEmotionCache from "./createEmotionCache";
 
 export async function render(url: string, theme: Theme, repository: TUserRepository) {

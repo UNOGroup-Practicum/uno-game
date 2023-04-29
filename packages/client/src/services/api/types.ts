@@ -85,16 +85,6 @@ export type GetTeamLeboardData = {
   limit: number;
 };
 
-export type AsyncThunkConfig = {
-  state?: unknown;
-  dispatch?: Dispatch;
-  extra?: unknown;
-  rejectValue?: unknown;
-  serializedErrorType?: unknown;
-  pendingMeta?: unknown;
-  fulfilledMeta?: unknown;
-  rejectedMeta?: unknown;
-
 export type GetTeamLeboardResponse = {
   data: UserToLeboardData;
 };
@@ -115,5 +105,15 @@ export type TUserRepository = {
 
 export type TUserService = {
   getCurrentUser(): Promise<User>;
+};
 
+export type AsyncThunkConfig = {
+  state?: unknown;
+  dispatch?: Dispatch;
+  extra?: unknown;
+  rejectValue?: unknown;
+  serializedErrorType?: unknown;
+  pendingMeta?: unknown;
+  fulfilledMeta?: unknown;
+  rejectedMeta?: unknown;
 };

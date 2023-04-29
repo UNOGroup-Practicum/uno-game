@@ -56,7 +56,7 @@ export const MessageItem: React.FC<PropsType> = ({ messageData, addMessage }) =>
       dispatch(forumThunks.deleteReaction(myLike.id));
     }
   };
-  
+
   return (
     <>
       <div className={styles.MessageItem}>
