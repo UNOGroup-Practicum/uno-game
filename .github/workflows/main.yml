@@ -29,12 +29,10 @@ jobs:
           POSTGRES_DB: uno-db
           POSTGRES_PORT: 5555
           POSTGRES_HOST: localhost
-          API_ENDPOINT: http://localhost:3000/api/v2
-          API_BASEURL: http://localhost:3001
+          API_ENDPOINT: https://uno-game.ru/api/v2
+          API_BASEURL: https://api.uno-game.ru
           API_YANDEX_BASEURL: https://ya-praktikum.tech
         run: |
           docker compose build
           docker tag practicum-app:latest cr.yandex/$CR_REGISTRY/practicum-app
           docker push cr.yandex/$CR_REGISTRY/practicum-app
-          docker tag practicum-postgres:14 cr.yandex/$CR_REGISTRY/practicum-postgres
-          docker push cr.yandex/$CR_REGISTRY/practicum-postgres
