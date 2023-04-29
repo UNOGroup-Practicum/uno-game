@@ -17,14 +17,14 @@ jobs:
   # Но нам хватит одного
   build:
     # Для построение проекта от вас не требуется сервер или что-либо подобное, 
-		# GitHub выполнит построение, используя собственный runner - такую
-		# общедоступную 'виртуальную машину'
+    # GitHub выполнит построение, используя собственный runner - такую
+    # общедоступную 'виртуальную машину'
     runs-on: ubuntu-latest
 
     # Определяем шаги процесса
     steps:
       # Запускает предварительную проверку 
-			# Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
       # Авторизация в Яндекс.Облаке (здесь ничего не меняем)
@@ -33,7 +33,7 @@ jobs:
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
 
-			# Построение образа и отправка его в Container Registry
+      # Построение образа и отправка его в Container Registry
       - name: Build, tag, and push image to Yandex Cloud Container Registry
         env:
 					# Здесь указываем идентификатор регистра (о нём позднее)
@@ -53,8 +53,8 @@ jobs:
           API_ENDPOINT: http://localhost:3000/api/v2
           API_BASEURL: http://localhost:3001
           API_YANDEX_BASEURL: https://ya-praktikum.tech
-				# Всё описание выше было лишь подготовкой
-				# Тем не менее, оставшиеся шаги более не должны вызывать вопросы
+	# Всё описание выше было лишь подготовкой
+	# Тем не менее, оставшиеся шаги более не должны вызывать вопросы
         run: |
           docker compose build
           docker tag practicum-app:latest cr.yandex/$CR_REGISTRY/practicum-app
