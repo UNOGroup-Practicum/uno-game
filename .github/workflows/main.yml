@@ -1,0 +1,63 @@
+# Определяем название процесса (просто отображается на странице Actions в GitHub)
+name: Push To Yandex Cloud CR
+
+# Определяем условия запуска процесса
+# Подробнее см. https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows)
+on:
+  # Позволяет запускать вручную из GitHub
+  workflow_dispatch:
+
+	# Позволяет запускать при push в main (и при commit и при merge) 
+	push:
+	    branches:
+	      - main
+
+# Определяем процесс (состоит из нескольких последовательных/параллельных джобов)
+jobs:
+  # Но нам хватит одного
+  build:
+    # Для построение проекта от вас не требуется сервер или что-либо подобное, 
+		# GitHub выполнит построение, используя собственный runner - такую
+		# общедоступную 'виртуальную машину'
+    runs-on: ubuntu-latest
+
+    # Определяем шаги процесса
+    steps:
+      # Запускает предварительную проверку 
+			# Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Авторизация в Яндекс.Облаке (здесь ничего не меняем)
+      - name: Yandex Cloud CR "Login" Action for GitHub Actions
+        uses: yc-actions/yc-cr-login@v0.1-alpha
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+			# Построение образа и отправка его в Container Registry
+      - name: Build, tag, and push image to Yandex Cloud Container Registry
+        env:
+					# Здесь указываем идентификатор регистра (о нём позднее)
+          CR_REGISTRY: crpq2iktq7d2ovlj97f2
+					# Здесь указываем название репозитория (впрочем оно далее не используется)
+          CR_REPOSITORY: game.practicum.yandex.ru
+					# Здесь ничего не меняем (формирует уникальное название для образа)
+          IMAGE_TAG: ${{ github.sha }}
+					# Далее указываем все прочие нужные нам перееменные среды
+          CLIENT_PORT: 3000
+          SERVER_PORT: 3001
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: uno-db
+          POSTGRES_PORT: 5555
+          POSTGRES_HOST: localhost
+          API_ENDPOINT: http://localhost:3000/api/v2
+          API_BASEURL: http://localhost:3001
+          API_YANDEX_BASEURL: https://ya-praktikum.tech
+				# Всё описание выше было лишь подготовкой
+				# Тем не менее, оставшиеся шаги более не должны вызывать вопросы
+        run: |
+          docker compose build
+          docker tag practicum-app:latest cr.yandex/$CR_REGISTRY/practicum-app
+          docker push cr.yandex/$CR_REGISTRY/practicum-app
+          docker tag practicum-postgres:14 cr.yandex/$CR_REGISTRY/practicum-postgres
+          docker push cr.yandex/$CR_REGISTRY/practicum-postgres
