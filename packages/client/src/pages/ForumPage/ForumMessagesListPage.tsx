@@ -39,17 +39,7 @@ export const ForumMessagesListPage: React.FC = () => {
   const { themes, currentMessages } = useSelector(forumSelect);
   const user = useSelector(authSelect).user as User;
   const themeId = useParams().themeId as string;
-  const theme = themes.find((theme) => theme.id === +themeId) as ThemeType;
-
-  // исправляет ошибку при перезагрузке страницы другим
-  useEffect(() => {
-    if (!theme?.user_id || !theme?.title) {
-      navigate(ROUTES.forum.path);
-    }
-  }, [theme]);
-
-  const user_id = theme?.user_id;
-  const title = theme?.title;
+  const { user_id, title } = themes.find((theme) => theme.id === +themeId) as ThemeType;
 
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = () => {

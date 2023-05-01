@@ -1,12 +1,15 @@
 import { authThunks } from "services/slices/auth-slice";
 import { AppDispatch } from "services/store";
 
+import { forumThunks } from "./services/slices/forum-slice";
+
 export type Route = {
   path: string;
   loader?: (dispatch: AppDispatch) => void;
 };
 
 export const loadUser = (dispatch: AppDispatch) => dispatch(authThunks.me());
+export const getThemes = (dispatch: AppDispatch) => dispatch(forumThunks.getThemes());
 
 //routes
 export const ROUTES: Record<string, Route> = {
