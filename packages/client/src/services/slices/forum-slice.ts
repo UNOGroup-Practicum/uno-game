@@ -8,6 +8,7 @@ import {
 } from "pages/ForumPage/types/types";
 
 import { forumAPI } from "../api/forumApi";
+import { TUserService } from "../api/types";
 import { RootState } from "../store";
 
 import { FulfilledAction, PendingAction, RejectedAction } from "./types";
@@ -23,8 +24,10 @@ export const initialState: ForumState = {
 
 export const forumThunks = {
   // темы
-  getThemes: createAsyncThunk("FORUM/themes", async (_, { dispatch }) => {
-    const newThemes = await forumAPI.getThemes();
+  getThemes: createAsyncThunk("FORUM/themes", async (_, { extra, dispatch }) => {
+    const service: TUserService = extra as TUserService;
+    const newThemes = await service.getForumThemes();
+
     dispatch(forumSlice.actions.setThemes(newThemes));
   }),
   postTheme: createAsyncThunk<void, RequestTheme, { rejectValue: ForumState["error"] }>(

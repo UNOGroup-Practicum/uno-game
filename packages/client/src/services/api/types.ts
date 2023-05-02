@@ -101,10 +101,14 @@ export type LeaderboardUserData = {
 
 export type TUserRepository = {
   getCurrent(): Promise<UserDTO>;
+  // TODO: добавить типы
+  getForumThemes(): Promise<any>;
 };
 
 export type TUserService = {
   getCurrentUser(): Promise<User>;
+  // TODO: добавить типы
+  getForumThemes(): Promise<any>;
 };
 
 export type AsyncThunkConfig = {

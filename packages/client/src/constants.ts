@@ -31,7 +31,14 @@ export const ROUTES: Record<string, Route> = {
   rules: {
     path: "/rules",
   },
-  forum: { path: "/forum" },
+  forum: {
+    path: "/forum",
+    loader: (dispatch) => getThemes(dispatch),
+  },
+  forumTheme: {
+    path: "/forum/:themeId",
+    loader: (dispatch) => getThemes(dispatch),
+  },
   gamePreparing: {
     path: "/game-preparing",
   },

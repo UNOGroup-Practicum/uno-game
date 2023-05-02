@@ -1,46 +1,70 @@
-import axios from "axios";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+// TODO: удалить @ts-nocheck
 
 import { RequestMessage, RequestReaction, RequestTheme } from "pages/ForumPage/types/types";
 
-const instance = axios.create({
-  baseURL: __API_BASEURL__,
-  withCredentials: true,
-});
+import { request } from "./apiRequest";
 
+// TODO: добавить типы
 export const forumAPI = {
   // темы
   async getThemes() {
-    const response = await instance.get("/forum/themes/");
-    return response.data.data;
+    const response = await request.get("/forum/themes/", {
+      baseURL: __API_BASEURL__,
+    });
+
+    return response.data;
   },
   async postThemes(data: RequestTheme) {
-    const response = await instance.post("/forum/themes/", data);
-    return response.data.data;
+    const response = await request.post("/forum/themes/", data, {
+      baseURL: __API_BASEURL__,
+    });
+
+    return response.data;
   },
   async deleteTheme(themeId: number) {
-    const response = await instance.delete(`/forum/themes/${themeId}`);
-    return response.data.data;
+    const response = await request.delete(`/forum/themes/${themeId}`, {
+      baseURL: __API_BASEURL__,
+    });
+
+    return response.data;
   },
   // сообщения
   async getMessages(themeId: number) {
-    const response = await instance.get(`/forum/messages/${themeId}`);
-    return response.data.data;
+    const response = await request.get(`/forum/messages/${themeId}`, {
+      baseURL: __API_BASEURL__,
+    });
+
+    return response.data;
   },
   async postMessage(data: RequestMessage) {
-    const response = await instance.post("/forum/messages/", data);
-    return response.data.data;
+    const response = await request.post("/forum/messages/", data, {
+      baseURL: __API_BASEURL__,
+    });
+
+    return response.data;
   },
   // реакции
   async getReactions(theme_id: number) {
-    const response = await instance.get(`/forum/reactions/${theme_id}`);
-    return response.data.data;
+    const response = await request.get(`/forum/reactions/${theme_id}`, {
+      baseURL: __API_BASEURL__,
+    });
+
+    return response.data;
   },
   async postReaction(data: RequestReaction) {
-    const response = await instance.post("/forum/reactions/", data);
-    return response.data.data;
+    const response = await request.post("/forum/reactions/", data, {
+      baseURL: __API_BASEURL__,
+    });
+
+    return response.data;
   },
   async deleteReactions(reaction_id: number) {
-    const response = await instance.delete(`/forum/reactions/${reaction_id}`);
-    return response.data.data;
+    const response = await request.delete(`/forum/reactions/${reaction_id}`, {
+      baseURL: __API_BASEURL__,
+    });
+
+    return response.data;
   },
 };
