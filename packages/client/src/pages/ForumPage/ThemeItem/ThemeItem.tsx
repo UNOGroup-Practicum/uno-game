@@ -1,10 +1,10 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
+import { ThemeType } from "services/api/types";
+
 import { ROUTES } from "../../../constants";
-// import {ending} from "../helpers/ending";
 import { timeOptions } from "../helpers/timeOptions";
-import { ThemeType } from "../types/types";
 
 import styles from "./ThemeItem.module.scss";
 

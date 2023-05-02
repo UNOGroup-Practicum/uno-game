@@ -14,7 +14,7 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 
-import { User } from "services/api/types";
+import { RequestMessage, ThemeType, User } from "services/api/types";
 import { useDispatch } from "services/hooks";
 import { authSelect } from "services/slices/auth-slice";
 import { forumSelect, forumThunks } from "services/slices/forum-slice";
@@ -23,7 +23,6 @@ import { ROUTES } from "../../constants";
 
 import { MessageForm } from "./MessageForm/MessageForm";
 import { MessageItem } from "./MessageItem/MessageItem";
-import { RequestMessage, ThemeType } from "./types/types";
 
 import styles from "./ForumPage.module.scss";
 

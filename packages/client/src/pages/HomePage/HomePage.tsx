@@ -21,14 +21,10 @@ import promoBgWebp from "assets/images/promo_bg.jpg?format=webp&quality=75&sourc
 import promoBg from "assets/images/promo_bg.jpg?quality=75&imagetools";
 
 import { ROUTES } from "../../constants";
-import { request } from "../../services/api/apiRequest";
-import { forumAPI } from "../../services/api/forumApi";
-import { themeAPI } from "../../services/api/themeApi";
 
 import styles from "./HomePage.module.scss";
 
 const AdvantagesItem: React.FC<React.PropsWithChildren> = ({ children }) => {
-  // Todo: добавить стили для светлой темы
   const { theme } = useTheme();
   const isDark = theme === Theme.DARK;
 

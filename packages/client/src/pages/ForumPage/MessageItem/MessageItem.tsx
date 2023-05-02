@@ -5,7 +5,7 @@ import { Avatar, IconButton, Typography } from "@mui/material";
 
 import React, { useState } from "react";
 
-import { User } from "services/api/types";
+import { MessageType, User } from "services/api/types";
 import { useDispatch, useSelector } from "services/hooks";
 import { authSelect } from "services/slices/auth-slice";
 import { forumThunks } from "services/slices/forum-slice";
@@ -13,7 +13,6 @@ import { forumThunks } from "services/slices/forum-slice";
 import { AddMessageType } from "../ForumMessagesListPage";
 import { timeOptions } from "../helpers/timeOptions";
 import { MessageForm } from "../MessageForm/MessageForm";
-import { MessageType } from "../types/types";
 
 import { MessageReplyItem } from "./MessageReplyItem";
 

@@ -1,14 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
+import { forumAPI } from "../api/forumApi";
 import {
   ForumState,
   RequestMessage,
   RequestReaction,
   RequestTheme,
-} from "pages/ForumPage/types/types";
-
-import { forumAPI } from "../api/forumApi";
-import { TUserService } from "../api/types";
+  TUserService,
+} from "../api/types";
 import { RootState } from "../store";
 
 import { FulfilledAction, PendingAction, RejectedAction } from "./types";
