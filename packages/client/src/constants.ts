@@ -9,7 +9,6 @@ export type Route = {
 };
 
 export const loadUser = (dispatch: AppDispatch) => dispatch(authThunks.me());
-export const getThemes = (dispatch: AppDispatch) => dispatch(forumThunks.getThemes());
 
 //routes
 export const ROUTES: Record<string, Route> = {
@@ -33,11 +32,11 @@ export const ROUTES: Record<string, Route> = {
   },
   forum: {
     path: "/forum",
-    loader: (dispatch) => getThemes(dispatch),
+    loader: (dispatch) => dispatch(forumThunks.getThemes()),
   },
   forumTheme: {
     path: "/forum/:themeId",
-    loader: (dispatch) => getThemes(dispatch),
+    loader: (dispatch) => dispatch(forumThunks.getThemes()),
   },
   gamePreparing: {
     path: "/game-preparing",
