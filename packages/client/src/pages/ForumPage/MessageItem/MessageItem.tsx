@@ -29,9 +29,10 @@ export const MessageItem: React.FC<PropsType> = ({ messageData, addMessage }) =>
   const user = useSelector(authSelect).user as User;
   const likesCount = useSelector(
     (state) =>
-      state.forum.currentReactions.filter(
-        (reaction) => reaction.message_id === messageData.id && reaction.reaction === "like"
-      ).length
+      state.forum.currentReactions.filter((reaction) => {
+        console.log("likesCount");
+        return reaction.message_id === messageData.id && reaction.reaction === "like";
+      }).length
   );
   const myLike = useSelector((state) =>
     state.forum.currentReactions.filter(
@@ -42,13 +43,13 @@ export const MessageItem: React.FC<PropsType> = ({ messageData, addMessage }) =>
     )
   )[0];
 
-  const onClickLike = () => {
+  const onClickLike = (reaction: string) => {
     if (!myLike?.id) {
       const dataRequest = {
         theme_id: messageData.theme_id,
         message_id: messageData.id,
         user_id: user.id,
-        reaction: "like",
+        reaction,
       };
       dispatch(forumThunks.postReaction(dataRequest));
     } else {
@@ -83,7 +84,11 @@ export const MessageItem: React.FC<PropsType> = ({ messageData, addMessage }) =>
         >
           <ReplyIcon />
         </IconButton>
-        <IconButton className={styles.MessageItem__like} color="error" onClick={onClickLike}>
+        <IconButton
+          className={styles.MessageItem__like}
+          color="error"
+          onClick={() => onClickLike("like")}
+        >
           {myLike?.id ? <FavoriteIcon /> : <FavoriteBorderIcon />}
           <Typography variant="subtitle2" ml={1}>
             {likesCount}
