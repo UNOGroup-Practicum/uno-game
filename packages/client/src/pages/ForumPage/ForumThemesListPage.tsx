@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import { useDispatch } from "services/hooks";
-import { authSelect } from "services/slices/auth-slice";
 import { forumSelect, forumThunks } from "services/slices/forum-slice";
 
 import { ThemeItem } from "./ThemeItem/ThemeItem";
@@ -14,7 +13,6 @@ import styles from "./ForumPage.module.scss";
 export const ForumThemesListPage: React.FC = () => {
   const dispatch = useDispatch();
   const { themes } = useSelector(forumSelect);
-  const { user } = useSelector(authSelect);
   const [title, setTitle] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
 
@@ -28,8 +26,8 @@ export const ForumThemesListPage: React.FC = () => {
 
   const addTheme = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!isDisabled && user) {
-      dispatch(forumThunks.postTheme({ user_id: user.id, title }));
+    if (!isDisabled) {
+      dispatch(forumThunks.postTheme(title));
 
       setTitle("");
     }

@@ -29,10 +29,12 @@ export const forumThunks = {
 
     dispatch(forumSlice.actions.setThemes(newThemes));
   }),
-  postTheme: createAsyncThunk<void, RequestTheme, { rejectValue: ForumState["error"] }>(
+  postTheme: createAsyncThunk<void, string, { rejectValue: ForumState["error"] }>(
     "FORUM/themes",
-    async (data, { dispatch }) => {
-      const newThemes = await forumAPI.postThemes(data);
+    async (title, { dispatch, getState }) => {
+      const state = getState() as RootState;
+      const user_id = state.auth.user?.id as number;
+      const newThemes = await forumAPI.postThemes({ title, user_id });
       dispatch(forumSlice.actions.setThemes(newThemes));
     }
   ),

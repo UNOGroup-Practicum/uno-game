@@ -97,7 +97,7 @@ export const ForumMessagesListPage: React.FC = () => {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {`Вы действительно хотите удалить эту тему?`}
+            Вы действительно хотите удалить эту тему?
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
