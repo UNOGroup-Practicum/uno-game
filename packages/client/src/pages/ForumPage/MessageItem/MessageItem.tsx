@@ -2,6 +2,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ReplyIcon from "@mui/icons-material/Reply";
 import { Avatar, IconButton, Typography } from "@mui/material";
+import { createSelector } from "@reduxjs/toolkit";
 
 import React, { useState } from "react";
 
@@ -10,6 +11,7 @@ import { useDispatch, useSelector } from "services/hooks";
 import { authSelect } from "services/slices/auth-slice";
 import { forumThunks } from "services/slices/forum-slice";
 
+import { RootState } from "../../../services/store";
 import { AddMessageType } from "../ForumMessagesListPage";
 import { timeOptions } from "../helpers/timeOptions";
 import { MessageForm } from "../MessageForm/MessageForm";
@@ -22,29 +24,37 @@ type PropsType = {
   messageData: MessageType;
   addMessage: AddMessageType;
 };
+const getLikes = createSelector(
+    (state: RootState) => state.forum.currentReactions,
+    (state: RootState, messageData: MessageType) => messageData.id,
+    (currentReactions, messageId) =>
+      currentReactions.filter(
+        (reaction) => reaction.message_id === messageId && reaction.reaction === "like"
+      )
+  ),
+  getMyLikeId = createSelector(
+    (state: RootState) => state.forum.currentReactions,
+    (state: RootState, messageData: MessageType) => messageData.id,
+    (state: RootState, messageData: MessageType, user: User) => user.id,
+    (currentReactions, messageId, userId) =>
+      currentReactions.filter(
+        (reaction) =>
+          reaction.message_id === messageId &&
+          reaction.reaction === "like" &&
+          reaction.user_id === userId
+      )[0]?.id
+  );
 
 export const MessageItem: React.FC<PropsType> = ({ messageData, addMessage }) => {
   const [isComment, setIsComment] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector(authSelect).user as User;
-  const likesCount = useSelector(
-    (state) =>
-      state.forum.currentReactions.filter((reaction) => {
-        console.log("likesCount");
-        return reaction.message_id === messageData.id && reaction.reaction === "like";
-      }).length
-  );
-  const myLike = useSelector((state) =>
-    state.forum.currentReactions.filter(
-      (reaction) =>
-        reaction.message_id === messageData.id &&
-        reaction.reaction === "like" &&
-        reaction.user_id === user.id
-    )
-  )[0];
+
+  const myLikeId = useSelector((state) => getMyLikeId(state, messageData, user)),
+    likesCount = useSelector((state) => getLikes(state, messageData).length);
 
   const onClickLike = (reaction: string) => {
-    if (!myLike?.id) {
+    if (!myLikeId) {
       const dataRequest = {
         theme_id: messageData.theme_id,
         message_id: messageData.id,
@@ -53,7 +63,7 @@ export const MessageItem: React.FC<PropsType> = ({ messageData, addMessage }) =>
       };
       dispatch(forumThunks.postReaction(dataRequest));
     } else {
-      dispatch(forumThunks.deleteReaction(myLike.id));
+      dispatch(forumThunks.deleteReaction(myLikeId));
     }
   };
 
@@ -89,7 +99,7 @@ export const MessageItem: React.FC<PropsType> = ({ messageData, addMessage }) =>
           color="error"
           onClick={() => onClickLike("like")}
         >
-          {myLike?.id ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+          {myLikeId ? <FavoriteIcon /> : <FavoriteBorderIcon />}
           <Typography variant="subtitle2" ml={1}>
             {likesCount}
           </Typography>
