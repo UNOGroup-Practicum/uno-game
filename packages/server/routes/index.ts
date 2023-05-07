@@ -7,16 +7,11 @@ export const checkIsUserAuthorized = async (req: Request, res: Response, next: N
   const apiService = new YandexAPIService(req.headers["cookie"]);
   try {
     const user = await apiService.getCurrentUser();
-    switch (req.body?.user_id) {
-      case user.id:
-        req.body.user = user;
-        next();
-        break;
-      case undefined:
-        next();
-        break;
-      default:
-        res.status(400).json({ error: "Пользователь не найден!" });
+    if (!req.body?.user_id || req.body?.user_id === user.id) {
+      req.body.user = user;
+      next();
+    } else {
+      res.status(400).json({ error: "Пользователь не найден!" });
     }
   } catch (error) {
     if (error instanceof ApiError) {

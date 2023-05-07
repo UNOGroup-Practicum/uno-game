@@ -60,9 +60,15 @@ export const Forum = {
     try {
       const theme_id = +req.params.theme_id;
       const theme = await ForumTheme.findByPk(theme_id);
-      await theme?.destroy();
-      const themes = await ForumTheme.findAll();
-      res.status(200).json({ data: themes });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      if (theme?.user_id === req.body.user.id) {
+        await theme?.destroy();
+        const themes = await ForumTheme.findAll();
+        res.status(200).json({ data: themes });
+      } else {
+        res.status(400).json({ error: "Пользователь не найден!" });
+      }
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
@@ -120,10 +126,14 @@ export const Forum = {
       const reaction = await ForumMessageReaction.findByPk(reaction_id);
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const theme_id = reaction?.theme_id;
-      await reaction?.destroy();
-      const reactions = await ForumMessageReaction.findAll({ where: { theme_id } });
-      res.status(200).json({ data: reactions });
+      const { user_id, theme_id } = reaction;
+      if (user_id === req.body.user.id) {
+        await reaction?.destroy();
+        const reactions = await ForumMessageReaction.findAll({ where: { theme_id } });
+        res.status(200).json({ data: reactions });
+      } else {
+        res.status(400).json({ error: "Пользователь не найден!" });
+      }
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
