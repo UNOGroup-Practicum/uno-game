@@ -24,13 +24,13 @@ type PropsType = {
   messageData: MessageType;
   addMessage: AddMessageType;
 };
-const getLikes = createSelector(
+const getLikesCount = createSelector(
     (state: RootState) => state.forum.currentReactions,
     (state: RootState, messageData: MessageType) => messageData.id,
     (currentReactions, messageId) =>
       currentReactions.filter(
         (reaction) => reaction.message_id === messageId && reaction.reaction === "like"
-      )
+      ).length
   ),
   getMyLikeId = createSelector(
     (state: RootState) => state.forum.currentReactions,
@@ -43,6 +43,12 @@ const getLikes = createSelector(
           reaction.reaction === "like" &&
           reaction.user_id === userId
       )[0]?.id
+  ),
+  getParentMessageText = createSelector(
+    (state: RootState) => state.forum.currentMessages,
+    (state: RootState, messageData: MessageType) => messageData?.parent_message_id,
+    (currentMessages, parentMessageId) =>
+      currentMessages.filter((message) => message.id === parentMessageId)[0]?.message
   );
 
 export const MessageItem: React.FC<PropsType> = ({ messageData, addMessage }) => {
@@ -51,7 +57,12 @@ export const MessageItem: React.FC<PropsType> = ({ messageData, addMessage }) =>
   const user = useSelector(authSelect).user as User;
 
   const myLikeId = useSelector((state) => getMyLikeId(state, messageData, user)),
-    likesCount = useSelector((state) => getLikes(state, messageData).length);
+    likesCount = useSelector((state) => getLikesCount(state, messageData));
+
+  let parentMessageText = null;
+  if (messageData?.parent_message_id) {
+    parentMessageText = useSelector((state) => getParentMessageText(state, messageData));
+  }
 
   const onClickLike = (reaction: string) => {
     if (!myLikeId) {
@@ -75,9 +86,7 @@ export const MessageItem: React.FC<PropsType> = ({ messageData, addMessage }) =>
           <p className={styles.MessageItem__user_username}>{messageData.user_display_name}</p>
         </div>
 
-        {messageData.parent_message_text && (
-          <MessageReplyItem message={messageData.parent_message_text} />
-        )}
+        {parentMessageText && <MessageReplyItem message={parentMessageText} />}
 
         <p className={styles.MessageItem__text}>{messageData.message}</p>
 
@@ -110,7 +119,7 @@ export const MessageItem: React.FC<PropsType> = ({ messageData, addMessage }) =>
           addMessage={addMessage}
           placeholder={"Ответить"}
           parent_message_id={messageData.id}
-          parent_message_text={messageData.message}
+          setIsComment={setIsComment}
         />
       )}
     </>

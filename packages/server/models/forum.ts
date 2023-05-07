@@ -47,11 +47,6 @@ export const forum_message = {
     allowNull: true,
     defaultValue: null,
   },
-  parent_message_text: {
-    type: DataType.STRING,
-    allowNull: true,
-    defaultValue: null,
-  },
 };
 export const forum_reaction = {
   id: {

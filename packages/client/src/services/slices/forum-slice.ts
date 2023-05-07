@@ -1,13 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { forumAPI } from "../api/forumApi";
-import {
-  ForumState,
-  RequestMessage,
-  RequestReaction,
-  RequestTheme,
-  TUserService,
-} from "../api/types";
+import { ForumState, RequestMessage, RequestReaction, TUserService } from "../api/types";
 import { RootState } from "../store";
 
 import { FulfilledAction, PendingAction, RejectedAction } from "./types";

@@ -47,7 +47,8 @@ export const Forum = {
   },
   postTheme: async (req: Request, res: Response) => {
     try {
-      const { user_id, title } = req.body;
+      const user_id = req.body.user.id;
+      const title = req.body.title;
       await ForumTheme.create({ user_id, title });
       const themes = await ForumTheme.findAll();
       res.status(200).json({ data: themes });
@@ -79,7 +80,13 @@ export const Forum = {
   },
   postMessage: async (req: Request, res: Response) => {
     try {
-      await ForumMessage.create({ ...req.body });
+      const { display_name, avatar } = req.body.user;
+      const messageData = {
+        ...req.body,
+        user_display_name: display_name,
+        user_avatar: avatar,
+      };
+      await ForumMessage.create({ ...messageData });
       const theme_id = +req.body.theme_id;
       const themes = await ForumMessage.findAll({ where: { theme_id } });
       res.status(200).json({ data: themes });

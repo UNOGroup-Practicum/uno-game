@@ -112,7 +112,6 @@ export type MessageType = {
   user_avatar: string;
   message: string;
   parent_message_id: number | null;
-  parent_message_text: string | null;
   createdAt: Date;
 };
 export type ReactionsType = {

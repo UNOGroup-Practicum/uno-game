@@ -10,13 +10,13 @@ type MessageFormProps = {
   addMessage: AddMessageType;
   placeholder?: string;
   parent_message_id?: number;
-  parent_message_text?: string;
+  setIsComment?: (flag: boolean) => void;
 };
 export const MessageForm: React.FC<MessageFormProps> = ({
   addMessage,
   placeholder,
   parent_message_id,
-  parent_message_text,
+  setIsComment,
 }) => {
   const [text, setText] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
@@ -25,8 +25,11 @@ export const MessageForm: React.FC<MessageFormProps> = ({
     text.length ? setIsDisabled(false) : setIsDisabled(true);
   }, [text]);
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    addMessage(e, text, parent_message_id || null, parent_message_text || null);
+    addMessage(e, text, parent_message_id || null);
     setText("");
+    if (setIsComment) {
+      setIsComment(false);
+    }
   };
   return (
     <form className={styles.Form} onSubmit={onSubmit}>

@@ -29,8 +29,7 @@ import styles from "./ForumPage.module.scss";
 export type AddMessageType = (
   e: React.FormEvent<HTMLFormElement>,
   text: string,
-  parent_message_id: number | null,
-  parent_message_text: string | null
+  parent_message_id: number | null
 ) => void;
 export const ForumMessagesListPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -52,7 +51,7 @@ export const ForumMessagesListPage: React.FC = () => {
     dispatch(forumThunks.getMessages(+themeId));
   }, []);
 
-  const addMessage: AddMessageType = (e, text, parent_message_id, parent_message_text) => {
+  const addMessage: AddMessageType = (e, text, parent_message_id) => {
     e.preventDefault();
     const data: RequestMessage = {
       theme_id: +themeId,
@@ -61,7 +60,6 @@ export const ForumMessagesListPage: React.FC = () => {
       user_avatar: user.avatar,
       message: text,
       parent_message_id,
-      parent_message_text,
     };
     dispatch(forumThunks.postMessage(data));
   };
