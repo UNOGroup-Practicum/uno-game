@@ -1,6 +1,6 @@
 import { Button, Card, CardContent, Container, Grid, Paper, Typography } from "@mui/material";
 
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Theme } from "theme/ThemeContext";
 import { useTheme } from "theme/useTheme";
@@ -25,7 +25,6 @@ import { ROUTES } from "../../constants";
 import styles from "./HomePage.module.scss";
 
 const AdvantagesItem: React.FC<React.PropsWithChildren> = ({ children }) => {
-  // Todo: добавить стили для светлой темы
   const { theme } = useTheme();
   const isDark = theme === Theme.DARK;
 

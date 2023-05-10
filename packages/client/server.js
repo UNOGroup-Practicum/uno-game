@@ -10,13 +10,25 @@ const instance = axios.create({
   withCredentials: true,
 });
 
-class YandexAPISSR {
+class API_SSR_Repository {
   constructor(_cookieHeader) {
     this._cookieHeader = _cookieHeader;
   }
 
   async getCurrent() {
     const { data: result } = await instance.get("/api/v2/auth/user", {
+      headers: {
+        cookie: this._cookieHeader,
+      },
+    });
+
+    return result;
+  }
+
+  async getForumThemes() {
+    const {
+      data: { data: result },
+    } = await instance.get("/forum/themes/", {
       headers: {
         cookie: this._cookieHeader,
       },
@@ -93,7 +105,7 @@ export async function startServer() {
       const { html, emotionCss, initialState } = await render(
         url,
         theme,
-        new YandexAPISSR(req.headers["cookie"])
+        new API_SSR_Repository(req.headers["cookie"])
       );
       const htmlWithReplacements = template
         .replace(`<!--app-html-->`, html)

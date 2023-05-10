@@ -15,7 +15,7 @@ import ThemeProvider from "theme/ThemeProvider";
 
 import App from "components/app/App";
 
-import { loadUser,Route, ROUTES } from "./constants";
+import { loadUser, Route, ROUTES } from "./constants";
 import createEmotionCache from "./createEmotionCache";
 
 export async function render(url: string, theme: Theme, repository: TUserRepository) {
@@ -26,7 +26,7 @@ export async function render(url: string, theme: Theme, repository: TUserReposit
 
   await loadUser(store.dispatch);
 
-  const currentRoute = Object.values(ROUTES).find((route) => matchPath(pathname, route.path)) || {};
+  const currentRoute = Object.values(ROUTES).find((route) => matchPath(route.path, pathname)) || {};
   const { loader } = currentRoute as Route;
 
   if (loader) {

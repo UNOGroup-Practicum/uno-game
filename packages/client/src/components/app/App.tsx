@@ -82,7 +82,7 @@ function App() {
             <Route path={ROUTES.leaderboard.path} element={<LiderboardPage />} />
             <Route path={ROUTES.forum.path}>
               <Route index element={<ForumThemesListPage />} />
-              <Route path=":themeId" element={<ForumMessagesListPage />} />
+              <Route path={ROUTES.forumTheme.path} element={<ForumMessagesListPage />} />
             </Route>
             <Route path={ROUTES.gamePreparing.path} element={<GamePreparingPage />} />
             <Route path={ROUTES.game.path} element={<GamePage />} />

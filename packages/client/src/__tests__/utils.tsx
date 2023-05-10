@@ -7,8 +7,8 @@ import React from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 
+import { APIClientRepository } from "services/api/APIClientRepository";
 import { UserService } from "services/api/UserService";
-import { YandexAPIClient } from "services/api/YandexAPIClient";
 import { rootReducer } from "services/reducers";
 import ThemeProvider from "theme/ThemeProvider";
 
@@ -67,7 +67,7 @@ function createThunkMiddleware() {
       // @ts-ignore
       (action) => {
         if (typeof action === "function") {
-          return action(dispatch, getState, new UserService(new YandexAPIClient()));
+          return action(dispatch, getState, new UserService(new APIClientRepository()));
         }
 
         return next(action);
