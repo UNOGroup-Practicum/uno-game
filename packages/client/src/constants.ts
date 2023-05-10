@@ -1,6 +1,8 @@
 import { authThunks } from "services/slices/auth-slice";
 import { AppDispatch } from "services/store";
 
+import { forumThunks } from "./services/slices/forum-slice";
+
 export type Route = {
   path: string;
   loader?: (dispatch: AppDispatch) => void;
@@ -28,7 +30,14 @@ export const ROUTES: Record<string, Route> = {
   rules: {
     path: "/rules",
   },
-  forum: { path: "/forum" },
+  forum: {
+    path: "/forum",
+    loader: (dispatch) => dispatch(forumThunks.getThemes()),
+  },
+  forumTheme: {
+    path: "/forum/:themeId",
+    loader: (dispatch) => dispatch(forumThunks.getThemes()),
+  },
   gamePreparing: {
     path: "/game-preparing",
   },

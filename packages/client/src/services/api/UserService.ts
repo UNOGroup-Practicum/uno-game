@@ -14,4 +14,8 @@ export class UserService {
 
     return transformUser(result);
   }
+
+  async getForumThemes() {
+    return this._repo.getForumThemes();
+  }
 }

@@ -5,8 +5,6 @@ import createBackSideCard from "./createBackSideCard";
 import createDigitCard from "./createDigitCard";
 import setCardsAmountForGamer from "./setCardsAmountForGamer";
 
-// TODO: Исчинить типы
-// @ts-ignore
 const cardsDistribution: TCardsDistribution = (
   canvas,
   ctx,

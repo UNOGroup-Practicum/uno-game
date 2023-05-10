@@ -1,92 +1,117 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Avatar, Button, Container, TextField } from "@mui/material";
+import {
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+} from "@mui/material";
 
-import React, { useEffect, useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
+
+import { RequestMessage, ThemeType, User } from "services/api/types";
+import { useDispatch } from "services/hooks";
+import { authSelect } from "services/slices/auth-slice";
+import { forumSelect, forumThunks } from "services/slices/forum-slice";
 
 import { ROUTES } from "../../constants";
 
-import { currentUserData, forumData } from "./data/data";
+import { MessageForm } from "./MessageForm/MessageForm";
 import { MessageItem } from "./MessageItem/MessageItem";
 
 import styles from "./ForumPage.module.scss";
-import stylesMessageItem from "./MessageItem/MessageItem.module.scss";
 
+export type AddMessageType = (
+  e: React.FormEvent<HTMLFormElement>,
+  text: string,
+  parent_message_id: number | null
+) => void;
 export const ForumMessagesListPage: React.FC = () => {
-  const [text, setText] = useState("");
-  const { themeId } = useParams();
-  const [isDisabled, setIsDisabled] = useState(true);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { themes, currentMessages } = useSelector(forumSelect);
+  const user = useSelector(authSelect).user as User;
+  const themeId = useParams().themeId as string;
+  const { user_id, title } = themes.find((theme) => theme.id === +themeId) as ThemeType;
 
-  const themeData = forumData.filter((item) => Number(item.themeId) === Number(themeId))[0];
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
-    text.length ? setIsDisabled(false) : setIsDisabled(true);
-  }, [text]);
+    dispatch(forumThunks.getMessages(+themeId));
+  }, []);
 
-  const addMessage = (e: React.FormEvent<HTMLFormElement>) => {
+  const addMessage: AddMessageType = (e, text, parent_message_id) => {
     e.preventDefault();
-    if (!isDisabled) {
-      // здесь будет отправка сообщения
-      console.log(text);
-
-      setText("");
-    }
+    const data: RequestMessage = {
+      theme_id: +themeId,
+      user_id: user.id,
+      user_display_name: user.displayName,
+      user_avatar: user.avatar,
+      message: text,
+      parent_message_id,
+    };
+    dispatch(forumThunks.postMessage(data));
   };
 
   const delTheme = () => {
-    console.log(`Theme ${themeData.themeId} deleted`);
+    dispatch(forumThunks.deleteTheme(+themeId));
+    navigate(ROUTES.forum.path);
   };
 
   return (
     <Container maxWidth="md" data-testid="page-forum-messages">
       <main className={styles.ForumPage}>
-        <div className={styles.ForumPage_wrapper}>
-          <div className={stylesMessageItem.MessageItem__user}>
-            <Avatar alt="Avatar" src={themeData.themeCreatorUser.avatar} />
-            <p className={stylesMessageItem.MessageItem__user_username}>
-              {themeData.themeCreatorUser.display_name}
-            </p>
-          </div>
-          {themeData.themeCreatorUser.id === currentUserData.id && (
-            <Button onClick={delTheme} variant="outlined" color="error" startIcon={<DeleteIcon />}>
-              Удалить тему
-            </Button>
-          )}
-        </div>
-
         <h2 className={styles.ForumPage__header}>
-          <NavLink to={ROUTES.forum.path}>{"<"}</NavLink>
-          {themeData.themeTitle}
+          <div>
+            <NavLink to={ROUTES.forum.path}>{"<"}</NavLink>
+            {title}
+          </div>
+          {user_id && user?.id === user_id && (
+            <IconButton aria-label="delete" color="error" onClick={handleClickOpen}>
+              <DeleteIcon />
+            </IconButton>
+          )}
         </h2>
-
-        {themeData.themeMessages.map((item) => (
-          <MessageItem key={item.messageId} messageData={item} />
+        {currentMessages.map((item) => (
+          <MessageItem key={item.id} messageData={item} addMessage={addMessage} />
         ))}
+        <MessageForm addMessage={addMessage} />
 
-        <form className={styles.ForumPage__form} onSubmit={addMessage}>
-          <TextField
-            className={styles.ForumPage__form_input}
-            multiline
-            variant="outlined"
-            type="search"
-            value={text}
-            placeholder={"Отправить сообщение"}
-            name="title"
-            size="small"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setText(event.target.value);
-            }}
-          />
-          <Button
-            size="small"
-            variant="contained"
-            type="submit"
-            color="warning"
-            disabled={isDisabled}
-          >
-            Отправить
-          </Button>
-        </form>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            Вы действительно хотите удалить эту тему?
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              При удалении темы, будут удалены также все сообщения в этой теме. Отменить данное
+              действие будет невозможно!
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} autoFocus>
+              Отменить
+            </Button>
+            <Button onClick={delTheme} color="error">
+              Удалить
+            </Button>
+          </DialogActions>
+        </Dialog>
       </main>
     </Container>
   );
