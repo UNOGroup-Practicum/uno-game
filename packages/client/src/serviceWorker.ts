@@ -77,7 +77,7 @@ function isUnprocessedRequest(request: Request) {
   }
 
   // API
-  if (request.url.match(/^\/api\/.+/)) {
+  if (url.pathname.match(/^\/api\/.+/)) {
     return true;
   }
 
