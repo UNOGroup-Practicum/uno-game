@@ -75,7 +75,7 @@ export async function startServer() {
     createProxyMiddleware({
       changeOrigin: true,
       cookieDomainRewrite: {
-        "*": "",
+        "*": process.env.COOKIE_DOMAIN_REWRITE,
       },
       target: process.env.API_BASEURL,
     })
