@@ -19,7 +19,7 @@ app.use(
   createProxyMiddleware({
     changeOrigin: true,
     cookieDomainRewrite: {
-      "*": "",
+      "*": process.env.COOKIE_DOMAIN_REWRITE as string,
     },
     target: process.env.API_YANDEX_BASEURL,
   })
